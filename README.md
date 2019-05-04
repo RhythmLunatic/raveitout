@@ -1,6 +1,5 @@
-# Rave It Out: Season 2
-![Rave It Out](Graphics/logo.png)
-The Official Rave It Out theme. Pitbull would approve. Dale!
+# Rave It Out: Weaboo Edition
+The unofficial mod to RIO S2 where the music is replaced with Voltexes, the pictures are supplied yourself, and there are probably less bugs.
 
 ## Usage
 Works on 5.0.12+ only. Auto Velocity will not work if you do not compile the [latest 5.1-new branch](https://github.com/stepmania/stepmania/tree/5_1-new) of StepMania or [our fork](https://github.com/RhythmLunatic/stepmania/tree/starworlds).
