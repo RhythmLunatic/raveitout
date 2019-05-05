@@ -746,6 +746,7 @@ local t = Def.ActorFrame {
 					curProfileScreen[params.PlayerNumber] = 1;
 					--SCREENMAN:SystemMessage(curProfileScreen[params.PlayerNumber]);
 					self:sleep(.2):queuecommand("UpdateInternal2");
+					self:GetChild("CardReadySound"):playforplayer(params.PlayerNumber);
 					--Because SM's own messagecommands isn't consistent...
 					MESSAGEMAN:Broadcast("ProfileChosen",{Player=params.PlayerNumber});
 				else
@@ -864,6 +865,11 @@ local t = Def.ActorFrame {
 					self:play();
 				end;
 			end;
+		};
+		Def.Sound{
+			File=THEME:GetPathS("ScreenSelectProfile","CardReady");
+			Name="CardReadySound";
+			SupportPan=true
 		};
 	};
 };

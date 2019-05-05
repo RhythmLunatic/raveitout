@@ -5,14 +5,14 @@ RIO:2018-10-04
 DISPLAY TYPE: HD
 ]]
 SysInfo = {
-	InternalName = "RIOS2",
-	Version = "Beta",
+	InternalName = "RIO:WE",
+	Version = "Alpha",
 }
 
 RIO_FOLDER_NAMES = {
-	EasyFolder = "99-Easy",
+	EasyFolder = "99-Easy", --To be removed at a later date, but I'm working on it...
 	SpecialFolder = "99-Special",
-	SnapTracksFolder = "00-Snap Tracks", --To be removed at a later date and automatically generated, but we're working on it...
+	SnapTracksFolder = "00-Snap Tracks",
 	--[[
 	If this is set the game will use it for arcade mode. If not, it will pick a random folder,
 	but ONLY if you aren't playing with a profile. Profiles will resume from their last played song
