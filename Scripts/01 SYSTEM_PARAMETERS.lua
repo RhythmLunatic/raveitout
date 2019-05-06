@@ -12,7 +12,7 @@ SysInfo = {
 RIO_FOLDER_NAMES = {
 	EasyFolder = "99-Easy", --To be removed at a later date, but I'm working on it...
 	SpecialFolder = "99-Special",
-	SnapTracksFolder = "00-Snap Tracks",
+	SnapTracksFolder = "00-Snap Tracks", --To be removed at a later date, but I'm working on it...
 	--[[
 	If this is set the game will use it for arcade mode. If not, it will pick a random folder,
 	but ONLY if you aren't playing with a profile. Profiles will resume from their last played song

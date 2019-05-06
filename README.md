@@ -4,7 +4,7 @@ The unofficial mod to RIO S2 where the music is replaced with EZ2AC, the picture
 Also the lifebar is changed.
 
 ## Usage
-Works on 5.0.12+ only. Auto Velocity will not work if you do not compile the [latest 5.1-new branch](https://github.com/stepmania/stepmania/tree/5_1-new) of StepMania or [our fork](https://github.com/RhythmLunatic/stepmania/tree/starworlds).
+Works on 5.0.12+ only. Auto Velocity will not work if you do not compile the [latest 5.1-new branch](https://github.com/stepmania/stepmania/tree/5_1-new) of StepMania or [the RIO fork](https://github.com/RhythmLunatic/stepmania/tree/starworlds).
 
 Configure the groups for Easy and Special mode in 01 SYSTEM_PARAMETERS.lua.
 
