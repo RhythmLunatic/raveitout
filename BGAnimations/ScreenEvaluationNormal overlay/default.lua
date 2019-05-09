@@ -76,7 +76,7 @@ end;
 	};
 
 
-t[#t+1] = LoadActor("unlocks.lua");								--Unlock system
+--t[#t+1] = LoadActor("unlocks.lua");								--Unlock system
 
 --this is the dim for the numbers, it's kind of confusing right now since the numbers and bg is separated
 local listcount = (PREFSMAN:GetPreference("AllowW1") == "AllowW1_Never") and 8 or 9;

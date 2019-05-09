@@ -148,7 +148,7 @@ local function inputs(event)
 	if event.type == "InputEventType_Release" then return end
 	
 	if button == "Center" or button == "Start" then
-		SCREENMAN:SystemMessage(scroller:get_info_at_focus_pos());
+		--SCREENMAN:SystemMessage(scroller:get_info_at_focus_pos());
 		SCREENMAN:set_input_redirected(PLAYER_1, false);
 		SCREENMAN:set_input_redirected(PLAYER_2, false);
 		MESSAGEMAN:Broadcast("StartSelectingSong");
