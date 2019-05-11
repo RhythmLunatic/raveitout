@@ -88,6 +88,8 @@ t[#t+1] = Def.Actor {
 				--SCREENMAN:SystemMessage("Unjoined "..player)
 			end;
 		end;
+		
+
 		SCREENMAN:GetTopScreen():Continue();
 	end;
 };
