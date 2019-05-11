@@ -48,7 +48,8 @@ local sections = {
 		"Step Artist - Gio Shawn",
 		"Step Artist - Akira Sora (HaleyHalcyon)",
 		"Programming - Accelerator",
-		"Programming - José Varela"
+		"Programming - José Varela",
+		"Programming - Tertu"
 	}},
 	{ "Special Thanks", {
 		"Everyone who liked our Facebook page",

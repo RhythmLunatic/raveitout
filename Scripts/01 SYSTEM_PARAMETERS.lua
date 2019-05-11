@@ -5,7 +5,7 @@ RIO:2018-10-04
 DISPLAY TYPE: HD
 ]]
 SysInfo = {
-	InternalName = "RIO:WE",
+	InternalName = "RIO4W",
 	Version = "Alpha",
 }
 
