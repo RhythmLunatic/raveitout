@@ -1,16 +1,16 @@
 local phrases = {
-"Perfectionist Mode is best used for obtaining SS scores without wasting time. You won’t regret it. Heh.",
+"Perfectionist Mode is best used for obtaining SS scores without wasting time.",
 "Some modifiers will be overridden by certain charts.",
-"Report any bugs to “http://facebook.com/raveitoutgame”. Make sure you report them in a very aggresive manner. Memes are appreciated but not mandatory.",
-"Make sure to hit hold heads accurately, or you will be punished with worse judgements on following holds. Yeah, it’s bullshit. Nah, we don’t care.",
+"Report any bugs to Rhythm Lunatic. Or don't.",
+"Make sure to hit hold heads accurately, or you will be punished with worse judgements on following holds. Because StepMania is a great engine.",
 "Check the options list for the Screen Filter feature. It will allow a BGA to be viewed without affecting any gameplay. Loser.",
 "If you already played for awhile, give “Pro mode” a whirl and test your timing skills. Also helps determine what is on and off sync.",
-"The cuter the song, the harder the charts will be. We guarantee it.",
-"Rave It Out is basically “Pitbull: The Game”: every song has some reason to make someone angry. Dale.",
-"Play a song that is by Kanye West by himself. Trust me.",
+"The cuter the anime girl, the harder the charts will be. I guarantee it.",
 "Playing Rave It Out during certain times of the year can cause weather changes in game.",
-"Quad and Quint arrow combinations are a norm in Rave It Out. Learning how to hit them will be to your benefit.",
-"Some songs have specific trivia. This song is not one of them."
+"Some songs have unique trivia. This song is not one of them. (Add your own by reading the Song Structure Documentation.txt)",
+"Some songs have unique loading screen backgrounds... If you've put in the specialBG.png.",
+"Getting >90% accuracy in a song that requires 2 hearts will get you an extra heart which can be used to play another song.",
+"If you're on the bonus stage and the song title is glowing red, try getting >95% accuracy for a surprise..."
 };
 
 local message;
