@@ -7,34 +7,25 @@ function VideoMode()
 		SelectType = "SelectOne";
 		OneChoiceForAllPlayers = true;		--ojo
 		ExportOnChange = false;
-		Choices = { "Super SD", "SD", "HD"}; --Maybe add an Auto option.
+		Choices = {"SD", "HD"}; --Maybe add an Auto option.
 		LoadSelections = function(self, list, pn)
-			if PREFSMAN:GetPreference("MaxTextureResolution") < 1024 then
-				list[1] = true;
-			elseif PREFSMAN:GetPreference("MaxTextureResolution") == 1024 then
-				list[2] = true;	
+			if PREFSMAN:GetPreference("MaxTextureResolution") == 2048 then
+				list[2] = true;
 			else
-				list[3] = true;
+				list[1] = true;
 			end;
 		end;
 		SaveSelections = function(self, list, pn)
 			--Want more options? TOO BAD!
 			if list[1] then
-				PREFSMAN:SetPreference("MaxTextureResolution",256);
-				PREFSMAN:SetPreference("DisplayColorDepth",16);
-				PREFSMAN:SetPreference("MovieColorDepth",16);
-				PREFSMAN:SetPreference("TextureColorDepth",16);
-			elseif list[2] then
 				PREFSMAN:SetPreference("MaxTextureResolution",1024);
-				PREFSMAN:SetPreference("DisplayColorDepth",32);
-				PREFSMAN:SetPreference("MovieColorDepth",32);
-				PREFSMAN:SetPreference("TextureColorDepth",32);
 			else
 				PREFSMAN:SetPreference("MaxTextureResolution",2048);
-				PREFSMAN:SetPreference("DisplayColorDepth",32);
-				PREFSMAN:SetPreference("MovieColorDepth",32);
-				PREFSMAN:SetPreference("TextureColorDepth",32);
 			end;
+			--Always do 32bit
+			PREFSMAN:SetPreference("DisplayColorDepth",32);
+			PREFSMAN:SetPreference("MovieColorDepth",32);
+			PREFSMAN:SetPreference("TextureColorDepth",32);
 			PREFSMAN:SavePreferences();
 		end;
 	};
