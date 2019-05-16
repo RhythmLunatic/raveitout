@@ -214,8 +214,8 @@ Branch = {
 					return "ScreenProfileSaveSummary"
 				else
 					local steps = GAMESTATE:GetCurrentSteps(GAMESTATE:GetMasterPlayerNumber())
-					--local difficulty = (steps:GetDifficulty() ~= 'Difficulty_Edit') and steps:GetDifficulty() or 'Difficulty_Challenge'
-					local difficulty = steps:GetDifficulty();
+					local difficulty = (steps:GetDifficulty() ~= 'Difficulty_Edit') and steps:GetDifficulty() or 'Difficulty_Challenge'
+					--local difficulty = steps:GetDifficulty();
 					--assert(difficulty,"No steps???")
 					if s:HasStepsTypeAndDifficulty(steps:GetStepsType(),difficulty) then
 						GAMESTATE:SetCurrentSong(s);
