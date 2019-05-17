@@ -222,7 +222,7 @@ Branch = {
 						GAMESTATE:SetCurrentSteps(GAMESTATE:GetMasterPlayerNumber(),s:GetOneSteps(steps:GetStepsType(),difficulty))
 						return "ScreenStageInformation";
 					end;
-					SCREENMAN:SystemMessage("There was no available difficulties for the OMES.")
+					SCREENMAN:SystemMessage("The OMES did not have "..steps:GetStepsType()..","..steps:GetDifficulty().." and the game cannot continue.")
 					return "ScreenProfileSaveSummary"
 				end;
 			else

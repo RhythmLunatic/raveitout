@@ -566,12 +566,15 @@ else
 					OnCommand=function(self)
 						local arrow = "UpLeft";
 						local name = "Tap note";
-						if CurrentNoteSkin(pn) == "delta" then
-							name = "Ready Receptor";
-						elseif CurrentNoteSkin(pn) == "delta-note" or string.ends(CurrentNoteSkin(pn), "rhythm") then
-							arrow = "_UpLeft";
+						local path = NOTESKIN:GetPathForNoteSkin("", "__RIO_THUMB", CurrentNoteSkin(pn));
+						if not path then
+							if highlightedNoteSkin == "delta" then
+								name = "Ready Receptor";
+							elseif highlightedNoteSkin == "delta-note" or string.ends(highlightedNoteSkin, "rhythm") then
+								arrow = "_UpLeft";
+							end
+							path = NOTESKIN:GetPathForNoteSkin(arrow, name, CurrentNoteSkin(pn));
 						end
-						local path = NOTESKIN:GetPathForNoteSkin(arrow, name, CurrentNoteSkin(pn));
 						
 						self:Load(path);
 						self:croptop(0);
@@ -584,13 +587,15 @@ else
 								local highlightedNoteSkin = OPTIONSLIST_NOTESKINS[params.Selection+1];
 								local arrow = "UpLeft";
 								local name = "Tap note";
-								if highlightedNoteSkin == "delta" then
-									name = "Ready Receptor";
-								elseif highlightedNoteSkin == "delta-note" or string.ends(highlightedNoteSkin, "rhythm") then
-									arrow = "_UpLeft";
+								local path = NOTESKIN:GetPathForNoteSkin("", "__RIO_THUMB", highlightedNoteSkin);
+								if not path then
+									if highlightedNoteSkin == "delta" then
+										name = "Ready Receptor";
+									elseif highlightedNoteSkin == "delta-note" or string.ends(highlightedNoteSkin, "rhythm") then
+										arrow = "_UpLeft";
+									end
+									path = NOTESKIN:GetPathForNoteSkin(arrow, name, highlightedNoteSkin);
 								end
-								local path = NOTESKIN:GetPathForNoteSkin(arrow, name, highlightedNoteSkin);
-								
 								self:Load(path);
 								self:croptop(0);
 								self:cropright(0);

@@ -25,7 +25,7 @@ RIO_FOLDER_NAMES = {
 	PREDEFINED_GROUP_LIST = {}
 }
 --The song that gets picked for the One More Extra Stage.
-OMES_SONG = "Ace For Aces"
+OMES_SONG = "Ace For Aces (OMES Test)"
 
 -- These names will not show up over the difficulty icons.
 STEPMAKER_NAMES_BLACKLIST = {
