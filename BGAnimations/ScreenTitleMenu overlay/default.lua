@@ -8,22 +8,22 @@
         };
         --Bottom line
         Def.Quad{
-            InitCommand=cmd(setsize,width + lineSize, lineSize;addy,height/2;--[[horizalign,0;vertalign,2]]);
+            InitCommand=cmd(setsize,width + lineSize, lineSize;addy,height/2;);
             
         };
         --Top line
         Def.Quad{
-            InitCommand=cmd(setsize,width + lineSize, lineSize;addy,-height/2;--[[horizalign,2;vertalign,0]]); --2 = right aligned
+            InitCommand=cmd(setsize,width + lineSize, lineSize;addy,-height/2;); --2 = right aligned
             
         };
         --Left line
         Def.Quad{
-            InitCommand=cmd(setsize,lineSize, height + lineSize;addx,-width/2;--[[vertalign,0;horizalign,2]]); --2 = right aligned
+            InitCommand=cmd(setsize,lineSize, height + lineSize;addx,-width/2;); --2 = right aligned
             
         };
         --Right line
         Def.Quad{
-            InitCommand=cmd(setsize,lineSize, height + lineSize;addx,width/2;--[[vertalign,2;horizalign,0]]); --2 = bottom aligned
+            InitCommand=cmd(setsize,lineSize, height + lineSize;addx,width/2;); --2 = bottom aligned
             
         };
         
