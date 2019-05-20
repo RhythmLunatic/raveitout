@@ -39,6 +39,7 @@ function IsExtraStagePIU()
 end;
 
 
+--This is a static function meaning DO NOT do any setting of variables here! Do it in the branch.lua that checks this function!
 function UnlockedOMES_RIO()
 	--If they just played the extra stage, and there is an extra stage song defined, and they played said extra stage song...
 	if IsExtraStagePIU() and extraStageSong and GAMESTATE:GetCurrentSong():GetMainTitle() == extraStageSong then

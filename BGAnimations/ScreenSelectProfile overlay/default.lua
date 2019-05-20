@@ -156,7 +156,7 @@ function LoadPlayerStuff(Player)
 		Name = "LoginFrame";
 		
 		LoadFont("Common Normal")..{
-			Text="Or select a local profile below";
+			Text=THEME:GetString("ScreenSelectProfile","Or select a local profile below");
 			InitCommand=cmd(vertalign,top;horizalign,left;xy,-PROFILE_FRAME_WIDTH/2,-40);
 		};
 		
@@ -226,11 +226,11 @@ function LoadPlayerStuff(Player)
 			LoopCommand=cmd(decelerate,1;diffusealpha,1;zoom,1.5;sleep,.5;linear,.5;diffusealpha,0;sleep,0;zoom,3.5;queuecommand,"Loop");
 		};
 		LoadFont("Common Normal")..{
-			Text="Insert your USB stick to login";
+			Text=THEME:GetString("ScreenSelectProfile","Insert your USB stick to login");
 			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+25;vertalign,top);
 			OnCommand=function(self)
 				if not IsMemcardEnabled() then
-					self:settext("Memory cards are disabled.\nSelect a local profile below.");
+					self:settext(THEME:GetString("ScreenSelectProfile","Memory cards are disabled"));
 				end;
 			end;
 			--OnCommand=cmd(diffuseshift;effectperiod,2;effectcolor1,color("1,1,1,1");effectcolor2,color("1,1,1,0"));

@@ -1,4 +1,4 @@
-function rectGen(width, height, lineSize, bgColor)
+--[[function rectGen(width, height, lineSize, bgColor)
     return Def.ActorFrame{
     
         --Background transparency
@@ -29,7 +29,7 @@ function rectGen(width, height, lineSize, bgColor)
         
 
     };
-end;
+end;]]
 
 return Def.ActorFrame{
 	LoadFont("common normal")..{
@@ -83,13 +83,15 @@ return Def.ActorFrame{
 
 
 	LoadFont("Common normal")..{	--Unlock status data
-		InitCommand=cmd(visible,DoDebug;x,SCREEN_LEFT+10;y,SCREEN_TOP+10+30;vertalign,top;horizalign,left;zoom,0.5;);
+		Condition=DoDebug;
+		InitCommand=cmd(x,SCREEN_LEFT+10;y,SCREEN_TOP+10+30;vertalign,top;horizalign,left;zoom,0.5;);
 		OnCommand=function(self)
 			self:settext("Total unlocks: "..UNLOCKMAN:GetNumUnlocks().."\nUnlocked items: "..UNLOCKMAN:GetNumUnlocked());
 		end;
 	};
 	LoadFont("Common normal")..{	--Checkear unlock status de EntryID TT002
-		InitCommand=cmd(visible,DoDebug;x,_screen.cx;y,_screen.cy+220;zoom,0.5;);
+		Condition=DoDebug;
+		InitCommand=cmd(x,_screen.cx;y,_screen.cy+220;zoom,0.5;);
 		OnCommand=function(self)
 			local IsLocked = IsEntryIDLocked("TT002");
 			if IsLocked ~= -1 then
@@ -114,7 +116,8 @@ return Def.ActorFrame{
 	};
 	]]
 	LoadFont("Common normal")..{	--Songs played (machine profile)
-		InitCommand=cmd(visible,DoDebug;x,SCREEN_LEFT+10;y,_screen.cy+180;zoom,0.5;horizalign,left;settext,"Songs played (machine profile): "..PROFILEMAN:GetMachineProfile():GetNumTotalSongsPlayed(););
+		Condition=DoDebug;
+		InitCommand=cmd(x,SCREEN_LEFT+10;y,_screen.cy+180;zoom,0.5;horizalign,left;settext,"Songs played (machine profile): "..PROFILEMAN:GetMachineProfile():GetNumTotalSongsPlayed(););
 	};
 	
 	-- Memory cards

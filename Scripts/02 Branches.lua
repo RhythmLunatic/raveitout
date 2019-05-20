@@ -189,6 +189,7 @@ Branch = {
 			if UnlockedOMES_RIO() then
 				--Set stage break to 1. Gotta get that full combo!
 				setenv("BreakCombo",1);
+				setenv("IsOMES_RIO",true)
 				
 				assert(OMES_SONG,"Hey genius, you need to define an OMES_SONG.")
 				local s = SONGMAN:FindSong(OMES_SONG);

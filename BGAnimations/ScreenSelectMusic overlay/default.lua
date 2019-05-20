@@ -566,7 +566,9 @@ else
 					OnCommand=function(self)
 						local arrow = "UpLeft";
 						local name = "Tap note";
-						local path = NOTESKIN:GetPathForNoteSkin("", "__RIO_THUMB", CurrentNoteSkin(pn));
+						local highlightedNoteSkin = CurrentNoteSkin(pn);
+						--Constantly causes errors, just remove it
+						local path-- = NOTESKIN:GetPathForNoteSkin("", "__RIO_THUMB", CurrentNoteSkin(pn));
 						if not path then
 							if highlightedNoteSkin == "delta" then
 								name = "Ready Receptor";
@@ -587,7 +589,7 @@ else
 								local highlightedNoteSkin = OPTIONSLIST_NOTESKINS[params.Selection+1];
 								local arrow = "UpLeft";
 								local name = "Tap note";
-								local path = NOTESKIN:GetPathForNoteSkin("", "__RIO_THUMB", highlightedNoteSkin);
+								local path-- = NOTESKIN:GetPathForNoteSkin("", "__RIO_THUMB", highlightedNoteSkin);
 								if not path then
 									if highlightedNoteSkin == "delta" then
 										name = "Ready Receptor";
