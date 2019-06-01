@@ -248,6 +248,13 @@ function LoadPlayerStuff(Player)
 			--OnCommand=cmd(diffuseshift;effectperiod,2;effectcolor1,color("1,1,1,1");effectcolor2,color("1,1,1,0"));
 		
 		};
+		
+		LoadFont("Common Normal")..{
+			Condition=(PROFILEMAN:GetNumLocalProfiles() == 0) and IsMemcardEnabled();
+			Text=THEME:GetString("ScreenSelectProfile","Or press start to continue without a profile");
+			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+210;vertalign,top;wrapwidthpixels,PROFILE_FRAME_WIDTH-100);
+		
+		};
 		--This one shows up on top of the other one because it looks cool when you card in.
 		--[[Def.ActorFrame{
 			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/4-12);
