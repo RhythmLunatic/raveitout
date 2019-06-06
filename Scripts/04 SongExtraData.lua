@@ -43,13 +43,20 @@ local function PreviewTransform(song, VideoName)
 			VideoName = ""
 		end
 	else
-		--nothing yet, maybe something eventually
+		--Nothing
 	end
 	return VideoName
 end
 
+--In case there was no PREVIEWVID tag or it was blank, search manually
+local function previewFallback(song)
+	if FILEMAN:DoesFileExist(song:GetSongDir()..song:GetTranslitMainTitle().."-preview.mp4") then
+		return song:GetSongDir()..song:GetTranslitMainTitle().."-preview.mp4"
+	end;
+end
+
 local SongItems = {
-	PreviewVid={source="PREVIEWVID", transform=PreviewTransform, fallback=""},
+	PreviewVid={source="PREVIEWVID", transform=PreviewTransform, fallback=previewFallback},
 	Hearts={source="SONGTYPE", transform=SongTypeTransform, fallback=SongTypeFallback}
 }
 
