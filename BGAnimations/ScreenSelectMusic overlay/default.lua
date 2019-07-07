@@ -464,26 +464,25 @@ else
 					Text="Current Velocity:";
 					InitCommand=cmd(draworder,999;y,_screen.cy-(olhei/2.25)+35;vertalign,top;zoom,.5;wrapwidthpixels,350;diffusebottomedge,Color("HoloBlue");visible,false);
 					OnCommand=function(self,params)
-						self:playcommand("UpdateText",{Player=pn});
+						self:playcommand("UpdateText");
 					end;
-					UpdateTextCommand=function(self,params)
-						if params.Player == pn then
-							if GAMESTATE:GetPlayerState(pn):GetCurrentPlayerOptions():MMod() then
-								self:settext("Current Velocity: "..GAMESTATE:GetPlayerState(pn):GetCurrentPlayerOptions():MMod());
-							else
-								self:settext("Current Velocity: None");
-							end;
-						end;
+					UpdateTextCommand=function(self)
+						--[[
+							More ternary shit
+							If an MMod is set this will evaluate to true and will be concatenated to the string,
+							but if it's false then the conditional will pick "None" and that will be concatenated instead.
+						  ]]
+						self:settext("Current Velocity: "..(GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred"):MMod() or "None"));
 					end;
 					SpeedModChangedMessageCommand=function(self,params)
 						if params.Player == pn and currentOpList == "SpeedMods" then
-							self:playcommand("UpdateText",params);
+							self:playcommand("UpdateText");
 						end;
 					end;
 					AdjustCommand=function(self,params)
 						if currentOpList == "SongMenu" then
 							if params.Selection == 5 then
-								self:playcommand("UpdateText",params);
+								self:playcommand("UpdateText");
 								self:visible(true);
 							else
 								self:visible(false);

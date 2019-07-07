@@ -26,9 +26,19 @@ local gsCodes = {
 		--dance = "Down",
 		pump = "UpRight",
 	},
+	GroupSelect3 = {
+		default = "MenuUp"
+	},
+	GroupSelect4 = {
+		default= "MenuDown"
+	},
 	OptionList = {
 		default = "Left,Right,Left,Right",
 		pump = "DownLeft,DownRight,DownLeft,DownRight,DownLeft,DownRight"
+	},
+	--Alternative for menu buttons instead of pads
+	OptionList2 = {
+		default = "MenuLeft,MenuRight,MenuLeft,MenuRight,MenuLeft,MenuRight"
 	}
 };
 

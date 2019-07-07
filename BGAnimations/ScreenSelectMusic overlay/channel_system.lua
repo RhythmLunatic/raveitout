@@ -152,7 +152,7 @@ local function inputs(event)
 		SCREENMAN:set_input_redirected(PLAYER_1, false);
 		SCREENMAN:set_input_redirected(PLAYER_2, false);
 		MESSAGEMAN:Broadcast("StartSelectingSong");
-	elseif button == "DownLeft" or button == "Left" then
+	elseif button == "DownLeft" or button == "Left" or button == "MenuLeft" then
 		SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
 		if selection == 1 then
 			selection = #groups;
@@ -163,7 +163,7 @@ local function inputs(event)
 		setenv("cur_group",groups[selection]);
 		MESSAGEMAN:Broadcast("GroupChange");
 		
-	elseif button == "DownRight" or button == "Right" then
+	elseif button == "DownRight" or button == "Right" or button == "MenuRight" then
 		SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
 		if selection == #groups then
 			selection = 1;
@@ -237,7 +237,7 @@ local t = Def.ActorFrame{
 		local codeName = param.Name		-- code name, matches the one in metrics
 		--player is not needed
 		--local pn = param.PlayerNumber	-- which player entered the code
-		if codeName == "GroupSelect1" or codeName == "GroupSelect2" then
+		if codeName == "GroupSelectPad1" or codeName == "GroupSelectPad2" or codeName == "GroupSelectButton1" or codeName == "GroupSelectButton2" then
 			if isPickingDifficulty then return end; --Don't want to open the group select if they're picking the difficulty.
 			MESSAGEMAN:Broadcast("StartSelectingGroup");
 			--SCREENMAN:SystemMessage("Group select opened.");

@@ -39,7 +39,7 @@ local musicwheel; --Need a handle on the MusicWheel to work around a StepMania b
 
 local t = Def.ActorFrame{
 	CodeMessageCommand = function(self, params)
-		if params.Name == 'OptionList' then
+		if params.Name == 'OptionList' or params.Name == "OptionList2" then
 			--SCREENMAN:GetTopScreen():OpenOptionsList(params.PlayerNumber)
 			MESSAGEMAN:Broadcast("OptionsListOpened", {Player=params.PlayerNumber});
 			SCREENMAN:SystemMessage("Opened!");
