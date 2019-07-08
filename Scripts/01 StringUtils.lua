@@ -92,6 +92,20 @@ function strArrayToString(a)
 	return s;
 end
 
+function dumpTable(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+
+
 --Because GetCurrentGame returns lowercase, but StepsType wants uppercase.
 function firstToUpper(str)
     return (str:gsub("^%l", string.upper))

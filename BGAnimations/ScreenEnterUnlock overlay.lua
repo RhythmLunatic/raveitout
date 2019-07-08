@@ -43,7 +43,8 @@ local t = Def.ActorFrame{
 			elseif unlockmsg == "ExportData" then
 				parseData();
 			elseif unlockmsg == "Assemble" then
-				AssembleDefaultGroups();
+				--AssembleDefaultGroups();
+				AssembleCoopGroup();
 				self:settext("Groups generated.");
 			else
 				self:settext("Invalid unlock code.");

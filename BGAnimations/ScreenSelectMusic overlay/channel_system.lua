@@ -1,6 +1,12 @@
 local musicwheel; --Need a handle on the MusicWheel to work around a StepMania bug. Also needed to get the folders.
 
 --==========================
+--Special folders...
+--==========================
+
+
+
+--==========================
 --Item Scroller. Must be defined at the top to have 'scroller' var accessible to the rest of the lua.
 --==========================
 local scroller = setmetatable({disable_wrapping= false}, item_scroller_mt)
@@ -61,8 +67,12 @@ local item_mt= {
 	end,
 	-- info is one entry in the info set that is passed to the scroller.
 	set= function(self, info)
-		--self.container:GetChild("text"):settext(info)
-		local banner = SONGMAN:GetSongGroupBannerPath(info);
+		local banner;
+		if info == "CO-OP Mode" then
+			banner = THEME:GetPathG("Banner","coop");
+		else
+			banner = SONGMAN:GetSongGroupBannerPath(info);
+		end;
 		if banner == "" then
 			self.container:GetChild("banner"):Load(THEME:GetPathG("common","fallback group"));
 			--self.container:GetChild("text"):visible(true);
@@ -123,6 +133,12 @@ end;
 
 if DoDebug then groups = SONGMAN:GetSongGroupNames(); end]]
 local groups = getAvailableGroups();
+--Yes these are hardcoded at line 289....
+--Only show in multiplayer, since there's no need to show it in singleplayer.
+if GAMESTATE:GetNumSidesJoined() > 1 then
+	table.insert(groups, 1, "CO-OP Mode")
+end;
+
 assert(GAMESTATE:GetCurrentSong(), "The current song should have been set in ScreenSelectPlayMode!");
 local curGroup = GAMESTATE:GetCurrentSong():GetGroupName();
 for key,value in pairs(groups) do
@@ -285,7 +301,12 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 	StartSelectingSongMessageCommand=function(self)
 		SOUND:DimMusic(1,65536);
 		
-		--SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort('SortOrder_Group');
+		if groups[selection] == "CO-OP Mode" then
+			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort("SortOrder_Preferred");
+			SONGMAN:SetPreferredSongs("CoopSongs.txt");
+		else
+			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort('SortOrder_Group');
+		end;
 		SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.5 );
 		--The fuck is this global variable doing here?

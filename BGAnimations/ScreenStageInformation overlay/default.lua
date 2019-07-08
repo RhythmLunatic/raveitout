@@ -1,22 +1,28 @@
 local t =			Def.ActorFrame {};
 local IsP1On =		GAMESTATE:IsPlayerEnabled(PLAYER_1)	--Is player 1 present? BRETTY OBIOS :DDDD
 local IsP2On =		GAMESTATE:IsPlayerEnabled(PLAYER_2)	--Is player 2 present? BRETTY OBIOS :DDDD
--- default values
-p1meter = 0;
-p2meter = 0;
 
-song = GAMESTATE:GetCurrentSong(); 	--Get current song lel
-songdir = song:GetSongDir();--Get current song directory lel
+local song = GAMESTATE:GetCurrentSong(); 	--Get current song lel
+local songdir = song:GetSongDir();--Get current song directory lel
+
+--secret chart for certain song.
+if song:GetMainTitle() == "Show Time Under Leaden Skies" then
+	--SCREENMAN:SystemMessage("True!");
+	if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_OnePlayerOneSide" or GAMESTATE:GetCurrentStyle():GetStyleType() == 'StyleType_TwoPlayersTwoSides' then
+		local stepsArray = song:GetStepsByStepsType('StepsType_Pump_Single');
+		local res = stepsArray[ math.random( #stepsArray ) ]
+		--SCREENMAN:SystemMessage("Selected "..ToEnumShortString(res:GetDifficulty()));
+		GAMESTATE:SetCurrentSteps(PLAYER_1,res);
+	end;
+end;
+
 -- again sanity checks !!!
 local p1CurrentSteps = GAMESTATE:GetCurrentSteps(PLAYER_1);
 local p2CurrentSteps = GAMESTATE:GetCurrentSteps(PLAYER_2);
-if p1CurrentSteps then
-	p1meter =		p1CurrentSteps:GetMeter();
-end;
-if p2CurrentSteps then
-	p2meter =		p2CurrentSteps:GetMeter();
-end;
-meterhighest = math.max(p1meter,p2meter)
+
+local p1meter =	p1CurrentSteps and p1CurrentSteps:GetMeter() or 0;
+local p2meter = p2CurrentSteps and p2CurrentSteps:GetMeter() or 0;
+local meterhighest = math.max(p1meter,p2meter)
 
 local sttype =		GAMESTATE:GetCurrentStyle():GetStepsType()
 local cstyle;

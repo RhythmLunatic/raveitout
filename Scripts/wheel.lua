@@ -74,10 +74,11 @@ end
 
 --Thank you, DDR SN3 team!
 --This function is a port of https://github.com/Inorizushi/DDR-X3/blob/master/Scripts/Starter.lua, please credit them if you want to put it in your theme
-local outputPath = "/Themes/"..THEME:GetCurThemeName().."/Other/SongManager DefaultGroups.txt";
+
 local isolatePattern = "/([^/]+)/?$" --in English, "everything after the last forward slash unless there is a terminator"
 local combineFormat = "%s/%s"
 function AssembleDefaultGroups()
+	local outputPath = "/Themes/"..THEME:GetCurThemeName().."/Other/SongManager DefaultGroups.txt";
 	if not (SONGMAN and GAMESTATE) then return end
 	local streamSafeMode = (ReadPrefFromFile("StreamSafeEnabled") == "true");
 	local set = {}
@@ -135,3 +136,45 @@ function AssembleDefaultGroups()
 end
 --Lol
 --AssembleBasicMode();
+
+function AssembleCoopGroup()
+	local outputPath = "/Themes/"..THEME:GetCurThemeName().."/Other/SongManager CoopSongs.txt";
+	if not (SONGMAN and GAMESTATE) then return end
+	local set = {}
+	for _, song in pairs(SONGMAN:GetAllSongs()) do
+		local steps = song:GetStepsByStepsType('StepsType_Pump_Routine');
+		if #steps >= 1 and song:GetGroupName() ~= RIO_FOLDER_NAMES["EasyFolder"] then --Filter out songs that dont have pump, and unsafe songs 
+			local shortSongDir = string.match(song:GetSongDir(),isolatePattern)
+			local groupName = song:GetGroupName()
+			local groupTbl = GetOrCreateChild(set, "CO-OP Mode")
+			table.insert(groupTbl,
+				string.format(combineFormat, groupName, shortSongDir))
+		end
+	end
+	--sort all the groups and collect their names, then sort that too
+	local groupNames = {}
+	for groupName, group in pairs(set) do
+		if next(group) == nil then
+			set[groupName] = nil
+		else
+			table.sort(group)
+			table.insert(groupNames, groupName)
+		end
+	end
+	table.sort(groupNames)
+	--then, let's make a representation of our eventual file in memory.
+	local outputLines = {}
+	for _, groupName in ipairs(groupNames) do
+		table.insert(outputLines, "---"..groupName) --Comment it out if you don't want folders.
+		for _, path in ipairs(set[groupName]) do
+			table.insert(outputLines, path)
+		end
+	end
+	--now, slam it all out to disk.
+	local fHandle = RageFileUtil.CreateRageFile()
+	--the mode is Write+FlushToDiskOnClose
+	fHandle:Open(outputPath, 10)
+	fHandle:Write(table.concat(outputLines,'\n'))
+	fHandle:Close()
+	fHandle:destroy()
+end
