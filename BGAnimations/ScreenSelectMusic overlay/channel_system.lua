@@ -304,27 +304,26 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 		if groups[selection] == "CO-OP Mode" then
 			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort("SortOrder_Preferred");
 			SONGMAN:SetPreferredSongs("CoopSongs.txt");
+			self:load(THEME:GetPathS("","Genre/co-op"));
 		else
 			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort('SortOrder_Group');
+			--It works... But only if there's a banner.
+			local fir = SONGMAN:GetSongGroupBannerPath(getenv("cur_group"));
+			if not fir then
+				return;
+			end;
+			self:load(soundext(gisub(fir,'banner.png','info/sound')));
 		end;
 		SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.5 );
-		--The fuck is this global variable doing here?
-		--state = 1;
-		--SCREENMAN:SystemMessage(SONGMAN:GetSongGroupBannerPath(getenv("cur_group")))
-		
-		--It works... But only if there's a banner.
-		local fir = SONGMAN:GetSongGroupBannerPath(getenv("cur_group"));
-		if not fir then
-			return;
-		end;
-		self:load(soundext(gisub(fir,'banner.png','info/sound')));
+
 		--Unreliable, current song doesn't update fast enough.
 		--[[if SONGMAN:WasLoadedFromAdditionalSongs(GAMESTATE:GetCurrentSong()) then
 			self:load(soundext("/AdditionalSongs/"..getenv("cur_group").."/info/sound"));
 		else
 			self:load(soundext("/Songs/"..getenv("cur_group").."/info/sound"));
 		end]]
+		--Make it louder
 		self:play();
 		self:play();
 	end;
