@@ -392,7 +392,9 @@ function getLargeJacket()
 		return GAMESTATE:GetCurrentSong():GetJacketPath()
 	else
 		--self:LoadFromSongBanner(GAMESTATE:GetCurrentSong())
-		return song:GetBannerPath()
+		--So apparently I had song:GetBannerPath() here before and it wasn't breaking
+		--Because song was accidentally being made global in msg.lua. Oops.
+		return GAMESTATE:GetCurrentSong():GetBannerPath()
 	end;
 end;
 
