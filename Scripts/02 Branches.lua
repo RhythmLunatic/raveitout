@@ -20,7 +20,7 @@ function SelectMusicOrCourse()
 	if IsNetSMOnline() then
 		return "ScreenNetSelectMusic"
 	elseif GAMESTATE:IsCourseMode() then
-		return "ScreenSelectCourse"
+		return "ScreenQuestMode"
 	else
 		if getenv("PlayMode") == "Easy" then
 			return "ScreenSelectEasy"

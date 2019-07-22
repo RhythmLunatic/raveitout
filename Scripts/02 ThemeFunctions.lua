@@ -342,7 +342,7 @@ function GetSongBackground(return_nil_on_fail)
 		end
 	end
 	if song then
-		local path = split("/",GAMESTATE:GetCurrentSong():GetSongDir())
+		local path = split("/",song:GetSongDir())
 		path = path[#path-1];
 		--SCREENMAN:SystemMessage(song:GetSongDir())
 		if IsUsingWideScreen() then
@@ -376,7 +376,15 @@ end;
 
 
 function getLargeJacket()
-	local songdir  = GAMESTATE:GetCurrentSong():GetSongDir()
+	local song = GAMESTATE:GetCurrentSong();
+	if not song then
+		local trail = GAMESTATE:GetCurrentTrail(GAMESTATE:GetMasterPlayerNumber())
+		local e = trail:GetTrailEntries()
+		if #e > 0 then
+			song = e[1]:GetSong()
+		end
+	end
+	local songdir  = song:GetSongDir()
 	local path = split("/",songdir)
 	path = "/SongJacketsLarge/"..path[#path-1];
 	--SCREENMAN:SystemMessage(path)
@@ -388,13 +396,13 @@ function getLargeJacket()
 		return path..".jpeg"
 	elseif FILEMAN:DoesFileExist(songdir.."largejk.png") then
 		return songdir.."largejk.png"
-	elseif GAMESTATE:GetCurrentSong():HasJacket() then
-		return GAMESTATE:GetCurrentSong():GetJacketPath()
+	elseif song:HasJacket() then
+		return song:GetJacketPath()
 	else
 		--self:LoadFromSongBanner(GAMESTATE:GetCurrentSong())
 		--So apparently I had song:GetBannerPath() here before and it wasn't breaking
 		--Because song was accidentally being made global in msg.lua. Oops.
-		return GAMESTATE:GetCurrentSong():GetBannerPath()
+		return song:GetBannerPath()
 	end;
 end;
 

@@ -266,20 +266,30 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 	LoadFont("Common Normal")..{	--Stage break + value, message
 		InitCommand=cmd(x,_screen.cx;y,SCREEN_BOTTOM-30;zoom,0.5);
 		OnCommand=function(self)
-			if PerfectionistMode[PLAYER_1] and PerfectionistMode[PLAYER_2] then		--don't do shit if Perfectionist Mode is activated
+			--don't do shit if Perfectionist Mode is activated, don't show if it's the demo stage.
+			if (PerfectionistMode[PLAYER_1] and PerfectionistMode[PLAYER_2]) or stage == "ScreenGameplay stage Demo" then
+				self:visible(false)
 				return false
 			end;
-			-- TODO: Add a GetBreakCombo
 			self:settext("Limit Break: "..GetBreakCombo());
-			if stage == "ScreenGameplay stage Demo" then self:settext(""); else self:settext("Limit Break: "..GetBreakCombo()); end;
-			p1stype = GAMESTATE:GetCurrentSteps(PLAYER_1):GetStepsType();
-			p2stype = GAMESTATE:GetCurrentSteps(PLAYER_2):GetStepsType();
+			--[[local p1stype;
+			local p2stype;
+			if GAMESTATE:GetPlayMode() == 'PlayMode_Regular' then
+				p1stype = GAMESTATE:GetCurrentSteps(PLAYER_1):GetStepsType();
+				p2stype = GAMESTATE:GetCurrentSteps(PLAYER_2):GetStepsType();
+			else
+				p1stype = GAMESTATE:GetCurrentTrail(PLAYER_1):GetStepsType();
+				p2stype = GAMESTATE:GetCurrentTrail(PLAYER_2):GetStepsType();
+			end;
 			if p1stype ~= "StepsType_Pump_Single" or p2stype ~= "StepsType_Pump_Single" or PREFSMAN:GetPreference("Center1Player") then
+				self:y(SCREEN_BOTTOM-60);
+			end;]]
+			if CenterGameplayWidgets() then
 				self:y(SCREEN_BOTTOM-60);
 			end;
 		end;
 		LifeChangedMessageCommand=function(self)	--ya que las effortbar reaccionan tan bien al limit break entonces pensé "porqué no actualizarlas de igual forma?" xD -NeobeatIKK
-			self:playcommand("On");
+			self:settext("Limit Break: "..GetBreakCombo());
 		end;
 	};
 };

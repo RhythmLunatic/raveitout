@@ -365,10 +365,10 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 			PREFSMAN:SetPreference("AllowW1",'AllowW1_Everywhere');
 		elseif choice == "Special" then
 			-- Special Mode
-			local folder = SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["SpecialFolder"]);
+			--[[local folder = SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["SpecialFolder"]);
 			local randomSong = folder[math.random(1,#folder)]
 			GAMESTATE:SetCurrentSong(randomSong);
-			GAMESTATE:SetPreferredSong(randomSong);
+			GAMESTATE:SetPreferredSong(randomSong);]]
 			setenv("PlayMode","Special");
 		end
 		

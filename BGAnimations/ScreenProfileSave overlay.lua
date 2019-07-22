@@ -95,6 +95,11 @@ t[#t+1] = Def.Actor {
 };
 
 if DoDebug then
+	t[#t+1] = LoadFont("Common Normal")..{
+		Text="Next screen: "..Branch.AfterProfileSave();
+		InitCommand=cmd(zoom,2;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+40);
+	};
+
 	t[#t+1] = LoadFont("Common Normal")..{	--percentage scoring P1
 		InitCommand=cmd(zoom,2;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y);
 		Text=curstage.." - Delay: "..NextStageSleepTime;

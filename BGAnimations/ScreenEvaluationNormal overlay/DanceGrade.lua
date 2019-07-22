@@ -196,22 +196,24 @@ t[#t+1] = Def.ActorFrame{
 };
 --]]
 
-local initzoomp1 = 0.8;
---The graphics aren't centered properly and using SCREEN_WIDTH isn't really the best either
---Should use the aspect ratio to calculate, but whatever..
-local finalzoomp1 = 0.45;
-local p1initx = (player == PLAYER_1) and SCREEN_WIDTH/4.5 or SCREEN_RIGHT-SCREEN_WIDTH/4.5;
-local p1inity = SCREEN_CENTER_Y-50;
 
 
 --P1 RANK CODE
 if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified()==false then
+
+	local initzoomp1 = 0.8;
+	--The graphics aren't centered properly and using SCREEN_WIDTH isn't really the best either
+	--Should use the aspect ratio to calculate, but whatever..
+	local finalzoomp1 = 0.45;
+	local p1initx = (player == PLAYER_1) and SCREEN_WIDTH/4.5 or SCREEN_RIGHT-SCREEN_WIDTH/4.5;
+	local p1inity = SCREEN_CENTER_Y-50;
 
 	--TODO: investigate why this exists later
 	--[[if GAMESTATE:GetCurrentSteps(PLAYER_1):GetStepsType() == "StepsType_Pump_Routine" and GAMESTATE:GetMasterPlayerNumber() == PLAYER_2 then
 		initzoomp1 = 0
 		finalzoomp1 = 0
 	end]]
+	
 	-- old convention is commented
 	if getenv("StageFailed") == true then
 		gradep1="F"; -- _failed
@@ -255,6 +257,34 @@ if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified()==fal
 		t[#t+1] = LoadActor("xmas_hat")..{
 			InitCommand=cmd(x,p1initx+15;y,p1inity-45;draworder,100;diffusealpha,0;zoom,initzoomp1/1.5;sleep,3;linear,.2;diffusealpha,1;zoom,initzoomp1-0.25;linear,.3;zoom,finalzoomp1/1.5);
 		};
+	end;
+	
+	--FS box is here since it relies on the positioning of the grade letter for now... Probably should be fixed later
+	if (ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate") then
+		t[#t+1] = Def.ActorFrame{
+			InitCommand=cmd(xy,p1initx,SCREEN_BOTTOM-75;diffusealpha,0);
+			OnCommand=cmd(sleep,3;linear,.3;diffusealpha,1);
+			Def.Quad{
+				InitCommand=cmd(setsize,125,50;diffuse,0,0,0,0.55;);
+			};
+			--Have I mentioned that I don't like this font? Cuz I don't.
+			LoadFont("monsterrat/_montserrat semi bold 60px")..{
+				Text="FASTS";
+				InitCommand=cmd(zoom,datazoom-0.25;horizalign,left;xy,-62,-12);
+			};
+			LoadFont("monsterrat/_montserrat semi bold 60px")..{
+				Text="SLOWS";
+				InitCommand=cmd(zoom,datazoom-0.25;horizalign,left;xy,-62,12);
+			};
+			LoadFont("monsterrat/_montserrat light 60px")..{
+				Text=string.format("%03d",getenv("NumFasts"..pname(player)));
+				InitCommand=cmd(horizalign,right;xy,62,-12;zoom,datazoom-0.15;);
+			};
+			LoadFont("monsterrat/_montserrat light 60px")..{
+				Text=string.format("%03d",getenv("NumSlows"..pname(player)));
+				InitCommand=cmd(horizalign,right;xy,62,12;zoom,datazoom-0.15;);
+			};
+		}
 	end;
 	
 	if DoDebug then

@@ -48,6 +48,12 @@ local t = Def.ActorFrame{
 		LoadActor("new_elements");
 		LoadActor("score_system");
 		
+		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			Condition=DoDebug;
+			InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y;);
+			BeatCrossedMessageCommand=cmd(settext,GAMESTATE:GetSongBeat().."\nBPS: "..GAMESTATE:GetSongBPS().."\nSeconds: "..GAMESTATE:GetCurMusicSeconds().."\nCalculated: "..GAMESTATE:GetSongBeat()/GAMESTATE:GetSongBPS());
+		};
+		
 		--[[LoadFont("monsterrat/_montserrat light 60px")..{	--percentage scoring P2
 			InitCommand=cmd(visible,IsP2On;zoom,0.3;x,notefxp2;y,SCREEN_BOTTOM-30;skewx,-0.25);
 			ComboChangedMessageCommand=function(self,param)
@@ -185,7 +191,12 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 	if (style == "OnePlayerOneSide" and PREFSMAN:GetPreference("Center1Player")) or style == "OnePlayerTwoSides" then
 		notefxp = SCREEN_CENTER_X;
 	end;
-	local steps = GAMESTATE:GetCurrentSteps(pn):GetStepsType();
+	local steps;
+	if GAMESTATE:IsCourseMode() then
+		steps = GAMESTATE:GetCurrentTrail(pn):GetStepsType();
+	else
+		steps = GAMESTATE:GetCurrentSteps(pn):GetStepsType();
+	end;
 	
 	--Percentage thing
 	t[#t+1] = Def.ActorFrame{
@@ -245,7 +256,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 						end;
 					end;
 
-					if stepsp2 == "StepsType_Pump_Routine" and GAMESTATE:GetMasterPlayerNumber() ~= pn then
+					if steps == "StepsType_Pump_Routine" and GAMESTATE:GetMasterPlayerNumber() ~= pn then
 						self:visible(false);
 					end;
 				end;

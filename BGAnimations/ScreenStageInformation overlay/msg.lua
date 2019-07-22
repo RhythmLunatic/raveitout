@@ -5,6 +5,7 @@ local phrases = {
 "Make sure to hit hold heads accurately, or you will be punished with worse judgements on following holds. Because StepMania is a great engine.",
 "Check the options list for the Screen Filter feature. It will allow a BGA to be viewed without affecting any gameplay. Loser.",
 "If you already played for awhile, give “Pro mode” a whirl and test your timing skills. Also helps determine what is on and off sync.",
+"Want to REALLY test your skills? Try Special Mode! 60 different missions to choose from.",
 "The cuter the anime girl, the harder the charts will be. I guarantee it.",
 "Playing Rave It Out during certain times of the year can cause weather changes in game.",
 "Some songs have unique trivia. This song is not one of them. (Add your own by reading the Song Structure Documentation.txt)",
@@ -14,10 +15,20 @@ local phrases = {
 };
 
 local message;
-
-local songmsgpath = GAMESTATE:GetCurrentSong():GetSongDir().."msg.txt";
+local song = GAMESTATE:GetCurrentSong()
+if not song then
+	local trail = GAMESTATE:GetCurrentTrail(GAMESTATE:GetMasterPlayerNumber())
+	local e = trail:GetTrailEntries()
+	if #e > 0 then
+		song = e[1]:GetSong()
+	end
+end
+local songmsgpath = song:GetSongDir().."msg.txt";
 local songhasmsg = FILEMAN:DoesFileExist(songmsgpath)
-if songhasmsg then
+
+if GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse():GetDescription() ~= "" then
+	message = GAMESTATE:GetCurrentCourse():GetDescription();
+elseif songhasmsg then
 	local file = File.Read(songmsgpath)
 	messages = file:split("\r\n");
 	--SCREENMAN:SystemMessage(tostring(#messages).." "..strArrayToString(messages));
@@ -25,6 +36,7 @@ if songhasmsg then
 else
 	message = phrases[math.random(#phrases)];
 end;
+
 
 
 --animation controls
