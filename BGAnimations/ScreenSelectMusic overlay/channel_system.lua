@@ -70,6 +70,10 @@ local item_mt= {
 		local banner;
 		if info == "CO-OP Mode" then
 			banner = THEME:GetPathG("Banner","coop");
+		elseif info == "P1 Favorites" then
+			banner = THEME:GetPathG("Banner","P1Favorites");
+		elseif info == "P2 Favorites" then
+			banner = THEME:GetPathG("Banner","P2Favorites");
 		else
 			banner = SONGMAN:GetSongGroupBannerPath(info);
 		end;
@@ -137,6 +141,12 @@ local groups = getAvailableGroups();
 --Only show in multiplayer, since there's no need to show it in singleplayer.
 if GAMESTATE:GetNumSidesJoined() > 1 then
 	table.insert(groups, 1, "CO-OP Mode")
+end;
+
+for i,pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
+	if getenv(pname(pn).."HasAnyFavorites") then
+		table.insert(groups, i, pname(pn).." Favorites")
+	end;
 end;
 
 assert(GAMESTATE:GetCurrentSong(), "The current song should have been set in ScreenSelectPlayMode!");
@@ -301,10 +311,17 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 	StartSelectingSongMessageCommand=function(self)
 		SOUND:DimMusic(1,65536);
 		
+		--Yeah this was a really shitty idea
 		if groups[selection] == "CO-OP Mode" then
 			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort("SortOrder_Preferred");
 			SONGMAN:SetPreferredSongs("CoopSongs.txt");
 			self:load(THEME:GetPathS("","Genre/co-op"));
+			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
+		elseif groups[selection] == "P1 Favorites" or groups[selection] == "P2 Favorites" then
+			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort("SortOrder_Preferred");
+			SONGMAN:SetPreferredSongs("Favorites.txt");
+			self:load(THEME:GetPathS("","Genre/Favorites"));
+			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		else
 			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort('SortOrder_Group');
 			--It works... But only if there's a banner.
@@ -313,8 +330,8 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 				return;
 			end;
 			self:load(soundext(gisub(fir,'banner.png','info/sound')));
+			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		end;
-		SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.5 );
 
 		--Unreliable, current song doesn't update fast enough.

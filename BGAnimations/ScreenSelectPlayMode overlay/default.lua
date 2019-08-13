@@ -339,6 +339,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 			else
 				GAMESTATE:SetCurrentSong(lastPlayedSong);
 			end;
+			generateFavoritesForMusicWheel()
 		elseif choice == "Pro" then
 			-- Pro Mode
 			setenv("HeaderTitle","SELECT MUSIC");
@@ -361,7 +362,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 			else
 				GAMESTATE:SetCurrentSong(lastPlayedSong);
 			end;
-			
+			generateFavoritesForMusicWheel()
 			PREFSMAN:SetPreference("AllowW1",'AllowW1_Everywhere');
 		elseif choice == "Special" then
 			-- Special Mode

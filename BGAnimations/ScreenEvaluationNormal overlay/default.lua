@@ -9,19 +9,13 @@ t[#t+1] = LoadActor("AR Results")..{OnCommand=cmd(play)};	--Music
 t[#t+1] = LoadActor(THEME:GetPathS("_ScreenEvaluation","Music (loop)"))..{						
 		OnCommand=cmd(sleep,4;queuecommand,"PlaySound");
 		PlaySoundCommand=cmd(play);
-		OffCommand=cmd(stop)
+		OffCommand=cmd(stop);
 	};
 --songinfo
 local cursong =		GAMESTATE:GetCurrentSong()
 local song =		cursong:GetDisplayMainTitle()
 local artist =		GAMESTATE:GetCurrentSong():GetDisplayArtist()
-local function subtitle()	--regresar con parentesis el subtitulo si es que esta presente
-	if cursong:GetDisplaySubTitle() == "" then
-		return ""
-	else
-		return cursong:GetDisplaySubTitle()
-	end;
-end;
+
 	--CENTER COLUMN
 	t[#t+1] = LoadActor("gfx/midbarlayer")..{
 		InitCommand=cmd(zoomto,215,1;xy,SCREEN_CENTER_X,SCREEN_TOP;vertalign,top;horizalign,center;sleep,1;linear,0.75;zoomto,215,SCREEN_HEIGHT;);
@@ -66,7 +60,7 @@ end;
 		OnCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+68;diffusealpha,0;sleep,1.5;linear,0.75;diffusealpha,1;);
 	
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{	--SONG + (SUBTITLE)
-			InitCommand=cmd(uppercase,true;zoom,0.22;addy,1;skewx,-0.2;diffuse,0,0,0,1;horizalign,center;settext,song.." "..subtitle();maxwidth,1250);
+			InitCommand=cmd(uppercase,true;zoom,0.22;addy,1;skewx,-0.2;diffuse,0,0,0,1;horizalign,center;settext,cursong:GetDisplayFullTitle();maxwidth,1250);
 			OnCommand=function(self)
 				if GAMESTATE:IsCourseMode() then
 					self:settext(GAMESTATE:GetCurrentCourse():GetDisplayFullTitle());
@@ -97,7 +91,7 @@ end;
 if UnlockedOMES_RIO() then
 	t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{
 		Text=THEME:GetString("ScreenEvaluation","TryOneMoreExtraStage");
-		InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_BOTTOM-100;diffusealpha,0;zoom,3;skewx,-0.2;);
+		InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_BOTTOM-120;diffusealpha,0;zoom,3;skewx,-0.2;);
 		OnCommand=cmd(sleep,2;accelerate,1;diffusealpha,1;zoom,.3;queuecommand,"PlaySound");
 		PlaySoundCommand=function(self)
 			self:diffuseshift():effectcolor1(Color("White")):effectcolor2(Color("Yellow")):effectperiod(1);
@@ -124,6 +118,31 @@ t[#t+1] = Def.ActorFrame{
 	LoadActor("start")..{
 		InitCommand=cmd(x,75;y,-10;zoom,0.5);
 	};
+};
+--Favorite management
+t[#t+1] = Def.ActorFrame{
+	InitCommand=cmd(zoom,0;x,SCREEN_CENTER_X;y,SCREEN_BOTTOM+150;);
+	OnCommand=cmd(sleep,2;x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-75;bounceend,0.5;zoom,0.6;);
+	CodeMessageCommand=function(self,param)
+		if param.Name == "Favorite" and GAMESTATE:IsSideJoined(param.PlayerNumber) then
+			addOrRemoveFavorite(param.PlayerNumber)
+			generateFavoritesForMusicWheel()
+		end;
+	end;
+	
+	LoadFont("monsterrat/_montserrat semi bold 60px")..{
+		InitCommand=cmd(zoom,0.3;skewx,-0.2;horizalign,center;vertalign,middle;);
+		--Text=string.format(THEME:GetString("ScreenMemoryCardTest","InsertCard"),pname(side));
+		Text="PRESS         AND         \nTO FAVORITE THIS SONG.";
+	};
+
+	LoadActor("UpLeft Tap Note 3x2")..{
+		InitCommand=cmd(x,-8;y,-10;zoom,0.45);
+	};
+	LoadActor("UpLeft Tap Note 3x2")..{
+		InitCommand=cmd(x,70;y,-10;rotationz,90;zoom,0.45);
+	};
+
 };
 
 local bonus = {PLAYER_1 = false, PLAYER_2 = false}
