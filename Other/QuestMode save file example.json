@@ -1,0 +1,23 @@
+This isn't real json, don't expect it to work
+
+[
+	{ //mission group 1
+		"chun-li": //Some mission name here
+		[
+			true,
+			false,
+			false
+		],
+		"under night": //Some mission name here
+		[
+			true,
+			true,
+			true
+		]
+	},
+  {
+    
+    
+  }
+  
+]

@@ -2,7 +2,9 @@ function RioWheel(self,offsetFromCenter,itemIndex,numItems)
     local spacing = 210;
 	local edgeSpacing = 135;
     if math.abs(offsetFromCenter) < .5 then
-        self:zoom(1+math.cos(offsetFromCenter*math.pi)/3);
+        if not MUSICWHEEL_SONG_NAMES then
+			self:zoom(1+math.cos(offsetFromCenter*math.pi)/3);
+		end;
         self:x(offsetFromCenter*(spacing+edgeSpacing*2));
     else
         if offsetFromCenter >= .5 then

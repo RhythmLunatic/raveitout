@@ -305,34 +305,45 @@ local t = Def.ActorFrame{
 	end;
 }
 
+
+local lastSort = nil;
+function setSort(sort)
+	lastSort = sort;
+	SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort(sort);
+end;
+
 -- GENRE SOUNDS
 t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 	InitCommand=cmd(stop);
 	StartSelectingSongMessageCommand=function(self)
 		SOUND:DimMusic(1,65536);
 		
+		--SCREENMAN:SystemMessage(lastSort or "None");
 		--Yeah this was a really shitty idea
 		if groups[selection] == "CO-OP Mode" then
-			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort("SortOrder_Preferred");
+			setSort("SortOrder_Preferred")
 			SONGMAN:SetPreferredSongs("CoopSongs.txt");
 			self:load(THEME:GetPathS("","Genre/co-op"));
 			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		elseif groups[selection] == "P1 Favorites" or groups[selection] == "P2 Favorites" then
-			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort("SortOrder_Preferred");
+			setSort("SortOrder_Preferred")
 			SONGMAN:SetPreferredSongs("Favorites.txt");
 			self:load(THEME:GetPathS("","Genre/Favorites"));
 			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		else
-			SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort('SortOrder_Group');
+			if lastSort ~= "SortOrder_Group" then
+				setSort("SortOrder_Group")
+				--MESSAGEMAN:Broadcast("StartSelectingSong");
+			end;
+			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
+			--SCREENMAN:SystemMessage(groups[selection]);
 			--It works... But only if there's a banner.
 			local fir = SONGMAN:GetSongGroupBannerPath(getenv("cur_group"));
-			if not fir then
-				return;
+			if fir then
+				self:load(soundext(gisub(fir,'banner.png','info/sound')));
 			end;
-			self:load(soundext(gisub(fir,'banner.png','info/sound')));
-			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		end;
-		SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.5 );
+		SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.1 );
 
 		--Unreliable, current song doesn't update fast enough.
 		--[[if SONGMAN:WasLoadedFromAdditionalSongs(GAMESTATE:GetCurrentSong()) then

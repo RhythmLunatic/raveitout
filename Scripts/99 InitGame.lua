@@ -111,5 +111,7 @@ function Setup()
 		PlayerNumber_P1 = false,
 		PlayerNumber_P2 = false
 	};
-
+	
+	--It's global because musicwheel doesn't have a constructor and this needs to be loaded somewhere
+	MUSICWHEEL_SONG_NAMES = (ReadPrefFromFile("ShowSongNames") == "true");
 end

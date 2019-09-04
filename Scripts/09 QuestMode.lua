@@ -21,4 +21,19 @@ NUM_MISSIONS_SKIPPABLE = 2
 RIO_COURSE_GROUPS = {"The First Step", "The World Warrior"}
 
 -- 'QUESTMODEMAN' was a bit too verbose
-QUESTMODE = {}
+QUESTMODE = {
+	savefile = "RIO_MissionSaveData.txt";
+	[PLAYER_1] = nil,
+	[PLAYER_2] = nil
+}
+QUESTMODE.HasPassedMission=function(self,player)
+	assert(QUESTMODE[player],"LoadCurrentProgress hasn't been called yet!")
+	
+	
+end;
+QUESTMODE.SaveCurrentProgress=function(self,player)
+	local path = PROFILEMAN:GetProfileDir(ProfileSlot[PlayerNumber:Reverse()[player]+1])..QUESTMODE.savefile
+end;
+QUESTMODE.LoadCurrentProgress=function(self,player)
+	
+end;

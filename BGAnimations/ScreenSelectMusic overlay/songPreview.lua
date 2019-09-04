@@ -99,6 +99,7 @@ return Def.ActorFrame{
 		};
 		--TODO: Remove this when hiding songs works correctly!
 		Def.ActorFrame{
+			Condition=false;
 			InitCommand=cmd(x,_screen.cx;y,_screen.cy-30;visible,false);
 			CurrentSongChangedMessageCommand=function(self)
 				if streamSafeMode and has_value(STREAM_UNSAFE_AUDIO, GAMESTATE:GetCurrentSong():GetDisplayFullTitle() .. "||" .. GAMESTATE:GetCurrentSong():GetDisplayArtist()) then
