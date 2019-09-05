@@ -8,6 +8,7 @@ ClearExtraDataCache()
 
 local SongTypeToHearts = {
 	arcade = 2,
+	special = 2,
 	shortcut = 1,
 	remix = 3,
 	fullsong = 4,
