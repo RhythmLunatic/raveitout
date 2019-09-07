@@ -59,6 +59,10 @@ return Def.ActorFrame{
 			end;
 		end;
 	};
+	LoadFont("common normal")..{
+		InitCommand=cmd(xy,5,35;horizalign,left;vertalign,top;zoom,.5;Stroke,Color("Black"));
+		Text=string.upper(THEME:GetString("OptionTitles","LifeDifficulty"))..": "..GetLifeDifficulty();
+	};
 	
 	--[[Def.ActorFrame{
 	

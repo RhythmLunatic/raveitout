@@ -1,25 +1,9 @@
 local t = Def.ActorFrame {};
-local IsP1On =		GAMESTATE:IsPlayerEnabled(PLAYER_1)	--Is player 1 present? BRETTY OBIOS :DDDD
-local IsP2On =		GAMESTATE:IsPlayerEnabled(PLAYER_2)	--Is player 2 present? BRETTY OBIOS :DDDD
 
-local curstage = GAMESTATE:GetCurrentStage()
-local gfxNames = {
-	Stage_Extra1=	"ScreenGameplay stage extra1";
-	Stage_Extra2=	"ScreenGameplay stage extra1";
-	Stage_Demo=	"ScreenGameplay stage Demo";
-	Stage_Event="ScreenGameplay stage event";
-	Stage_1st=	"ScreenGameplay stage 1";
-	Stage_2nd=	"ScreenGameplay stage 2";
-	Stage_3rd=	"ScreenGameplay stage 3";
-	Stage_4th=	"ScreenGameplay stage 4";
-	Stage_5th=	"ScreenGameplay stage 5";
-	Stage_6th=	"ScreenGameplay stage 6";
-	StageFinal=	"ScreenGameplay stage final";
-};
-local stage = gfxNames[curstage];
+local stage = GAMESTATE:GetCurrentStage()
 
-
-local IsP1On =		GAMESTATE:IsPlayerEnabled(PLAYER_1)	--Is player 1 present? BRETTY OBIOS :DDDD
+--TODO: Fix for centered player
+--[[local IsP1On =		GAMESTATE:IsPlayerEnabled(PLAYER_1)	--Is player 1 present? BRETTY OBIOS :DDDD
 local IsP2On =		GAMESTATE:IsPlayerEnabled(PLAYER_2)	--Is player 2 present? BRETTY OBIOS :DDDD
 local notefxp1 =	THEME:GetMetric("ScreenGameplay","PlayerP1OnePlayerOneSideX")	--Note field X position P1
 local notefxp2 =	THEME:GetMetric("ScreenGameplay","PlayerP2OnePlayerOneSideX")	--Note field X position P2
@@ -32,7 +16,7 @@ local stagemaxscore = 100000000*GAMESTATE:GetNumStagesForCurrentSongAndStepsOrCo
 
 t[#t+1] = Def.ActorFrame{
 
-};
+};]]
 
 
 
@@ -54,7 +38,7 @@ t[#t+1] = Def.ActorFrame {
 t[#t+1] = Def.ActorFrame {
 	OnCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+50;diffusealpha,0;sleep,1;linear,0.5;diffusealpha,1;);
 	
-		LoadActor("stage_info/"..stage)..{
+		LoadActor(stage)..{
 			InitCommand=cmd(zoom,0.55);
 		};
 };

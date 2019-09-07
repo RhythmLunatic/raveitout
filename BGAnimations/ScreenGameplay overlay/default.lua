@@ -1,25 +1,7 @@
 local EasterEggs = PREFSMAN:GetPreference("EasterEggs");
 local master_player = GAMESTATE:GetMasterPlayerNumber();
 
-local curstage = GAMESTATE:GetCurrentStage()
-
-	local gfxNames = {
-		Stage_Extra1=	"ScreenGameplay stage extra1";
-		Stage_Extra2=	"ScreenGameplay stage extra1";
-		Stage_Demo=	"ScreenGameplay stage Demo";
-		Stage_Event="ScreenGameplay stage event";
-		Stage_1st=	"ScreenGameplay stage 1";
-		Stage_2nd=	"ScreenGameplay stage 2";
-		Stage_3rd=	"ScreenGameplay stage 3";
-		Stage_4th=	"ScreenGameplay stage 4";
-		Stage_5th=	"ScreenGameplay stage 5";
-		Stage_6th=	"ScreenGameplay stage 6";
-		StageFinal=	"ScreenGameplay stage final";
-	};
-
-	local stage = gfxNames[curstage];
-
-
+local stage = GAMESTATE:GetCurrentStage();
 local stagemaxscore = 100000000*GAMESTATE:GetNumStagesForCurrentSongAndStepsOrCourse()
 
 
@@ -48,11 +30,19 @@ local t = Def.ActorFrame{
 		LoadActor("new_elements");
 		LoadActor("score_system");
 		
-		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+		--[[LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
 			Condition=DoDebug;
 			InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y;);
 			BeatCrossedMessageCommand=cmd(settext,GAMESTATE:GetSongBeat().."\nBPS: "..GAMESTATE:GetSongBPS().."\nSeconds: "..GAMESTATE:GetCurMusicSeconds().."\nCalculated: "..GAMESTATE:GetSongBeat()/GAMESTATE:GetSongBPS());
-		};
+		};]]
+		
+		--[[LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			Condition=DoDebug;
+			InitCommand=cmd(Center);
+			ComboChangedMessageCommand=function(self)
+				self:settext(string.format("%.02f",STATSMAN:GetCurStageStats():GetPlayerStageStats(master_player):GetCurrentLife()*100).."%")
+			end;
+		};]]
 		
 		--[[LoadFont("monsterrat/_montserrat light 60px")..{	--percentage scoring P2
 			InitCommand=cmd(visible,IsP2On;zoom,0.3;x,notefxp2;y,SCREEN_BOTTOM-30;skewx,-0.25);
@@ -95,7 +85,7 @@ local t = Def.ActorFrame{
 		LoadActor("demoplay")..{
 			InitCommand=cmd(x,notefxp1;y,SCREEN_BOTTOM-70;zoom,0.5;playcommand,"Set");
 			OnCommand=function(self)
-				if stage == "ScreenGameplay stage Demo" then
+				if stage == "Stage_Demo" then
 					GAMESTATE:ApplyGameCommand("stopmusic");
 				else
 					self:visible(false);
@@ -113,11 +103,8 @@ local t = Def.ActorFrame{
 		};
 		
 		LoadActor("demoplay")..{
-			InitCommand=cmd(x,notefxp2;y,SCREEN_BOTTOM-70;zoom,0.5;playcommand,"Set");
-			OnCommand=function(self)
-				if stage ~= "ScreenGameplay stage Demo" then self:visible(false); end
-			end;
-			
+			Condition=(stage=="Stage_Demo");
+			InitCommand=cmd(x,notefxp2;y,SCREEN_BOTTOM-70;zoom,0.5;playcommand,"Set");			
 			SetCommand=function(self)
 				self:linear(0.2);
 				self:diffusealpha(1);
@@ -129,58 +116,8 @@ local t = Def.ActorFrame{
 		};
 
 	};
-	
 
-
-	--[[Def.ActorFrame {
-		InitCommand=cmd(x,notefxp2;y,SCREEN_CENTER_Y;visible,GAMESTATE:IsSideJoined(PLAYER_2));
-			ComboChangedMessageCommand=function (self, params)
-				local stats = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2);
-	
-				if stats:GetCurrentCombo() == 420 and EasterEggs then
-					MESSAGEMAN:Broadcast("WeedP2");
-				end
-			end;
-
-			LoadActor(THEME:GetPathG("","WeedCombo/explosion")) .. {
-				InitCommand=cmd(diffusealpha,0;blend,'BlendMode_Add';hide_if,not EasterEggs);
-				WeedP2MessageCommand=cmd(rotationz,0;zoom,2;diffusealpha,0.5;linear,0.5;rotationz,90;zoom,1.75;diffusealpha,0);
-			};
-			LoadActor(THEME:GetPathG("","WeedCombo/explosion")) .. {
-				InitCommand=cmd(diffusealpha,0;blend,'BlendMode_Add';hide_if,not EasterEggs);
-				WeedP2MessageCommand=cmd(rotationz,0;zoom,2;diffusealpha,0.5;linear,0.5;rotationz,-90;zoom,2.5;diffusealpha,0);
-			};
-	};]]
-	
-	
-	-- Player 2
-	--[[LoadFont("facu/_zona pro bold 20px")..{
-		InitCommand=cmd(player,PLAYER_2;x,THEME:GetMetric("ScreenGameplay","PlayerP2OnePlayerOneSideX");y,SCREEN_BOTTOM-46;horizalign,'HorizAlign_Center');
-		OnCommand=function(self, param)
-		p2stype = GAMESTATE:GetCurrentSteps(PLAYER_2):GetStepsType();
-		if p2stype ~= "StepsType_Pump_Single" and GAMESTATE:GetNumSidesJoined() == 1 or PREFSMAN:GetPreference("Center1Player") then
-			self:x(_screen.cx);
-		end
-			self:settext("Score: ".."0000");
-			self:zoom(0.7);
-			self:skewx(-0.25);
-			self:diffusealpha(0.9);
-		end;
-		RIOScoreChangedMessageCommand=function(self,params)
-			if params.Player == PLAYER_2 then
-				if params.Score > 0 then
-					self:settext("Score: "..params.Score);
-				else
-					self:settext("Score: ".."0000");
-				end;
-			end;
-		end;
-		OffCommand=function(self, param)
-			--STATSMAN:GetCurStageStats():GetPlayerStageStats( PLAYER_2 ):SetScore( getScores()[PLAYER_2] );
-		end;
-	};]]
-
-	LoadActor("MenuOptions");	
+	--LoadActor("MenuOptions");	
 };
 
 local competitionMode = (ActiveModifiers["P1"]["CompetitionMode"] and ActiveModifiers["P2"]["CompetitionMode"]) and not CenterGameplayWidgets()

@@ -1,20 +1,4 @@
-	local curstage = GAMESTATE:GetCurrentStage();
-
-	local gfxNames = {
-		Stage_Extra1=	"ScreenGameplay stage extra1";
-		Stage_Extra2=	"ScreenGameplay stage extra1";
-		Stage_Demo=	"ScreenGameplay stage Demo";
-		Stage_Event="ScreenGameplay stage event";
-		Stage_1st=	"ScreenGameplay stage 1";
-		Stage_2nd=	"ScreenGameplay stage 2";
-		Stage_3rd=	"ScreenGameplay stage 3";
-		Stage_4th=	"ScreenGameplay stage 4";
-		Stage_5th=	"ScreenGameplay stage 5";
-		Stage_6th=	"ScreenGameplay stage 6";
-		StageFinal=	"ScreenGameplay stage final";
-	};
-
-	local stage = gfxNames[curstage];
+local stage = GAMESTATE:GetCurrentStage();
 
 if GAMESTATE:IsCourseMode() then
 	song = GAMESTATE:GetCurrentCourse(); -- Get current Course xD
@@ -218,7 +202,7 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 				local hm = css:GetTapNoteScores("TapNoteScore_HitMine");
 				if w3 >= 1 or w4 >= 1 or w5 >= 1 or ms >= 1 or cm >= 1 then								-- Only W1s (AKA RAVINs / Marvelouses)
 					--GTS:PostScreenMessage("SM_BeginFailed",0);
-					if GAMESTATE:GetCurrentStage() == "Stage_1st" and Enjoy1stStagePMode == true then
+					if stage == "Stage_1st" and Enjoy1stStagePMode == true then
 						return nil
 					else
 						--SCREENMAN:SystemMessage("Player "..pn.." failed");
@@ -242,7 +226,7 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 				end;
 				if bFailed then
 					GTS:PostScreenMessage("SM_BeginFailed",0);
-					if GAMESTATE:GetCurrentStage() == "Stage_1st" and Enjoy1stStage == true then
+					if stage == "Stage_1st" and Enjoy1stStage == true then
 						return nil
 					else				-- No creo que haya problema en forzar el fail de ambos players, ya que el break requiere que ambos deben alcanzar el combo miss -NeobeatIKK
 						PSS1:FailPlayer();
@@ -267,7 +251,7 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 		InitCommand=cmd(x,_screen.cx;y,SCREEN_BOTTOM-30;zoom,0.5);
 		OnCommand=function(self)
 			--don't do shit if Perfectionist Mode is activated, don't show if it's the demo stage.
-			if (PerfectionistMode[PLAYER_1] and PerfectionistMode[PLAYER_2]) or stage == "ScreenGameplay stage Demo" then
+			if (PerfectionistMode[PLAYER_1] and PerfectionistMode[PLAYER_2]) or stage == "Stage_Demo" then
 				self:visible(false)
 				return false
 			end;
@@ -322,34 +306,6 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 				end;
 			end;
 		};
-		Def.Actor{		-- Write SpeedMod to Profile (PLAYER_2) by NeobeatIKK
-			OnCommand=function(self)
-				if IsP2On then
-					if prfnam2 ~= "" then
-						local GPS2 = GAMESTATE:GetPlayerState(PLAYER_2);
-						if GPS2:GetCurrentPlayerOptions():XMod() ~= nil then		--si XMod no da nil
-							speedmod = GPS2:GetCurrentPlayerOptions():XMod().."X"
-							modtype = "X"
-						end;
-						if GPS2:GetCurrentPlayerOptions():CMod() ~= nil then		--si CMod no da nil
-							speedmod = "C"..GPS2:GetCurrentPlayerOptions():CMod()
-							modtype = "C"
-						end;
-						if GPS2:GetCurrentPlayerOptions():MMod() ~= nil then		--si Mmod no da nil
-							speedmod = "M"..GPS2:GetCurrentPlayerOptions():MMod()
-							modtype = "M"
-						end;
-						local profilep = PROFILEMAN:GetProfileDir("ProfileSlot_Player2")
-						local songpath = GAMESTATE:GetCurrentSong():GetSongDir()
-					--	local usescard = PROFILEMAN:ProfileWasLoadedFromMemoryCard(PLAYER_1) --bool --breaks on load
-					--	File.Write(profilep.."/RIO_SongData/"..songpath.."LastSpeedModUsed.txt","SpeedMod="..speedmod..";\nSModType="..modtype..";");	--works
-					--	File.Write(profilep.."/RIO_SongData/"..songpath.."LastSpeedModTypeUsed.txt",modtype);	--Write SpeedModType				--works
-						File.Write(profilep.."/RIO_SongData/"..songpath.."LastSpeedModUsed.txt",speedmod);		--Write SpeedMod				--works
-					end;
-				end;
-			end;
-		};
-	};
 
 ]]
 
