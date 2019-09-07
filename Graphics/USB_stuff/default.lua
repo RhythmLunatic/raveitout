@@ -44,9 +44,8 @@ local function PlayerName(player)
 					--TODO: Adjust maxwidth based on the number of hearts per play.
 					self:settext(string.upper(name)):maxwidth(160);
 				end
-				
 			else
-				self:settext(string.upper(MEMCARDMAN:GetName(player)));
+				self:settext(string.upper(MEMCARDMAN:GetName(player))):maxwidth(160);
 			end
 			
 			self:visible(GAMESTATE:IsSideJoined(player));
@@ -168,7 +167,8 @@ t[#t+1] = Def.ActorFrame{
 
 
 --################# PLAYER 2 ##############
-	InitCommand=cmd(xy,SCREEN_RIGHT-5,SCREEN_BOTTOM-18;visible,GAMESTATE:IsSideJoined(PLAYER_2));
+	Condition=GAMESTATE:IsSideJoined(PLAYER_2);
+	InitCommand=cmd(xy,SCREEN_RIGHT-5,SCREEN_BOTTOM-18;);
 
 	LoadActor("p2_indicator") .. {
 		InitCommand=cmd(zoom,.75;addy,.5;horizalign,right;);
@@ -195,7 +195,7 @@ t[#t+1] = Def.ActorFrame{
 
 	};
 	LoadFont("Common Normal")..{
-		Condition=(DoDebug and GAMESTATE:IsSideJoined(PLAYER_2));
+		Condition=DoDebug;
 		InitCommand=function(self)
 			self:zoom(.5):horizalign(left):addx(-500):addy(-10);
 			if PROFILEMAN:ProfileWasLoadedFromMemoryCard(PLAYER_2) then
@@ -246,38 +246,39 @@ t[#t+1] = Def.ActorFrame{
 }
 
 --P2 HEARTS
-if IsUsingWideScreen() then
-	for i=1,HeartsPerPlay do
-		t[#t+1] = LoadActor("heart_background") .. {
-			InitCommand=cmd(zoom,0.5;x,(SCREEN_RIGHT-heartXPos)+i*16-heartsLength/2;y,SCREEN_BOTTOM-10;horizalign,right;visible,GAMESTATE:IsSideJoined(PLAYER_2));
-			OnCommand=cmd(visible,GAMESTATE:IsSideJoined(PLAYER_2));
-		};
-	end;
+if GAMESTATE:IsSideJoined(PLAYER_2) then
+	if IsUsingWideScreen() then
+		for i=1,HeartsPerPlay do
+			t[#t+1] = LoadActor("heart_background") .. {
+				InitCommand=cmd(zoom,0.5;x,(SCREEN_RIGHT-heartXPos)+i*16-heartsLength/2;y,SCREEN_BOTTOM-10;horizalign,right;);
+			};
+		end;
 
-	for i=1,NumHeartsLeft[PLAYER_2] do
-		t[#t+1] = LoadActor("heart_foreground") .. {
-			InitCommand=cmd(zoom,0.5;x,(SCREEN_RIGHT-heartXPos)+i*16-heartsLength/2;y,SCREEN_BOTTOM-10;horizalign,right;diffuseshift;effectcolor1,color("#FFFFFF");effectcolor2,color("#FFFFFF");visible,GAMESTATE:IsSideJoined(PLAYER_2));
-			CurrentSongChangedMessageCommand=function(self)
-				if i > NumHeartsLeft[PLAYER_2]-GetNumHeartsForSong() then
-					self:effectcolor1(color("#7e7e7e"))
-				else
-					self:effectcolor1(color("#FFFFFF"))
+		for i=1,NumHeartsLeft[PLAYER_2] do
+			t[#t+1] = LoadActor("heart_foreground") .. {
+				InitCommand=cmd(zoom,0.5;x,(SCREEN_RIGHT-heartXPos)+i*16-heartsLength/2;y,SCREEN_BOTTOM-10;horizalign,right;diffuseshift;effectcolor1,color("#FFFFFF");effectcolor2,color("#FFFFFF"););
+				CurrentSongChangedMessageCommand=function(self)
+					if i > NumHeartsLeft[PLAYER_2]-GetNumHeartsForSong() then
+						self:effectcolor1(color("#7e7e7e"))
+					else
+						self:effectcolor1(color("#FFFFFF"))
+					end;
 				end;
-			end;
+			};
+		end;
+	else
+		t[#t+1] = Def.ActorFrame{
+			InitCommand=cmd(xy,SCREEN_RIGHT-heartXPos+46,SCREEN_BOTTOM-10;);
+			
+			LoadActor("heart_foreground")..{
+				InitCommand=cmd(zoom,.5;);
+			};
+			LoadFont("common normal")..{
+				Text="x"..NumHeartsLeft[PLAYER_2];
+				InitCommand=cmd(zoom,.5;horizalign,left;addx,7);
+			};
 		};
 	end;
-else
-	t[#t+1] = Def.ActorFrame{
-		InitCommand=cmd(xy,SCREEN_RIGHT-heartXPos+46,SCREEN_BOTTOM-10;visible,GAMESTATE:IsSideJoined(PLAYER_2));
-		
-		LoadActor("heart_foreground")..{
-			InitCommand=cmd(zoom,.5;);
-		};
-		LoadFont("common normal")..{
-			Text="x"..NumHeartsLeft[PLAYER_2];
-			InitCommand=cmd(zoom,.5;horizalign,left;addx,7);
-		};
-	};
 end;
 
 --Yeah yeah I'll move it later
