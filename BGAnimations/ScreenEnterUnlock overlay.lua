@@ -45,7 +45,12 @@ local t = Def.ActorFrame{
 			elseif unlockmsg == "Assemble" then
 				--AssembleDefaultGroups();
 				AssembleCoopGroup();
+				AssembleShortcutGroup();
 				self:settext("Groups generated.");
+			elseif unlockmsg == "ResetQuestMode" then
+				local a = QUESTMODE:GenerateNewFile()
+				QUESTMODE[PLAYER_1] = a;
+				self:settext("Saved file to "..QUESTMODE:SaveCurrentProgress(PLAYER_1))
 			else
 				self:settext("Invalid unlock code.");
 			end;

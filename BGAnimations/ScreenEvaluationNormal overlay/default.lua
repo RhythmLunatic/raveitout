@@ -23,14 +23,16 @@ local artist =		GAMESTATE:GetCurrentSong():GetDisplayArtist()
 	
 	--TOP STUFF
 	t[#t+1] = LoadActor("gfx/p1_topbar")..{
-		InitCommand=cmd(x,SCREEN_LEFT-300;y,SCREEN_TOP+50;zoomto,275,55;horizalign,left;sleep,0.85;linear,0.2;x,SCREEN_LEFT;visible,GAMESTATE:IsSideJoined(PLAYER_1));
+		Condition=GAMESTATE:IsSideJoined(PLAYER_1);
+		InitCommand=cmd(x,SCREEN_LEFT-300;y,SCREEN_TOP+50;zoomto,275,55;horizalign,left;sleep,0.85;linear,0.2;x,SCREEN_LEFT;);
 		OnCommand=function(self)
 			if GAMESTATE:GetCurrentSteps(PLAYER_1):GetStepsType() == "StepsType_Pump_Routine" and GAMESTATE:GetMasterPlayerNumber() == PLAYER_2 then self:x(SCREEN_RIGHT-268) end;
 		end;
 	};
 	
 	t[#t+1] = LoadActor("gfx/p2_topbar")..{
-		InitCommand=cmd(x,SCREEN_RIGHT+300;y,SCREEN_TOP+50;horizalign,right;zoomto,275,55;sleep,0.85;linear,0.2;x,SCREEN_RIGHT;visible,GAMESTATE:IsSideJoined(PLAYER_2));
+		Condition=GAMESTATE:IsSideJoined(PLAYER_2);
+		InitCommand=cmd(x,SCREEN_RIGHT+300;y,SCREEN_TOP+50;horizalign,right;zoomto,275,55;sleep,0.85;linear,0.2;x,SCREEN_RIGHT;);
 		OnCommand=function(self)
 			if GAMESTATE:GetCurrentSteps(PLAYER_2):GetStepsType() == "StepsType_Pump_Routine" and GAMESTATE:GetMasterPlayerNumber() == PLAYER_1 then self:x(SCREEN_LEFT+268) end;
 		end;
@@ -119,48 +121,64 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(x,75;y,-10;zoom,0.5);
 	};
 };
---Favorite management
-t[#t+1] = Def.ActorFrame{
-	InitCommand=cmd(zoom,0;x,SCREEN_CENTER_X;y,SCREEN_BOTTOM+150;);
-	OnCommand=cmd(sleep,2;x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-75;bounceend,0.5;zoom,0.6;);
-	CodeMessageCommand=function(self,param)
-		if param.Name == "Favorite" and GAMESTATE:IsSideJoined(param.PlayerNumber) then
-			addOrRemoveFavorite(param.PlayerNumber)
-			generateFavoritesForMusicWheel()
-		end;
-	end;
+--Can't favorite during course mode, no need to calculate bonus hearts during course mode.
+if not GAMESTATE:IsCourseMode() then
 	
-	LoadFont("monsterrat/_montserrat semi bold 60px")..{
-		InitCommand=cmd(zoom,0.3;skewx,-0.2;horizalign,center;vertalign,middle;);
-		--Text=string.format(THEME:GetString("ScreenMemoryCardTest","InsertCard"),pname(side));
-		Text="PRESS         AND         \nTO FAVORITE THIS SONG.";
-	};
-
-	LoadActor("UpLeft Tap Note 3x2")..{
-		InitCommand=cmd(x,-8;y,-10;zoom,0.45);
-	};
-	LoadActor("UpLeft Tap Note 3x2")..{
-		InitCommand=cmd(x,70;y,-10;rotationz,90;zoom,0.45);
-	};
-
-};
-
-local bonus = {PLAYER_1 = false, PLAYER_2 = false}
-if not GAMESTATE:IsEventMode() then
-	for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
-		RemoveHearts(pn, GetNumHeartsForSong());
-		if PREFSMAN:GetPreference("AllowExtraStage") and PlayerAchievedBonusHeart(pn) and GetNumHeartsForSong() >= 2 then
-			GiveBonusHeart(pn)
-			--After giving the bonus heart PlayerAchievedBonusHeart will return false, so we have to keep the result in memory
-			bonus[pn] = true;
+	--Favorite management
+	t[#t+1] = Def.ActorFrame{
+		InitCommand=cmd(zoom,0;x,SCREEN_CENTER_X;y,SCREEN_BOTTOM+150;);
+		OnCommand=cmd(sleep,2;x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-75;bounceend,0.5;zoom,0.6;);
+		CodeMessageCommand=function(self,param)
+			if (param.Name == "Favorite1" or param.Name == "Favorite2") and GAMESTATE:IsSideJoined(param.PlayerNumber) then
+				addOrRemoveFavorite(param.PlayerNumber)
+				generateFavoritesForMusicWheel()
+			end;
 		end;
-		if GAMESTATE:GetNumStagesLeft(pn) <= 0 and NumHeartsLeft[pn] > 0 then
-			GAMESTATE:AddStageToPlayer(pn) --Hack to make sure SM5 doesn't think there are no stages left
+		
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			InitCommand=cmd(zoom,0.3;skewx,-0.2;horizalign,center;vertalign,middle;);
+			--Text=string.format(THEME:GetString("ScreenMemoryCardTest","InsertCard"),pname(side));
+			Text="PRESS         AND         \nTO FAVORITE THIS SONG.";
+		};
+
+		LoadActor("DownLeft Tap Note 3x2")..{
+			InitCommand=cmd(x,-6;y,-10;zoom,0.45);
+		};
+		LoadActor("DownLeft Tap Note 3x2")..{
+			InitCommand=cmd(x,73;y,-10;rotationz,-90;zoom,0.45);
+		};
+
+	};
+
+	--Calculate bonus hearts here
+	local bonus = {PLAYER_1 = false, PLAYER_2 = false}
+	if not GAMESTATE:IsEventMode() then
+		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+			RemoveHearts(pn, GetNumHeartsForSong());
+			if PREFSMAN:GetPreference("AllowExtraStage") and PlayerAchievedBonusHeart(pn) and GetNumHeartsForSong() >= 2 then
+				GiveBonusHeart(pn)
+				--After giving the bonus heart PlayerAchievedBonusHeart will return false, so we have to keep the result in memory
+				bonus[pn] = true;
+			end;
+			if GAMESTATE:GetNumStagesLeft(pn) <= 0 and NumHeartsLeft[pn] > 0 then
+				GAMESTATE:AddStageToPlayer(pn) --Hack to make sure SM5 doesn't think there are no stages left
+			end;
 		end;
 	end;
-end;
+	t[#t+1] = LoadActor(THEME:GetPathG("","USB_stuff"), bonus[PLAYER_1], bonus[PLAYER_2])..{};
+else
+	if not GAMESTATE:IsEventMode() then
+		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+			RemoveHearts(pn, HEARTS_PER_MISSION);
+			while (GAMESTATE:GetNumStagesLeft(pn) <= 3 and NumHeartsLeft[pn] > 0) do
+				--Hack to make sure SM5 doesn't think there are no stages left... I don't think it actually matters since we have a custom course select screen
+				GAMESTATE:AddStageToPlayer(pn)
+			end;
+		end;
+	end;
+	t[#t+1] = LoadActor(THEME:GetPathG("","USB_stuff"));
+end
 
-t[#t+1] = LoadActor(THEME:GetPathG("","USB_stuff"), bonus[PLAYER_1], bonus[PLAYER_2])..{
-};
+
 
 return t;

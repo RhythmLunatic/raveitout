@@ -31,10 +31,9 @@ local maxcp1 =		css1:MaxCombo()											--Max Combo for this stage
 --css1:SetScore(getScores()[player]);
 
 local p1score =		css1:GetScore()			--score :v
---local p1accuracy =	tonumber(string.format("%.02f",(p1score/stagemaxscore)*100))	--Player 1 accuracy formatted number	--"%.3f" thanks CH32, se cambia el numero para mas decimales
---local p2accuracy =	tonumber(string.format("%.02f",(p2score/stagemaxscore)*100))	--Player 2 accuracy formatted number
 
 --TODO: Why are you declaring a variable and then assigning it on the next line wtf
+--local p1accuracy =	tonumber(string.format("%.02f",(p1score/stagemaxscore)*100))	--Player 1 accuracy formatted number	--"%.3f" thanks CH32, se cambia el numero para mas decimales
 local p1accuracy = getenv(pname(player).."_accuracy") or 0;
 
 
@@ -71,57 +70,57 @@ t[#t+1] = Def.ActorFrame{
 	OnCommand=cmd(sleep,2;bounceend,0.5;zoom,1;rotationz,0);
 
 	LoadFont("monsterrat/_montserrat semi bold 60px")..{
-	InitCommand=cmd(zoomx,0.25;zoomy,0.225;skewx,-0.2;uppercase,true;horizalign,center;vertalign,top;);
-	OnCommand=function(self)
-		local steps = GAMESTATE:GetCurrentSteps(player);
-		if ToEnumShortString(steps:GetStepsType()) == "Pump_Routine" then
-			self:visible(player == GAMESTATE:GetMasterPlayerNumber());
+		InitCommand=cmd(zoomx,0.25;zoomy,0.225;skewx,-0.2;uppercase,true;horizalign,center;vertalign,top;);
+		OnCommand=function(self)
+			local steps = GAMESTATE:GetCurrentSteps(player);
+			if ToEnumShortString(steps:GetStepsType()) == "Pump_Routine" then
+				self:visible(player == GAMESTATE:GetMasterPlayerNumber());
+			end;
+			self:settext(StepsTypeToString(steps));
+			
+			if player == PLAYER_1 then
+				if IsUsingWideScreen() then self:x(SCREEN_CENTER_X-290); self:maxwidth(350); else self:x(SCREEN_CENTER_X-217); end;
+				self:horizalign(center);
+			elseif player == PLAYER_2 then
+				if IsUsingWideScreen() then self:x(SCREEN_CENTER_X+290); self:maxwidth(350); else self:x(SCREEN_CENTER_X+217); end;
+				self:horizalign(center);
+			end
+			
 		end;
-		self:settext(StepsTypeToString(steps));
 		
-		if player == PLAYER_1 then
-			if IsUsingWideScreen() then self:x(SCREEN_CENTER_X-290); self:maxwidth(350); else self:x(SCREEN_CENTER_X-217); end;
-			self:horizalign(center);
-		elseif player == PLAYER_2 then
-			if IsUsingWideScreen() then self:x(SCREEN_CENTER_X+290); self:maxwidth(350); else self:x(SCREEN_CENTER_X+217); end;
-			self:horizalign(center);
-		end
-		
-	end;
-	
-	OffCommand=cmd(linear,0.3;diffusealpha,0);
+		OffCommand=cmd(linear,0.3;diffusealpha,0);
 	};
 	
 	LoadFont("monsterrat/_montserrat light 60px")..{
-	InitCommand=cmd(y,13;zoom,0.235;skewx,-0.2;uppercase,true;horizalign,center;vertalign,top;maxwidth,220);
-	OnCommand=function(self)
+		InitCommand=cmd(y,13;zoom,0.235;skewx,-0.2;uppercase,true;horizalign,center;vertalign,top;maxwidth,220);
+		OnCommand=function(self)
 
-		if GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse() then
-			author = GAMESTATE:GetCurrentCourse():GetScripter();
-			if author == "" then
-				author = "Not available"
-			end
-		else
-			author = GAMESTATE:GetCurrentSteps(player):GetAuthorCredit();		--Cortes got lazy and opt to use Description tag lol
-			if author == "" then
-				author = "Not available"
+			if GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse() then
+				author = GAMESTATE:GetCurrentCourse():GetScripter();
+				if author == "" then
+					author = "Not available"
+				end
+			else
+				author = GAMESTATE:GetCurrentSteps(player):GetAuthorCredit();		--Cortes got lazy and opt to use Description tag lol
+				if author == "" then
+					author = "Not available"
+				end;
 			end;
+			
+			local steps = GAMESTATE:GetCurrentSteps(player);
+			local stepstype = ToEnumShortString(steps:GetStepsType());
+			if stepstype == "Pump_Routine" then self:visible(player == GAMESTATE:GetMasterPlayerNumber()); end;
+			
+			if player == PLAYER_1 then
+				if IsUsingWideScreen() then self:x(SCREEN_CENTER_X-290); self:maxwidth(350); else self:x(SCREEN_CENTER_X-217); end;
+				self:horizalign(center);
+			elseif player == PLAYER_2 then
+				if IsUsingWideScreen() then self:x(SCREEN_CENTER_X+290); self:maxwidth(350); else self:x(SCREEN_CENTER_X+217); end;
+				self:horizalign(center);
+			end
+			
+			self:settext(author);
 		end;
-		
-		local steps = GAMESTATE:GetCurrentSteps(player);
-		local stepstype = ToEnumShortString(steps:GetStepsType());
-		if stepstype == "Pump_Routine" then self:visible(player == GAMESTATE:GetMasterPlayerNumber()); end;
-		
-		if player == PLAYER_1 then
-			if IsUsingWideScreen() then self:x(SCREEN_CENTER_X-290); self:maxwidth(350); else self:x(SCREEN_CENTER_X-217); end;
-			self:horizalign(center);
-		elseif player == PLAYER_2 then
-			if IsUsingWideScreen() then self:x(SCREEN_CENTER_X+290); self:maxwidth(350); else self:x(SCREEN_CENTER_X+217); end;
-			self:horizalign(center);
-		end
-		
-		self:settext(author);
-	end;
 	};
 };
 
@@ -259,8 +258,24 @@ if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified()==fal
 		};
 	end;
 	
+	--Quest Mode stuff
+	if GAMESTATE:IsCourseMode() then
+		t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			InitCommand=function(self)
+				if QUESTMODE:HasPassedMission(player) then
+					self:settext("MISSION CLEAR!!!");
+				else
+					self:settext("MISSION FAILED...")--:diffusebottomedge(Color("Red"));
+				end;
+				self:xy(p1initx,p1inity):draworder(100):diffusealpha(0):zoom(initzoomp1):skewx(-0.2);
+			end;
+			OnCommand=cmd(sleep,3;linear,.2;diffusealpha,1;zoom,initzoomp1-0.25;linear,.3;zoom,.35);
+		};
+	end;
+	
 	--FS box is here since it relies on the positioning of the grade letter for now... Probably should be fixed later
-	if (ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate") then
+	--Also fast/slow is broken with routine so just don't do it
+	if (ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate") and ToEnumShortString(GAMESTATE:GetCurrentSteps(player):GetStepsType()) ~= "Pump_Routine" then
 		t[#t+1] = Def.ActorFrame{
 			InitCommand=cmd(xy,p1initx,SCREEN_BOTTOM-75;diffusealpha,0);
 			OnCommand=cmd(sleep,3;linear,.3;diffusealpha,1);

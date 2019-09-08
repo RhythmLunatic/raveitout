@@ -370,6 +370,9 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 			local randomSong = folder[math.random(1,#folder)]
 			GAMESTATE:SetCurrentSong(randomSong);
 			GAMESTATE:SetPreferredSong(randomSong);]]
+			for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
+				QUESTMODE:LoadCurrentProgress(pn);
+			end;
 			setenv("PlayMode","Special");
 		end
 		

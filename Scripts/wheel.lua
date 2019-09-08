@@ -180,3 +180,45 @@ function AssembleCoopGroup()
 	fHandle:Close()
 	fHandle:destroy()
 end
+
+function AssembleShortcutGroup()
+	local outputPath = "/Themes/"..THEME:GetCurThemeName().."/Other/SongManager SnapTracks.txt";
+	if not (SONGMAN and GAMESTATE) then return end
+	local set = {}
+	for _, song in pairs(SONGMAN:GetAllSongs()) do
+		local tagValue = string.lower(GetTagValue(song:GetSongFilePath(),"SONGTYPE"))
+		if (song:MusicLengthSeconds() < MAX_SECONDS_FOR_SHORTCUT and tagValue ~= "special") or tagValue == "shortcut" then
+			local shortSongDir = string.match(song:GetSongDir(),isolatePattern)
+			local groupName = song:GetGroupName()
+			local groupTbl = GetOrCreateChild(set, "Snap Tracks")
+			table.insert(groupTbl,
+				string.format(combineFormat, groupName, shortSongDir))
+		end
+	end
+	--sort all the groups and collect their names, then sort that too
+	local groupNames = {}
+	for groupName, group in pairs(set) do
+		if next(group) == nil then
+			set[groupName] = nil
+		else
+			table.sort(group)
+			table.insert(groupNames, groupName)
+		end
+	end
+	table.sort(groupNames)
+	--then, let's make a representation of our eventual file in memory.
+	local outputLines = {}
+	for _, groupName in ipairs(groupNames) do
+		table.insert(outputLines, "---"..groupName) --Comment it out if you don't want folders.
+		for _, path in ipairs(set[groupName]) do
+			table.insert(outputLines, path)
+		end
+	end
+	--now, slam it all out to disk.
+	local fHandle = RageFileUtil.CreateRageFile()
+	--the mode is Write+FlushToDiskOnClose
+	fHandle:Open(outputPath, 10)
+	fHandle:Write(table.concat(outputLines,'\n'))
+	fHandle:Close()
+	fHandle:destroy()
+end

@@ -24,6 +24,12 @@ RIO_FOLDER_NAMES = {
 	--If this is empty all groups will be shown.
 	PREDEFINED_GROUP_LIST = {}
 }
+--Take a wild guess. #SONGTYPE:shortcut will override this.
+MAX_SECONDS_FOR_SHORTCUT = 95
+
+--Number of hearts a mission will take in quest mode.
+HEARTS_PER_MISSION = 3
+
 --The song that gets picked for the One More Extra Stage.
 OMES_SONG = "Ace For Aces (OMES Test)"
 

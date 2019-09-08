@@ -78,6 +78,11 @@ t[#t+1] = Def.Actor {
 		for player in ivalues(GAMESTATE:GetHumanPlayers()) do
 			local profileDir = PROFILEMAN:GetProfileDir(ProfileSlot[PlayerNumber:Reverse()[player]+1]);
 			SaveProfileCustom(PROFILEMAN:GetProfile(player),profileDir);
+			
+			if GAMESTATE:IsCourseMode() and (NumHeartsLeft[player] < 1 or GAMESTATE:IsEventMode()) then
+				QUESTMODE:SaveCurrentProgress(player);
+			end;
+			
 			--If there are no stages left, save extra data needed for memory cards.
 			if NumHeartsLeft[player] < 1 then
 				if PROFILEMAN:ProfileWasLoadedFromMemoryCard(player) then

@@ -27,7 +27,7 @@ t[#t+1] = Def.ActorFrame {
 		InitCommand=cmd(uppercase,true;zoom,0.45;diffuse,1,1,1,1;horizalign,center;maxwidth,1280);
 		OnCommand=function(self)
 			if GAMESTATE:IsCourseMode() then
-				self:settext(GAMESTATE:GetCurrentCourse():GetDisplayArtist().." - "..GAMESTATE:GetCurrentCourse():GetDisplayFullTitle());
+				self:settext(GAMESTATE:GetCurrentCourse():GetScripter().." - "..GAMESTATE:GetCurrentCourse():GetDisplayFullTitle());
 			else
 				self:settext(GAMESTATE:GetCurrentSong():GetDisplayArtist().." - "..GAMESTATE:GetCurrentSong():GetDisplayFullTitle());
 			end;

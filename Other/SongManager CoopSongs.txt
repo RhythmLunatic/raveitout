@@ -86,7 +86,6 @@
 50-Custom Music/[Step1] Atropos
 50-Custom Music/[Step1] Ma Chouchoute
 50-Custom Music/[Step1] Ririze
-70-Composite/BONUS - Her (Laboum)
 99-Special/Bad Romance
 99-Special/Telephone
 99-Special/The One That Got Away

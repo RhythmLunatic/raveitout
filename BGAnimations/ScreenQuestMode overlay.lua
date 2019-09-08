@@ -146,7 +146,7 @@ function updateGroupCache()
 		end;
 		
 		GroupCache.courseRequirements[missionNum] = {
-			minGrade = GetTagValue(readfile,"MINGRADE"),
+			minGrade = GetTagValue(readfile,"MINACCURACY"),
 			minCombo = GetTagValue(readfile,"MINCOMBO"),
 			--limitBreak = GetTagValue(readfile,"LIMITBREAK") --limit break is fucking dumb anyway just use #LIFE for missions
 		}
@@ -324,11 +324,13 @@ t[#t+1] = Def.ActorFrame{
 				if currentGroupNum > 1 then
 					currentGroupNum = currentGroupNum-1;
 					updateGroupCache();
+					SOUND:PlayOnce(THEME:GetPathS("","iidx/syssd_sub_opt"),true);
 				end;
 			elseif params.Name== "UpRight" then
 				if currentGroupNum < NUM_MISSION_GROUPS then
 					currentGroupNum = currentGroupNum+1;
 					updateGroupCache();
+					SOUND:PlayOnce(THEME:GetPathS("","iidx/syssd_sub_opt"),true);
 				end;
 			elseif params.Name == "DownLeft" then
 				if currentMissionNum > 1 then
@@ -336,6 +338,7 @@ t[#t+1] = Def.ActorFrame{
 					setCurrentCourse()
 					MESSAGEMAN:Broadcast("CurrentCourseChanged")
 					self:stoptweening():decelerate(.2):y(135+35*(currentMissionNum-1));
+					SOUND:PlayOnce(THEME:GetPathS("MusicWheel","change"),true);
 				end;
 			elseif params.Name == "DownRight" then
 				if currentMissionNum < GroupCache.numCourses then
@@ -343,10 +346,12 @@ t[#t+1] = Def.ActorFrame{
 					setCurrentCourse()
 					MESSAGEMAN:Broadcast("CurrentCourseChanged")
 					self:stoptweening():decelerate(.2):y(135+35*(currentMissionNum-1));
+					SOUND:PlayOnce(THEME:GetPathS("MusicWheel","change"),true);
 				end;
 			elseif params.Name == "Center" then
 				local can, reason = CanSafelyEnterGameplayCourse()
 				if can then
+					SOUND:PlayOnce(THEME:GetPathS("","ready/offcommand"));
 					GAMESTATE:prepare_song_for_gameplay();
 					SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToNextScreen");
 				else
