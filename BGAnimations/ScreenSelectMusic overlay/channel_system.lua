@@ -30,16 +30,17 @@ local item_mt= {
 		  		--subself:zoom(.75);
 			end;
 				
-			--[[Def.BitmapText{
-				Name= "text",
-				Font= "Common Normal",
-				InitCommand=cmd(addy,100);
-			};]]
+
 			
 			Def.Sprite{
 				Name="banner";
 				--InitCommand=cmd(scaletofit,0,0,1,1;);
 			};
+			--[[Def.BitmapText{
+				Name= "text",
+				Font= "Common Normal",
+				InitCommand=cmd(addy,100;DiffuseAndStroke,Color("White"),Color("Black");shadowlength,1);
+			};]]
 		};
 	end,
 	-- item_index is the index in the list, ranging from 1 to num_items.
@@ -67,6 +68,7 @@ local item_mt= {
 	end,
 	-- info is one entry in the info set that is passed to the scroller.
 	set= function(self, info)
+		--self.container:GetChild("text"):settext(info);
 		local banner;
 		if info == "CO-OP Mode" then
 			banner = THEME:GetPathG("Banner","coop");
@@ -79,7 +81,6 @@ local item_mt= {
 		end;
 		if banner == "" then
 			self.container:GetChild("banner"):Load(THEME:GetPathG("common","fallback group"));
-			--self.container:GetChild("text"):visible(true);
   		else
   			self.container:GetChild("banner"):Load(banner);
   			--self.container:GetChild("text"):visible(false);
@@ -135,28 +136,39 @@ if hearts >= 4*GAMESTATE:GetNumSidesJoined() then
 	if GAMESTATE:GetCurrentSong():GetGroupName() == "81 Rave It Out (Rave)" then selection = total_arcade_folders+2; end;
 end;
 
-if DoDebug then groups = SONGMAN:GetSongGroupNames(); end]]
-local groups = getAvailableGroups();
---Yes these are hardcoded at line 289....
---Only show in multiplayer, since there's no need to show it in singleplayer.
-if GAMESTATE:GetNumSidesJoined() > 1 then
-	table.insert(groups, 1, "CO-OP Mode")
-end;
+]]
 
-for i,pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
-	if getenv(pname(pn).."HasAnyFavorites") then
-		table.insert(groups, i, pname(pn).." Favorites")
+--If the sort order is not default this will be overridden when the screen is on
+local groups;
+--SCREENMAN:SystemMessage(GAMESTATE:GetSortOrder())
+function genDefaultGroups()
+	groups = getAvailableGroups()
+	--Yes these are hardcoded at line 289....
+	--Only show in multiplayer, since there's no need to show it in singleplayer.
+	if GAMESTATE:GetNumSidesJoined() > 1 then
+		table.insert(groups, 1, "CO-OP Mode")
 	end;
+
+	for i,pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
+		if getenv(pname(pn).."HasAnyFavorites") then
+			table.insert(groups, i, pname(pn).." Favorites")
+		end;
+	end;
+	
+	assert(GAMESTATE:GetCurrentSong(), "The current song should have been set in ScreenSelectPlayMode!");
+	local curGroup = GAMESTATE:GetCurrentSong():GetGroupName();
+	for key,value in pairs(groups) do
+		if curGroup == value then
+			selection = key;
+		end
+	end;
+	setenv("cur_group",groups[selection]);
 end;
 
-assert(GAMESTATE:GetCurrentSong(), "The current song should have been set in ScreenSelectPlayMode!");
-local curGroup = GAMESTATE:GetCurrentSong():GetGroupName();
-for key,value in pairs(groups) do
-	if curGroup == value then
-		selection = key;
-	end
+if (GAMESTATE:GetSortOrder() == nil or GAMESTATE:GetSortOrder() == "SortOrder_Group" or GAMESTATE:GetSortOrder() == "SortOrder_Preferred") then
+	genDefaultGroups();
 end;
-setenv("cur_group",groups[selection]);
+
 
 --=======================================================
 --Input handler. Brought to you by PIU Delta NEX Rebirth.
@@ -245,7 +257,21 @@ local t = Def.ActorFrame{
 	OnCommand=function(self)
 		SCREENMAN:GetTopScreen():AddInputCallback(inputs);
 		musicwheel = SCREENMAN:GetTopScreen():GetChild('MusicWheel');
-		scroller:set_info_set(groups, 1);
+		if (GAMESTATE:GetSortOrder() == nil or GAMESTATE:GetSortOrder() == "SortOrder_Group" or GAMESTATE:GetSortOrder() == "SortOrder_Preferred") then
+			scroller:set_info_set(groups, 1);
+		else
+			groups = musicwheel:GetCurrentSections()
+			local curGroup = musicwheel:GetSelectedSection();
+			SCREENMAN:SystemMessage(curGroup);
+			for key,value in pairs(groups) do
+				if curGroup == value then
+					selection = key;
+				end
+			end;
+			assert(groups,"REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+			setenv("cur_group",groups[selection]);
+			scroller:set_info_set(groups, 1);
+		end;
 		scroller:scroll_by_amount(selection-1)
 	end;
 
@@ -296,7 +322,11 @@ local t = Def.ActorFrame{
 		button_history = {"none", "none", "none", "none"};
 	
 		if musicwheel:ChangeSort(params.newSort) then
-			groups = musicwheel:GetCurrentSections()
+			if GAMESTATE:GetSortOrder() == "SortOrder_Group" then
+				genDefaultGroups();
+			else
+				groups = musicwheel:GetCurrentSections()
+			end;
 			selection = 1
 			--SCREENMAN:SystemMessage("SortChanged")
 			scroller:set_info_set(groups, 1);
@@ -310,6 +340,7 @@ local lastSort = nil;
 function setSort(sort)
 	lastSort = sort;
 	SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort(sort);
+	
 end;
 
 -- GENRE SOUNDS
@@ -331,9 +362,22 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 			self:load(THEME:GetPathS("","Genre/Favorites"));
 			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 		else
-			if lastSort ~= "SortOrder_Group" then
+			if GAMESTATE:GetSortOrder() == "SortOrder_Preferred" then
 				setSort("SortOrder_Group")
 				--MESSAGEMAN:Broadcast("StartSelectingSong");
+				-- Odd, changing the sort order requires us to call SetOpenSection more than once
+				SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort(sort);
+				--[[SCREENMAN:GetTopScreen():CloseCurrentSection();
+				SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection("");
+				SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.1 );]]
+				SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
+				--[[SCREENMAN:GetTopScreen():GetMusicWheel():Move(1)
+				SCREENMAN:GetTopScreen():GetMusicWheel():Move(0);
+				SCREENMAN:SystemMessage(SCREENMAN:GetTopScreen():GetMusicWheel():GetSelectedSection())
+				SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
+				SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort(sort);
+				SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
+				SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.1 );]]
 			end;
 			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 			--SCREENMAN:SystemMessage(groups[selection]);
@@ -407,7 +451,7 @@ t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			end;]]
 			if not getenv("cur_group") then
 				self:settext("cur_group env var missing!");
-			else	
+			else
 				self:settext(string.gsub(getenv("cur_group"),"^%d%d? ?%- ?", ""));
 			end;
 		end;

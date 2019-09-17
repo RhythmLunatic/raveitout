@@ -5,7 +5,6 @@ local t = Def.ActorFrame {
 };
 
 --HAS THIS GUY EVER HEARD OF METRICS???
-local stage =		GAMESTATE:GetCurrentStage()
 --optionlist controls
 local OPLIST_WIDTH =		THEME:GetMetric("CustomRIO","OpQuadWidth")		--option list quad width
 local olania =		0.1			--optionlist animation time in
@@ -142,20 +141,14 @@ t[#t+1] = Def.ActorFrame {
 		end;
 	};
 	
-	LoadFont("monsterrat/_montserrat semi bold 60px")..{	
+	LoadFont("monsterrat/_montserrat semi bold 60px")..{
 		InitCommand=cmd(horizalign,left;x,SCREEN_LEFT+16;y,SCREEN_TOP+30;zoom,0.6;skewx,-0.25);
-		CurrentSongChangedMessageCommand=function(self)
-		local song = GAMESTATE:GetCurrentSong();
-			if song then
-				self:uppercase(true);
-				cur_group = GAMESTATE:GetCurrentSong():GetGroupName();
-				self:settext(string.gsub(cur_group,"^%d%d? ?%- ?", ""));
-				--[[if string.find(cur_group,"Rave It Out") then
-					self:settext(string.sub(cur_group, 17, string.len(cur_group)-1));
-				else
-					self:settext(string.sub(cur_group, 4, string.len(cur_group)));
-				end;]]
-			end
+		OnCommand=function(self)
+			local musicwheel = SCREENMAN:GetTopScreen():GetChild('MusicWheel');
+			self:settext(string.gsub(musicwheel:GetSelectedSection(),"^%d%d? ?%- ?", ""));
+		end;
+		StartSelectingSongMessageCommand=function(self)
+			self:playcommand("On");
 		end;
 	};
  };
@@ -163,35 +156,16 @@ t[#t+1] = Def.ActorFrame {
 t[#t+1] = LoadActor("arrow_shine");
 t[#t+1] = Def.ActorFrame{
 
-	--[[
-	LoadFont("Common normal")..{	--formatted stage display
+	
+	--[[LoadFont("Common normal")..{	--formatted stage display
 		InitCommand=cmd(xy,_screen.cx,_screen.cy-190;zoomx,0.75;zoomy,0.65);
-		OnCommand=function(self)
-			local stageNum=GAMESTATE:GetCurrentStageIndex()
-			if stageNum < 10 then stg = "0"..stageNum+1 else stg = stageNum+1 end;
-			
-			if DoDebug then curstage = "DevMode - Stage: "..stg
-			elseif GAMESTATE:IsEventMode() then curstage = "Event Mode - "..stageNum.."th Stage"
-			elseif 		stage == "Stage_1st"		then curstage = "1st Stage"
-			elseif	stage == "Stage_2nd"		then curstage = "2nd Stage"
-			elseif	stage == "Stage_3rd"		then curstage = "3rd Stage"
-			elseif	stage == "Stage_4th"		then curstage = "4th Stage"
-			elseif	stage == "Stage_5th"		then curstage = "5th Stage"
-			elseif	stage == "Stage_Next"		then curstage = "Next Stage"
-			elseif	stage == "Stage_Final"		then curstage = "Final Stage"
-			elseif	stage == "Stage_Extra1"		then curstage = "Extra Stage"
-			elseif	stage == "Stage_Extra2"		then curstage = "Encore Stage"
-			elseif	stage == "Stage_Nonstop"	then curstage = "Nonstop Stage"
-			elseif	stage == "Stage_Oni"		then curstage = "Oni Stage"
-			elseif	stage == "Stage_Endless"	then curstage = "Endless"
-			elseif	stage == "Stage_Event"		then curstage = "Event Mode"
-			elseif	stage == "Stage_Demo"		then curstage = "Demo"
-			else	curstage = stageNum.."th Stage"
-			end;
-			self:settext(curstage);
-		end;
-	};
-	--]]
+		Text=ToEnumShortString(GAMESTATE:GetCurrentStage()).." Stage";
+	};]]
+	--[[LoadFont("monsterrat/_montserrat semi bold 60px")..{
+		InitCommand=cmd(horizalign,right;x,SCREEN_RIGHT-16;y,SCREEN_TOP+23;zoom,0.6;skewx,-0.25;);
+		Text=string.upper(ToEnumShortString(GAMESTATE:GetCurrentStage()).." Stage");
+	};]]
+	
 
 	--Left side background
 	Def.ActorFrame{
