@@ -401,6 +401,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 	end;
 };
 
+--THE BACKGROUND VIDEO
 t[#t+1] = LoadActor(THEME:GetPathG("","background/common_bg"))..{
 		InitCommand=cmd(diffusealpha,0);
 		StartSelectingGroupMessageCommand=cmd(stoptweening;linear,0.35;diffusealpha,1);

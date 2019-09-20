@@ -6,8 +6,8 @@ local SortTypes = {
 	["Top Grades"] = 'SortOrder_TopGrades',
 	["Artist"] = 'SortOrder_Artist',
 	["Genre"] = 'SortOrder_Genre',
-	--"Level (Singles)",
-	--"Level (Doubles)",
+	["Level (Singles)"] = 'SortOrder_AllDifficultyMeter',
+	["Level (Doubles)"] = "DoubleAllDifficultyMeter"
 	--"Heart Count"
 }
 
