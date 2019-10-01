@@ -50,15 +50,16 @@ local item_mt= {
 		local offsetFromCenter = item_index-math.floor(numWheelItems/2)
 		--PrimeWheel(self.container,offsetFromCenter,item_index,numWheelItems)
 		self.container:stoptweening();
+		--self.container:finishtweening();
 		if math.abs(offsetFromCenter) < 4 then
 			self.container:decelerate(.5);
 			self.container:visible(true);
 		else
 			self.container:visible(false);
 		end;
-		self.container:x(offsetFromCenter*500)
+		self.container:x(offsetFromCenter*350)
 		--self.container:rotationy(offsetFromCenter*-45);
-		self.container:zoom(math.cos(offsetFromCenter*math.pi/6)*.8)
+		self.container:zoom(math.cos(offsetFromCenter*math.pi/3)*.9):diffusealpha(math.cos(offsetFromCenter*math.pi/3)*.9);
 		
 		--[[if offsetFromCenter == 0 then
 			self.container:diffuse(Color("Red"));
