@@ -88,7 +88,7 @@ local judgmentToLoad = ActiveModifiers[pname(player)]["JudgmentGraphic"];
 
 --FastSlow handling
 local fastSlowToLoad = nil; --Yes I'm declaring it as nil
-if (ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate") then
+if (ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate" and PREFSMAN:GetPreference("AllowW1") == "AllowW1_Everywhere") then
 	--Initialize env
 	setenv("NumFasts"..pname(player),0)
 	setenv("NumSlows"..pname(player),0)
