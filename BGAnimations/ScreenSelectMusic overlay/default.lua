@@ -165,7 +165,6 @@ t[#t+1] = Def.ActorFrame{
 		Text=string.upper(ToEnumShortString(GAMESTATE:GetCurrentStage()).." Stage");
 	};]]
 	
-
 	--Left side background
 	Def.ActorFrame{
 		InitCommand=cmd(x,SCREEN_LEFT;y,_screen.cy+110;vertalign,middle,horizalign,right);

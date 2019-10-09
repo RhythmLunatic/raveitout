@@ -49,10 +49,11 @@ local item_mt= {
 	transform= function(self, item_index, num_items, is_focus)
 		local offsetFromCenter = item_index-math.floor(numWheelItems/2)
 		--PrimeWheel(self.container,offsetFromCenter,item_index,numWheelItems)
-		self.container:stoptweening();
+		--self.container:hurrytweening(2);
 		--self.container:finishtweening();
+		self.container:stoptweening();
 		if math.abs(offsetFromCenter) < 4 then
-			self.container:decelerate(.5);
+			self.container:decelerate(.45);
 			self.container:visible(true);
 		else
 			self.container:visible(false);
@@ -341,7 +342,6 @@ local lastSort = nil;
 function setSort(sort)
 	lastSort = sort;
 	SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort(sort);
-	
 end;
 
 -- GENRE SOUNDS

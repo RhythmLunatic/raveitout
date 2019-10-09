@@ -2,7 +2,14 @@ local EasterEggs = PREFSMAN:GetPreference("EasterEggs");
 local master_player = GAMESTATE:GetMasterPlayerNumber();
 
 local stage = GAMESTATE:GetCurrentStage();
-local stagemaxscore = 100000000*GAMESTATE:GetNumStagesForCurrentSongAndStepsOrCourse()
+
+local numStages = 1;
+if GAMESTATE:IsCourseMode() then
+	numStages = GAMESTATE:GetCurrentCourse():GetEstimatedNumStages()
+end;
+
+local stagemaxscore = 100000000*numStages -- GAMESTATE:GetNumStagesForCurrentSongAndStepsOrCourse() returns 3 no matter what... Must be broken
+--SCREENMAN:SystemMessage(GAMESTATE:GetCurrentCourse():GetEstimatedNumStages());
 
 
 if GAMESTATE:IsCourseMode() then
@@ -83,6 +90,7 @@ local t = Def.ActorFrame{
 		LoadActor("song meter")..{};
 		
 		LoadActor("demoplay")..{
+			Condition=(stage=="Stage_Demo");
 			InitCommand=cmd(x,notefxp1;y,SCREEN_BOTTOM-70;zoom,0.5;playcommand,"Set");
 			OnCommand=function(self)
 				if stage == "Stage_Demo" then
@@ -164,11 +172,10 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				InitCommand=cmd(zoomx,0.8;zoomy,0.7;playcommand,"ComboChangedMessage";y,SCREEN_BOTTOM-28;);
 				ComboChangedMessageCommand=function(self,param)
 					local State = GAMESTATE:GetPlayerState(pn);
-					local PlayerType = State:GetPlayerController();
+					--local PlayerType = State:GetPlayerController();
 					local css = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn);
-					local curmaxscore =	stagemaxscore
 					local score =		css:GetScore()				--score :v
-					local rawaccuracy =	(score/curmaxscore)*100		--Player accuracy RAW number
+					local rawaccuracy =	(score/stagemaxscore)*100		--Player accuracy RAW number
 					--rawaccuracy = getenv("P1_accuracy");
 					local maxzoomx = 0.8;
 					local multiplier = (maxzoomx/100)*rawaccuracy
@@ -205,7 +212,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			--LifeChangedMessageCommand=function(self,param)
 				-- percentage scoring stuff:
 				local State = GAMESTATE:GetPlayerState(pn);
-				local PlayerType = State:GetPlayerController();				
+				--local PlayerType = State:GetPlayerController();				
 				local css = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn);
 				local curmaxscore =	stagemaxscore
 				local score =		css:GetScore()				--score :v
@@ -285,5 +292,11 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 end;
 
 t[#t+1] = LoadActor("playerFailed");
+
+if stage=="Stage_Demo" then
+	t[#t+1] = LoadActor(THEME:GetPathG("ScreenAttract", "cardInserted"))..{
+		InitCommand=cmd(Center);
+	};
+end;
 
 return t;

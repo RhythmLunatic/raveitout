@@ -3,7 +3,6 @@ local player = ...;
 -- -- Season 2 asset designer A.Sora here
 -- -- If we decide to add W5 back, it'll be called Failin'
 --local p1w5 =		css1:GetTapNoteScores("TapNoteScore_W5")				--BARELY
---local p2w5 =		css2:GetTapNoteScores("TapNoteScore_W5")				--BARELY
 local t =			Def.ActorFrame {};
 local css1 =		STATSMAN:GetCurStageStats():GetPlayerStageStats(player);
 
@@ -198,7 +197,7 @@ t[#t+1] = Def.ActorFrame{
 
 
 --P1 RANK CODE
-if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified()==false then
+if css1:IsDisqualified()==false then
 
 	local initzoomp1 = 0.8;
 	--The graphics aren't centered properly and using SCREEN_WIDTH isn't really the best either
@@ -212,33 +211,10 @@ if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified()==fal
 		initzoomp1 = 0
 		finalzoomp1 = 0
 	end]]
-	
-	-- old convention is commented
-	if getenv("StageFailed") == true then
-		gradep1="F"; -- _failed
-	elseif p1accuracy == 100 then
-		gradep1="S3"; -- S_S
-	elseif p1accuracy >= 97 and p1misses == 0 and p1w4 == 0 and p1w3 == 0 then
-		if PREFSMAN:GetPreference("AllowW1") == "AllowW1_Never" then 
-			gradep1="S3"; -- S_S
-		else 
-			gradep1="S2"; -- S_plus
-		end;
-	elseif p1accuracy >= 96 and p1misses == 0 and p1w4 == 0 then
-		gradep1="S1"; -- S_normal
-	elseif p1accuracy >= 80 then
-		gradep1="A";
-	elseif p1accuracy >= 70 then
-		gradep1="B";
-	elseif p1accuracy >= 60 then
-		gradep1="C";
-	elseif p1accuracy >= 50 then
-		gradep1="D";
-	elseif p1accuracy < 50 then
-		gradep1="E"; -- F
-	else
-		gradep1="F"; -- _failed
-	end;
+	local gradep1 = getGradeFromStats(player);
+	--local gradep1 = "S3"
+	--assert(false,gradep1);
+
 
 	t[#t+1] = LoadActor(THEME:GetPathG("","GradeDisplayEval/Grade-"..gradep1))..{
 		InitCommand=cmd(x,p1initx;y,p1inity;draworder,100;diffusealpha,0;zoom,initzoomp1;sleep,3;linear,.2;diffusealpha,1;zoom,initzoomp1-0.25;linear,.3;zoom,finalzoomp1);
@@ -260,16 +236,17 @@ if STATSMAN:GetCurStageStats():GetPlayerStageStats(player):IsDisqualified()==fal
 	
 	--Quest Mode stuff
 	if GAMESTATE:IsCourseMode() then
-		t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{
+		t[#t+1] = LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
 			InitCommand=function(self)
-				if QUESTMODE:HasPassedMission(player) then
+				--This function updates clear status in memory while checking
+				if QUESTMODE:CheckAndUpdateMissionStatus(player) then
 					self:settext("MISSION CLEAR!!!");
 				else
 					self:settext("MISSION FAILED...")--:diffusebottomedge(Color("Red"));
 				end;
 				self:xy(p1initx,p1inity):draworder(100):diffusealpha(0):zoom(initzoomp1):skewx(-0.2);
 			end;
-			OnCommand=cmd(sleep,3;linear,.2;diffusealpha,1;zoom,initzoomp1-0.25;linear,.3;zoom,.35);
+			OnCommand=cmd(zoom,2;sleep,3;linear,.2;diffusealpha,1;zoom,1;linear,.3;zoom,.8);
 		};
 	end;
 	

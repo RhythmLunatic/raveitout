@@ -9,8 +9,9 @@ Setup:
 
 Refer to https://github.com/stepmania/stepmania/wiki/Courses on help with making courses.
 Unique tags for RIO missions:
-#MINSCORE:    minimum score needed to pass.
+NOT USED : #MINSCORE:    minimum score needed to pass.
 #MINACCURACY: minimum accuracy needed to pass.
+#MINGRADE:    minimum grade needed to pass? Isn't this just minaccuracy again?
 #MINCOMBO:    minimum combo needed to pass.
 #MAXBREAK:    maximum combo breaks allowed.
 (Unimplemented) #LIMITBREAK: maximum number of misses allowed
@@ -23,10 +24,37 @@ So let's say you completed 3 out of 5 missions for the group it's set to 2, now 
 go on to the next group.
 ]]
 NUM_MISSIONS_SKIPPABLE = 2
-RIO_COURSE_GROUPS = {"The First Step", "The World Warrior"}
+--[[
+There are as many course worlds as you want, with course areas inside those course worlds,
+with courses inside the course area folders
+Since SM doesn't support nested course folders, you just have to prefix them and specify the
+folder.
+Ingame it will be changed so "EASY - The First Step" -> "The First Step"
+Note: Obviously don't reuse the same folders for all three mission worlds, then
+you'd have the same grades for all the courses.
+]]
+RIO_COURSE_GROUPS = {
+	["Easy World"] = {
+		"The First Step",
+		"The World Warrior",
+		"404 Not Found"
+	},
+	["Medium World"] = {
+		"The First Step",
+		"The World Warrior",
+		"404 Not Found"
+	},
+	["Hard World"] = {
+		"The First Step",
+		"The World Warrior",
+		"404 Not Found"
+	}
+}
 
 -- 'QUESTMODEMAN' was a bit too verbose
 QUESTMODE = {
+	allMissionsPlayable = false, --DEBUGGING
+	currentWorld = nil,
 	savefile = "RIO_MissionSaveData.json";
 	PlayerNumber_P1 = nil,
 	PlayerNumber_P2 = nil
@@ -41,6 +69,21 @@ QUESTMODE.GetSaveDataPath=function(self,player)
 	local profileDir = PROFILEMAN:GetProfileDir(ProfileSlot[PlayerNumber:Reverse()[player]+1])
 	assert(profileDir ~= '',"No profile is loaded. Cannot save mission data.")
 	return profileDir..self.savefile
+end;
+
+
+QUESTMODE.CheckAndUpdateMissionStatus=function(self,player)
+	local clearStatus = self:HasPassedMission(player);
+	assert(self.currentWorld)
+	--[[assert(self[player])
+	assert(self[player][currentWorld])
+	assert(self[player][currentWorld][GAMESTATE:GetCurrentCourse():GetDisplayFullTitle()] ~= nil);]]
+	
+	--If it's not already passed, update the clear status. Since we don't want to set a cleared mission back to uncleared.
+	if self[player][self.currentWorld][GAMESTATE:GetCurrentCourse():GetDisplayFullTitle()] ~= true then
+		self[player][self.currentWorld][GAMESTATE:GetCurrentCourse():GetDisplayFullTitle()] = clearStatus;
+	end;
+	return clearStatus;
 end;
 
 QUESTMODE.HasPassedMission=function(self,player)
@@ -71,6 +114,16 @@ QUESTMODE.HasPassedMission=function(self,player)
 		end;
 	end
 	
+	local minimumGrade = GetTagValue(crsFile,"MINGRADE")
+	if minimumGrade ~= "" then
+		--In ScoreGradeManager
+		local grade = getGradeAsInt(player);
+		assert(GRADE_TABLE[minimumGrade], "MINGRADE has an invalid grade: "..minimumGrade);
+		if grade < GRADE_TABLE[minimumGrade] then
+			return true;
+		end;
+	end;
+	
 	--You might be wondering where maxBreak is, well it's handled by the gameplay lua so we don't actually need to check here.
 	--If you go over the max breaks allowed you'll just fail the song immediately
 	return true;
@@ -94,10 +147,12 @@ end;
 
 QUESTMODE.GenerateNewFile=function()
 	local tempArr = {};
-	for i,crsGroup in ipairs(RIO_COURSE_GROUPS) do
-		tempArr[i] = {};
-		for crs in ivalues(SONGMAN:GetCoursesInGroup(crsGroup,false)) do
-			tempArr[i][crs:GetDisplayFullTitle()] = {false,false,false}
+	for crsWorldName,crsWorld in pairs(RIO_COURSE_GROUPS) do
+		tempArr[crsWorldName] = {};
+		for crsGroup in ivalues(crsWorld) do
+			for crs in ivalues(SONGMAN:GetCoursesInGroup(crsGroup,false)) do
+				tempArr[crsWorldName][crs:GetDisplayFullTitle()] = false
+			end;
 		end;
 	end;
 	return tempArr;

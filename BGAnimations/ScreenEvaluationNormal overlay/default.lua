@@ -179,6 +179,4 @@ else
 	t[#t+1] = LoadActor(THEME:GetPathG("","USB_stuff"));
 end
 
-
-
 return t;

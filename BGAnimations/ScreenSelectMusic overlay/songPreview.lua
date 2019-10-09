@@ -83,7 +83,6 @@ return Def.ActorFrame{
 				else
 					local song = GAMESTATE:GetCurrentSong()
 					path = GetBGAPreviewPath("PREVIEWVID");
-					--SCREENMAN:SystemMessage(path)
 					--path = song:GetBannerPath();
 					self:Load(path);
 				end;

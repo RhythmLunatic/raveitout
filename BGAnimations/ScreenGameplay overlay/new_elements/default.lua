@@ -38,7 +38,10 @@ t[#t+1] = Def.ActorFrame {
 t[#t+1] = Def.ActorFrame {
 	OnCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+50;diffusealpha,0;sleep,1;linear,0.5;diffusealpha,1;);
 	
-		LoadActor(stage)..{
+		Def.Sprite{
+			--We don't have course mode graphics..
+			Condition=(not GAMESTATE:IsCourseMode());
+			Texture=stage;
 			InitCommand=cmd(zoom,0.55);
 		};
 };

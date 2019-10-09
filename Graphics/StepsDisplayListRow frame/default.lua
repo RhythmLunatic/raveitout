@@ -59,6 +59,7 @@ t[#t+1] = Def.ActorFrame{
 						self:x(customx+2.2);	
 					else
 						self:setstate(5);
+						self:x(customx+3.2);
 					end;
 				end;
 			else

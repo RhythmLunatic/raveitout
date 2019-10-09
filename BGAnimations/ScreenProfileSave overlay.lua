@@ -12,7 +12,7 @@ if IsExtraStagePIU() then
 	curstage = "Stage_Extra1"
 elseif GAMESTATE:GetCurrentStageIndex() > 3 then
 	curstage = Stage[4];
-elseif curstage == "Stage_Extra1" or curstage == "Stage_Final" then --It will say this if you use snap tracks, which we don't want because it's not actually the extra stage.
+elseif curstage == "Stage_Extra1" or curstage == "Stage_Final" or curstage == "Stage_Nonstop" then --It will say this if you use snap tracks, which we don't want because it's not actually the extra stage.
 	curstage = Stage[GAMESTATE:GetCurrentStageIndex()+1]
 end;
 --SCREENMAN:SystemMessage(curstage)
@@ -27,6 +27,7 @@ local delay_time = {
 	Stage_6th = 10;
 	Stage_Final = 9;
 	Stage_Extra1 = 9;
+	Stage_Nonstop = 8;
 };
 
 local NextStageSleepTime = delay_time[curstage];

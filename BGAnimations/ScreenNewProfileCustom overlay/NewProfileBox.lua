@@ -45,10 +45,12 @@ local SSC_BORDER_SIZE = 4;
 local SSC_ROWS = 1;
 local SSC_COLUMNS = 9;
 local bWidth, bHeight = 40,50;
+--The bWidth for the top.
+local topbWidth = bWidth - 12;
 --Various precalculated variables to make things easy to position
-local sqWidth = bWidth*SSC_COLUMNS+SSC_BORDER_SIZE*SSC_COLUMNS;
+local sqWidth = topbWidth*SSC_COLUMNS+SSC_BORDER_SIZE*SSC_COLUMNS;
 local sqHeight = bHeight*SSC_ROWS+SSC_BORDER_SIZE*SSC_ROWS;
-local xPosition = -sqWidth/2+bWidth/2+SSC_BORDER_SIZE/2;
+local xPosition = -sqWidth/2+topbWidth/2+SSC_BORDER_SIZE/2;
 local yPosition = -100;
 
 
@@ -77,43 +79,48 @@ local boxFrame = Def.ActorFrame{
 	OnCommand=function(self)
 		boxFrameActor = self;
 	end;
-	
-	LoadActor(THEME:GetPathG("common",'arrow'))..{
-		InitCommand=cmd(rotationz,90;xy,sqWidth/2,100;bounce)
-		--OnCommand=cmd(self:GetTexture
-	};
 };
 
+--I got sick of draw issues, so draw the background box first
+for i = 0, SSC_ROWS-1 do
+	for j = 0, SSC_COLUMNS-1 do
+		boxFrame[#boxFrame+1] = Def.Quad{
+			InitCommand=cmd(setsize,topbWidth,bHeight;z,1;xy,j*(topbWidth+SSC_BORDER_SIZE),i*(bHeight+SSC_BORDER_SIZE);zoomy,0);
+			OnCommand=function(self)
+				if j%2 == 0 then
+					if i%2 == 0 then
+						self:diffuse(Color("HoloBlue"));
+					else
+						self:diffuse(Color("White"));
+					end;
+				else
+					if i%2 ~= 0 then
+						self:diffuse(Color("HoloBlue"));
+					else
+						self:diffuse(Color("White"));
+					end;
+				end;
+				self:sleep(.03*j):decelerate(.1):zoomy(1);
+			end;
+		};
+		--[[boxFrame[#boxFrame+1] = rectGen(topbWidth,bHeight,1,Color("White"),color("1,1,1,.5"))..{
+				InitCommand=cmd(setsize,topbWidth,bHeight;z,1;xy,j*(topbWidth+SSC_BORDER_SIZE),i*(bHeight+SSC_BORDER_SIZE););
+			};]]
+	end
+end
+--Then draw the letters.
 for i = 0, SSC_ROWS-1 do
 	for j = 0, SSC_COLUMNS-1 do
 		local chrID = tonumber(j..i)
 		boxFrame[#boxFrame+1] = Def.ActorFrame{
-			InitCommand=cmd(xy,j*(bWidth+SSC_BORDER_SIZE),i*(bHeight+SSC_BORDER_SIZE));
+			InitCommand=cmd(xy,j*(topbWidth+SSC_BORDER_SIZE),i*(bHeight+SSC_BORDER_SIZE);SetDrawByZPosition,true);
 			Name=j;
 			
-			Def.Quad{
-				--Name="DebugQuad";
-				InitCommand=cmd(setsize,bWidth,bHeight);
-				OnCommand=function(self)
-					if j%2 == 0 then
-						if i%2 == 0 then
-							self:diffuse(Color("HoloBlue"));
-						else
-							self:diffuse(Color("White"));
-						end;
-					else
-						if i%2 ~= 0 then
-							self:diffuse(Color("HoloBlue"));
-						else
-							self:diffuse(Color("White"));
-						end;
-					end;
-				end;
-			};
+
 			
 			LoadFont("monsterrat/_montserrat semi bold 60px")..{
 				Name="TextActor";
-				InitCommand=cmd(diffuse,color("0,0,0,1");zoom,0.6;skewx,-0.255;maxwidth,bWidth+20);
+				InitCommand=cmd(diffuse,color("0,0,0,1");zoom,0.6;skewx,-0.255;maxwidth,topbWidth+20;z,100;);
 				NewTextCommand=cmd(zoom,1.6;decelerate,.5;zoom,.6);
 				--Text=j;
 			};
@@ -180,6 +187,12 @@ local item_mt= {
 		else
 			self.container:y(0);
 		end;
+		--[[if math.abs(offsetFromCenter) > 3 then
+			self.container:diffusealpha(0);
+		else
+			self.container:diffusealpha(1);
+		end;]]
+		self.container:diffusealpha(math.cos(offsetFromCenter*math.pi/6.5))
 		self.container:x(offsetFromCenter*45);
 	end,
 	-- info is one entry in the info set that is passed to the scroller.
@@ -189,6 +202,7 @@ local item_mt= {
 }}
 
 local curName = "";
+local isDone = false;
 local t = Def.ActorFrame{
 	--[[InitCommand=function(self)
 		--self:SetTextureName( "asdfghjkl" )
@@ -215,6 +229,7 @@ local t = Def.ActorFrame{
 	--Input handler
 	CodeMessageCommand=function(self, params)
 		if params.PlayerNumber ~= player then return end;
+		if isDone then return end;
 	
 		if params.Name == "Left" then
 			--SCREENMAN:SystemMessage("aasdas");
@@ -232,7 +247,12 @@ local t = Def.ActorFrame{
 				boxFrameActor:GetChild(tostring(#curName)):GetChild("TextActor"):settext("");
 				SOUND:PlayOnce(THEME:GetPathS("Codebox", "Enter"))
 			elseif txt == "END" then
-			
+				if curName ~= "" then
+					MESSAGEMAN:Broadcast("DoneSelecting",{Player=player});
+					PROFILEMAN:GetProfile(player):SetDisplayName(curName);
+					isDone = true;
+					self:decelerate(.5):zoomy(0);
+				end
 			elseif #curName < SSC_COLUMNS then
 				curName = curName..txt;
 				boxFrameActor:GetChild(tostring(#curName-1)):GetChild("TextActor"):settext(txt):playcommand("NewText");
@@ -254,4 +274,11 @@ t[#t+1] = scroller:create_actors("foo", numWheelItems, item_mt, 0, 100);
 
 t[#t+1] = boxFrame;
 t[#t+1] = boxFrame2;
+t[#t+1] = 	LoadActor(THEME:GetPathG("common",'arrow'))..{
+		InitCommand=cmd(rotationz,90;y,-20;bounce)
+		--OnCommand=cmd(self:GetTexture
+	};
+t[#t+1] = LoadActor(THEME:GetPathG("Common","Mask"))..{
+		InitCommand=cmd(zoom,.6;diffuse,PlayerColor(player););
+	};
 return t;

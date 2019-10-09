@@ -299,7 +299,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		WriteGamePrefToFile("DefaultFail","");
 		setenv("StageBreak",true);
 		
-		if choice ~= "Pro" then
+		if choice ~= "Pro" and choice ~= "Special" then
 			PREFSMAN:SetPreference("AllowW1",'AllowW1_Never');
 			for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				GAMESTATE:ApplyGameCommand( "mod,3x,rio,30% mini;", pn );
@@ -365,6 +365,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 			generateFavoritesForMusicWheel()
 			PREFSMAN:SetPreference("AllowW1",'AllowW1_Everywhere');
 		elseif choice == "Special" then
+			PREFSMAN:SetPreference("AllowW1",'AllowW1_Everywhere');
 			-- Special Mode
 			--[[local folder = SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["SpecialFolder"]);
 			local randomSong = folder[math.random(1,#folder)]

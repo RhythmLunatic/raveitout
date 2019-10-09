@@ -42,7 +42,10 @@ local phrases = {
 	"no u",
 	"RIP Museca",
 	"RIP Crossbeats",
-	"RIP BeatStream"
+	"RIP BeatStream",
+	"Academy City's #1",
+	"Are you tired of reading these yet?",
+	"https://youtu.be/dQw4w9WgXcQ"
 
 };
 
@@ -64,9 +67,9 @@ return Def.ActorFrame{
 		InitCommand=cmd(Center;cropright,1;diffusealpha,0);
 		OnCommand=cmd(sleep,3;linear,.5;diffusealpha,1;decelerate,1;cropright,0;);
 	};
-	LoadFont("Kunstware")..{
+	LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
         Text=phrases[math.random(#phrases)];
-        InitCommand=cmd(Center;addy,50;diffusealpha,0);
+        InitCommand=cmd(Center;addy,50;diffusealpha,0;wrapwidthpixels,SCREEN_WIDTH;zoom,.75);
 		OnCommand=cmd(sleep,4;linear,.1;diffusealpha,1);
     };
 	

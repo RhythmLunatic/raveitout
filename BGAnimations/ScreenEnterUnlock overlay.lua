@@ -48,9 +48,18 @@ local t = Def.ActorFrame{
 				AssembleShortcutGroup();
 				self:settext("Groups generated.");
 			elseif unlockmsg == "ResetQuestMode" then
-				local a = QUESTMODE:GenerateNewFile()
-				QUESTMODE[PLAYER_1] = a;
-				self:settext("Saved file to "..QUESTMODE:SaveCurrentProgress(PLAYER_1))
+				local strToWrite = json.encode(QUESTMODE:GenerateNewFile())
+				local file= RageFileUtil.CreateRageFile()
+				local path = THEME:GetCurrentThemeDirectory().."Other/QuestMode_Debug.json";
+				if not file:Open(path, 2) then
+					error("Could not open '" .. path .. "' to write quest mode save file.")
+				else
+					file:Write(strToWrite)
+					file:Close()
+					file:destroy()
+				end
+				--QUESTMODE[PLAYER_1] = a;
+				self:settext("Saved file to "..path)
 			else
 				self:settext("Invalid unlock code.");
 			end;

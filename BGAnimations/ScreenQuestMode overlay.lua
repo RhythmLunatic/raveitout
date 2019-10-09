@@ -106,7 +106,7 @@ end;
 --1 indexed, because lua.
 local currentMissionNum;
 local currentGroupNum = 1;
-local NUM_MISSION_GROUPS = #RIO_COURSE_GROUPS
+local NUM_MISSION_GROUPS = #RIO_COURSE_GROUPS[QUESTMODE.currentWorld]
 --Needs to be defined up here
 local GroupCache = {};
 
@@ -125,17 +125,20 @@ function setCurrentCourse()
 	
 	QUESTMODE.CurMissionRequirements = {
 		minGrade = GroupCache.courseRequirements[currentMissionNum].minGrade,
-		minCombo = GroupCache.courseRequirements[currentMissionNum].minCombo
+		minCombo = GroupCache.courseRequirements[currentMissionNum].minCombo,
+		minAccuracy = GroupCache.courseRequirements[currentMissionNum].minAccuracy,
+		maxBreak = GroupCache.courseRequirements[currentMissionNum].maxBreak
 	};
 	--setenv("BreakCombo",GroupCache.courseRequirements[currentMissionNum].limitBreak or THEME:GetMetric("CustomRIO","MissToBreak"));
 end
 
 function updateGroupCache()
-	GroupCache.currentGroup = RIO_COURSE_GROUPS[currentGroupNum];
+	GroupCache.currentGroup = RIO_COURSE_GROUPS[QUESTMODE.currentWorld][currentGroupNum];
 	--Clear courses from the table.
 	GroupCache.courses = {}
 	GroupCache.courseRequirements = {};
 	for course in ivalues(SONGMAN:GetCoursesInGroup(GroupCache.currentGroup,false)) do
+		--assert(course,"Hey idiot, don't give an invalid course");
 		local readfile = File.Read( course:GetCourseDir() )
 		local missionNum = GetTagValue(readfile,"MISSIONID")
 		if missionNum and missionNum ~= "" then
@@ -146,8 +149,10 @@ function updateGroupCache()
 		end;
 		
 		GroupCache.courseRequirements[missionNum] = {
-			minGrade = GetTagValue(readfile,"MINACCURACY"),
+			minGrade = GetTagValue(readfile,"MINGRADE"),
 			minCombo = GetTagValue(readfile,"MINCOMBO"),
+			minAccuracy = GetTagValue(readfile,"MINACCURACY"),
+			maxBreak = GetTagValue(readfile,"MAXBREAK")
 			--limitBreak = GetTagValue(readfile,"LIMITBREAK") --limit break is fucking dumb anyway just use #LIFE for missions
 		}
 		
@@ -247,68 +252,116 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(setsize,410,2;diffuse,color("1,1,1,1");xy,200+160,140;horizalign,left;vertalign,top;fadeleft,.8;faderight,.8;);
 	};
 	--Mission requirements
-	Def.Sprite{
+	--[[Def.Sprite{
 		Texture=THEME:GetPathG("QuestMode","MissionRequirements");
 		InitCommand=cmd(Resize,SCREEN_WIDTH,SCREEN_HEIGHT;Center);
-	};
-	--[[Def.ActorFrame{
+	};]]
+	Def.ActorFrame{
+		CurrentCourseChangedMessageCommand=function(self)
+			local r = QUESTMODE.CurMissionRequirements;
+			if r.maxBreak then
+				self:GetChild("BreakText"):settext(r.maxBreak):visible(true);
+				self:GetChild("BreakBG"):diffusealpha(1);
+			else
+				self:GetChild("BreakText"):visible(false);
+				self:GetChild("BreakBG"):diffusealpha(.5);
+			end;
+			
+			if r.minCombo then
+				self:GetChild("ComboText"):settext(r.minCombo):visible(true);
+				self:GetChild("ComboBG"):diffusealpha(1);
+			else
+				self:GetChild("ComboText"):visible(false);
+				self:GetChild("ComboBG"):diffusealpha(.5);
+			end;
+			
+			if r.minGrade then
+				self:GetChild("GradeText"):Load(THEME:GetPathG("","GradeDisplayEval/"..r.minGrade)):visible(true);
+				self:GetChild("GradeBG"):diffusealpha(1);
+			else
+				self:GetChild("GradeText"):visible(false);
+				self:GetChild("GradeBG"):diffusealpha(.5);
+			end;
+			
+			if r.minAccuracy then
+				self:GetChild("AccuracyText"):settext(r.minAccuracy.."%"):visible(true);
+				self:GetChild("AccuracyBG"):diffusealpha(1);
+			else
+				self:GetChild("AccuracyText"):visible(false);
+				self:GetChild("AccuracyBG"):diffusealpha(.5);
+			end;
+			
+		end;
+	
 		InitCommand=cmd(xy,200+160+410/2,110+220;);
 		Def.Sprite{
-			Texture=THEME:GetPathG("Common","DialogBox");
-			InitCommand=cmd(zoomy,.2;zoomx,.46;diffusealpha,.5);
+			Name="MissionBG";
+			Texture=THEME:GetPathG("QuestMode","MissionBG");
+			InitCommand=cmd(zoom,.67);
+			--InitCommand=cmd(zoomy,.2;zoomx,.46;diffusealpha,.5);
 		};
 		--left
-		Def.Quad{
-			InitCommand=cmd(setsize,70,70;addx,-180+360/4*1-360/4/2);
+		Def.Sprite{
+			Name="BreakBG";
+			Texture=THEME:GetPathG("QuestMode","BreakRequirement");
+			InitCommand=cmd(zoom,.67;addx,-180+360/4*1-360/4/2);
 		};
 		LoadFont("monsterrat/_montserrat light 60px")..{
+			Name="BreakText";
 			--(SCREEN_WIDTH/numChoices*i-SCREEN_WIDTH/numChoices/2)
-			InitCommand=cmd(zoom,0.185;addy,42;addx,-180+360/4*1-360/4/2);
+			InitCommand=cmd(zoom,.5;addy,-5;addx,-180+360/4*1-360/4/2;maxwidth,130);
 			OnCommand=function(self)
-				self:uppercase(true);
-				self:settext("GRADE");
-			end;
-		};
-		--Left
-			Def.Quad{
-			InitCommand=cmd(setsize,70,70;addx,-180+360/4*2-360/4/2);
-		};
-		LoadFont("monsterrat/_montserrat light 60px")..{
-			InitCommand=cmd(zoom,0.185;addy,42;addx,-180+360/4*2-360/4/2);
-			OnCommand=function(self)
-				self:uppercase(true);
-				self:settext("COMBO");
+				--self:uppercase(true);
+				self:settext("123");
 			end;
 		};
 		
-		Def.Quad{
-			InitCommand=cmd(setsize,70,70;addx,-180+360/4*3-360/4/2);
+		--Left
+		Def.Sprite{
+			Name="ComboBG";
+			Texture=THEME:GetPathG("QuestMode","ComboRequirement");
+			InitCommand=cmd(zoom,.67;addx,-180+360/4*2-360/4/2);
 		};
 		LoadFont("monsterrat/_montserrat light 60px")..{
-			InitCommand=cmd(zoom,0.185;addy,42;addx,-180+360/4*3-360/4/2);
+			Name="ComboText";
+			InitCommand=cmd(zoom,.5;addy,-5;addx,-180+360/4*2-360/4/2;maxwidth,130);
 			OnCommand=function(self)
-				self:uppercase(true);
-				self:settext("ACCURACY");
+				--self:uppercase(true);
+				self:settext("456");
+			end;
+		};
+		
+		Def.Sprite{
+			Name="AccuracyBG";
+			Texture=THEME:GetPathG("QuestMode","AccuracyRequirement");
+			InitCommand=cmd(zoom,.67;addx,-180+360/4*3-360/4/2);
+		};
+		LoadFont("monsterrat/_montserrat light 60px")..{
+			Name="AccuracyText";
+			InitCommand=cmd(zoom,.5;addy,-5;addx,-180+360/4*3-360/4/2;maxwidth,130);
+			OnCommand=function(self)
+				self:settext("15%");
 			end;
 		};
 		--Left
-			Def.Quad{
-			InitCommand=cmd(setsize,70,70;addx,-180+360/4*4-360/4/2);
+			Def.Sprite{
+			Name="GradeBG";
+			Texture=THEME:GetPathG("QuestMode","GradeRequirement");
+			InitCommand=cmd(zoom,.67;addx,-180+360/4*4-360/4/2);
 		};
-		LoadFont("monsterrat/_montserrat light 60px")..{
-			InitCommand=cmd(zoom,0.185;addy,42;addx,-180+360/4*4-360/4/2);
-			OnCommand=function(self)
-				self:uppercase(true);
-				self:settext("BREAK");
-			end;
+		Def.Sprite{
+			Name="GradeText";
+			Texture=THEME:GetPathG("","GradeDisplayEval/B");
+			--The grade icons are 2px off for whatever dumb reason
+			InitCommand=cmd(zoom,.25;addy,-5;addx,-182+360/4*4-360/4/2;);
 		};
-	};]]
+	};
 	
 	
 	--Mission description, if there is one
-	LoadFont("Common Normal")..{
+	LoadFont("facu/_zona pro bold 40px")..{
 		Text="Mission Description Goes Here";
-		InitCommand=cmd(xy,200+160+410/2,290;vertalign,bottom;maxwidth,650);
+		InitCommand=cmd(xy,360+410/2,288;vertalign,bottom;maxwidth,700;skewx,-0.255;zoom,.5);
 		OnCommand=cmd(settext,GroupCache.courses[currentMissionNum]:GetDescription();stoptweening;diffusealpha,0;decelerate,.2;diffusealpha,1;);
 		CurrentCourseChangedMessageCommand=cmd(playcommand,"On");
 	};
@@ -375,12 +428,20 @@ for i = 1,6 do
 		Def.Quad{
 			InitCommand=cmd(diffuse,color(".5,.5,.5,.5");setsize,30,30);
 		};
-		--[[Def.Sprite{
+		Def.Sprite{
 			Texture=THEME:GetPathG("","medal_gold");
-			InitCommand=cmd(zoom,.15;addx,-40);
-			CurrentCourseChangedMessageCommand
+			InitCommand=cmd(zoom,.15;addx,-40;);
+			OnCommand=cmd(playcommand,"Update");
+			CurrentMissionGroupChangedMessageCommand=cmd(playcommand,"Update");
+			UpdateCommand=function(self)
+				self:stoptweening():diffusealpha(0);
+				--self:sleep(i*.05):decelerate(.2):diffusealpha(1);
+				if i <= GroupCache.numCourses and QUESTMODE[GAMESTATE:GetMasterPlayerNumber()][QUESTMODE.currentWorld][GroupCache.courses[i]:GetDisplayFullTitle()] then
+					self:sleep(i*.05):decelerate(.2):diffusealpha(1);
+				end;
+			end;
 		
-		};]]
+		};
 		LoadFont("_roboto Bold 54px")..{
 			Text=i;
 			InitCommand=cmd(zoom,.6;addy,3);
@@ -413,18 +474,19 @@ for i = 1,4 do
 		OnCommand=function(self)
 			local course = GAMESTATE:GetCurrentCourse();
 			self:stoptweening():diffusealpha(0);
-			if i <= course:GetNumCourseEntries() then
-				self:GetChild("SongName"):settext(course:GetCourseEntry(i-1):GetSong():GetDisplayFullTitle());
-				local trail = GroupCache.courses[currentMissionNum]:GetAllTrails()[i]
-				if trail then
-					local meter = trail:GetMeter();
+			local trailEntries = GroupCache.courses[currentMissionNum]:GetAllTrails()[1]:GetTrailEntries();
+			if i <= #trailEntries then
+				self:GetChild("SongName"):settext(trailEntries[i]:GetSong():GetDisplayFullTitle());
+				if true then
+					local steps = trailEntries[i]:GetSteps()
+					local meter = steps:GetMeter();
 					if meter >= 99 then
 						self:GetChild("Label"):settext("??");
 					else
 						self:GetChild("Label"):settextf("%02d",meter);
 					end;
 					
-					local StepsType = trail:GetStepsType();
+					local StepsType = steps:GetStepsType();
 					local labelBG = self:GetChild("LabelBG");
 					if StepsType then
 						sString = THEME:GetString("StepsDisplay StepsType",ToEnumShortString(StepsType));
@@ -491,5 +553,7 @@ for i = 1,4 do
 	};
 end;
 t[#t+1] = j;
+
+t[#t+1] = LoadActor(THEME:GetPathG("","USB_stuff"));
 
 return t;

@@ -157,14 +157,14 @@ function LoadPlayerStuff(Player)
 		Name = "LoginFrame";
 		
 		LoadFont("Common Normal")..{
-			Condition=(PROFILEMAN:GetNumLocalProfiles() > 0);
+			Condition=(PROFILEMAN:GetNumLocalProfiles() > 0 and not USING_RFID);
 			Text=THEME:GetString("ScreenSelectProfile","Or select a local profile below");
 			InitCommand=cmd(vertalign,top;horizalign,left;xy,-PROFILE_FRAME_WIDTH/2,-40;);
 		};
 		
 		--Scroller selection graphic.
-		Def.ActorFrame {
-			Condition=(PROFILEMAN:GetNumLocalProfiles() > 0);
+		Def.ActorFrame{
+			Condition=(PROFILEMAN:GetNumLocalProfiles() > 0 and not USING_RFID);
 			InitCommand=cmd(y,25-2;);
 			Def.Quad {
 				InitCommand=cmd(zoomto,PROFILE_FRAME_WIDTH,40+2);
@@ -185,11 +185,12 @@ function LoadPlayerStuff(Player)
 		};
 		--We embed a scroller frame here for them to select local profiles.
 		Def.ActorScroller{
+			--Condition=(PROFILEMAN:GetNumLocalProfiles() > 0 and not USING_RFID);
 			Name = 'Scroller';
 			NumItemsToDraw=6;
 			
 	 		--InitCommand=cmd(y,-230/2+20;);
-			OnCommand=cmd(y,1;SetFastCatchup,true;SetMask,200,5;SetSecondsPerItem,0.15);
+			OnCommand=cmd(y,1;SetFastCatchup,true;SetMask,200,5;SetSecondsPerItem,0.15;visible,(not USING_RFID));
 			TransformFunction=function(self, offset, itemIndex, numItems)
 				local focus = scale(math.abs(offset),0,2,1,0);
 				self:visible(false);
@@ -234,10 +235,13 @@ function LoadPlayerStuff(Player)
 			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+100;diffusealpha,.5);
 		};
 		LoadFont("Common Normal")..{
-			Text=THEME:GetString("ScreenSelectProfile","Insert your USB stick to login");
 			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+25;vertalign,top);
 			OnCommand=function(self)
-				if not IsMemcardEnabled() then
+				if USING_RFID == true then
+					self:settext(THEME:GetString("ScreenSelectProfile","Place your Rave It Out Pass near the reader to login"));
+				elseif IsMemcardEnabled() then
+					self:settext(THEME:GetString("ScreenSelectProfile","Insert your USB stick to login"));
+				else
 					if PROFILEMAN:GetNumLocalProfiles() > 0 then
 						self:settext(THEME:GetString("ScreenSelectProfile","Memory cards are disabled"));
 					else
@@ -250,7 +254,7 @@ function LoadPlayerStuff(Player)
 		};
 		
 		LoadFont("Common Normal")..{
-			Condition=(PROFILEMAN:GetNumLocalProfiles() == 0) and IsMemcardEnabled();
+			Condition=(((PROFILEMAN:GetNumLocalProfiles() == 0) and IsMemcardEnabled()) or USING_RFID == true);
 			Text=THEME:GetString("ScreenSelectProfile","Or press start to continue without a profile");
 			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+210;vertalign,top;wrapwidthpixels,PROFILE_FRAME_WIDTH-100);
 		
@@ -610,21 +614,6 @@ function LoadPlayerStuff(Player)
 		};]]
 	
 	};
-	
-	--I guess you can switch between profiles with this scroller?
-	--[[t[#t+1] = Def.ActorScroller{
-		Name = 'Scroller';
-		NumItemsToDraw=1;
-
-		OnCommand=cmd(draworder,1000;y,5;SetFastCatchup,true;SetMask,0,58;SetSecondsPerItem,0.15);
-		TransformFunction=function(self, offset, itemIndex, numItems)
-			local focus = scale(math.abs(offset),0,2,1,0);
-			self:visible(false);
-			self:y(math.floor( offset*40 ));
-
-		end;
-		OffCommand=cmd(linear,0.3;zoomy,0;diffusealpha,0);
-	};]]
 
 
 	--???
@@ -771,43 +760,60 @@ local t = Def.ActorFrame {
 				if curProfileScreen[params.PlayerNumber] == 0 then
 					curProfileScreen[params.PlayerNumber] = 1;
 					--SCREENMAN:SystemMessage(curProfileScreen[params.PlayerNumber]);
-					self:sleep(.2):queuecommand("UpdateInternal2");
+					self:sleep(.3):queuecommand("UpdateInternal2");
 					self:GetChild("CardReadySound"):playforplayer(params.PlayerNumber);
 					--Because SM's own messagecommands isn't consistent...
 					MESSAGEMAN:Broadcast("ProfileChosen",{Player=params.PlayerNumber});
 				else
 					--SCREENMAN:SystemMessage(curProfileScreen[params.PlayerNumber]);
+					
+					for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
+						local ind = SCREENMAN:GetTopScreen():GetProfileIndex(pn);
+						if ind > 0 and PROFILEMAN:GetLocalProfileFromIndex(ind-1):GetTotalNumSongsPlayed() == 0 then
+							SCREENMAN:SetNewScreen("ScreenNewProfileCustom");
+							break;
+						end;
+					end;
 					SCREENMAN:GetTopScreen():Finish();
 				end;
 			end;
 		end;
-		if params.Name == 'Up' or params.Name == 'Up2' or params.Name == 'DownLeft' then
-			if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
-				local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber);
-				if ind > 1 then
-					if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind - 1 ) then
-						MESSAGEMAN:Broadcast("DirectionButton");
-						self:queuecommand('UpdateInternal2');
+		if not USING_RFID then
+			if params.Name == 'Up' or params.Name == 'Up2' or params.Name == 'DownLeft' then
+				if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
+					local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber);
+					if ind > 1 then
+						if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind - 1 ) then
+							MESSAGEMAN:Broadcast("DirectionButton");
+							self:queuecommand('UpdateInternal2');
+						end;
 					end;
 				end;
 			end;
-		end;
-		if params.Name == 'Down' or params.Name == 'Down2' or params.Name == 'DownRight' then
-			if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
-				local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber);
-				if ind > 0 then
-					if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind + 1 ) then
-						MESSAGEMAN:Broadcast("DirectionButton");
-						self:queuecommand('UpdateInternal2');
+			if params.Name == 'Down' or params.Name == 'Down2' or params.Name == 'DownRight' then
+				if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
+					local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber);
+					if ind > 0 then
+						if SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, ind + 1 ) then
+							MESSAGEMAN:Broadcast("DirectionButton");
+							self:queuecommand('UpdateInternal2');
+						end;
 					end;
 				end;
 			end;
 		end;
 		if params.Name == 'Back' then
+			--SCREENMAN:SystemMessage(curProfileScreen[params.PlayerNumber]);
 			if GAMESTATE:GetNumPlayersEnabled()==0 then
 				SCREENMAN:GetTopScreen():Cancel();
 			else
 				MESSAGEMAN:Broadcast("BackButton");
+				if curProfileScreen[params.PlayerNumber] > 0 then
+					curProfileScreen[params.PlayerNumber] = curProfileScreen[params.PlayerNumber] - 1;
+				else
+					--SCREENMAN:SystemMessage("Unjoined player. Joined players: "..GAMESTATE:GetNumPlayersEnabled());
+					GAMESTATE:UnjoinPlayer(params.PlayerNumber);
+				end;
 				SCREENMAN:GetTopScreen():SetProfileIndex(params.PlayerNumber, -2);
 			end;
 		end;
@@ -822,12 +828,58 @@ local t = Def.ActorFrame {
 	end;
 
 	OnCommand=function(self, params)
+		if LAST_SCANNED_CARD ~= nil then
+			self:playcommand("CheckingCard");
+		end;
 		self:queuecommand('UpdateInternal2');
 	end;
 
 	UpdateInternal2Command=function(self)
 		UpdateInternal3(self, PLAYER_1);
 		UpdateInternal3(self, PLAYER_2);
+	end;
+	
+	CardScannedMessageCommand=function(self,params)
+		if not USING_RFID then return end;
+		LAST_SCANNED_CARD = params
+		GAMESTATE:JoinPlayer(params.Player);
+		self:queuecommand("CheckingCard");
+		--SOUND:PlayOnce(THEME:GetPathS("","iidx/decide_lincle"));
+		--self:sleep(.5):linear(.3):diffusealpha(1):sleep(1):queuecommand("EnterProfileSelect");
+	end;
+	
+	
+	CheckingCardCommand=function(self)
+		assert(LAST_SCANNED_CARD.card);
+		assert(LAST_SCANNED_CARD.Player)
+		local ind = PROFILEMAN:GetLocalProfileIndexFromID(LAST_SCANNED_CARD.card);
+		assert(ind);
+		if ind > 0 then
+			SCREENMAN:GetTopScreen():SetProfileIndex(LAST_SCANNED_CARD.Player, ind+1 );
+			curProfileScreen[LAST_SCANNED_CARD.Player] = 1;
+			self:sleep(.3):queuecommand("UpdateInternal2");
+			self:GetChild("CardReadySound"):playforplayer(LAST_SCANNED_CARD.Player);
+			--SCREENMAN:SystemMessage(ind);
+		else
+			--It would make more sense to just give the ID when it's created right?
+			if PROFILEMAN:CreateLocalProfileByID("New Player", LAST_SCANNED_CARD.card) then
+				local ind = PROFILEMAN:GetLocalProfileIndexFromID(LAST_SCANNED_CARD.card);
+				if ind then
+					SCREENMAN:GetTopScreen():SetProfileIndex(LAST_SCANNED_CARD.Player, ind );
+					curProfileScreen[LAST_SCANNED_CARD.Player] = 1;
+					--SCREENMAN:SystemMessage(curProfileScreen[params.PlayerNumber]);
+					self:sleep(.3):queuecommand("UpdateInternal2");
+					self:GetChild("CardReadySound"):playforplayer(LAST_SCANNED_CARD.Player);
+					--Because SM's own messagecommands isn't consistent...
+					MESSAGEMAN:Broadcast("ProfileChosen",{Player=LAST_SCANNED_CARD.Player});
+				else
+					lua.ReportScriptError("Failed to obtain an index after creating the profile. Bailing out.");
+				end;
+			else
+				lua.ReportScriptError("Failed to create a profile. Card ID is too long? ID: "..LAST_SCANNED_CARD.card);
+			end;
+		end;
+		LAST_SCANNED_CARD = nil;
 	end;
 
 	children = {

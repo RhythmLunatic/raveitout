@@ -92,6 +92,12 @@ if IsUsingWideScreen() then
 					self:effectcolor1(color("#FFFFFF"))
 				end;
 			end;
+			--Right now courses are 3 hearts each, that may be changed later.
+			CurrentCourseChangedMessageCommand=function(self)
+				if i > NumHeartsLeft[PLAYER_1]-3 then
+					self:effectcolor1(color("#7e7e7e"))
+				end;
+			end;
 		};
 	end;
 else
@@ -262,6 +268,11 @@ if GAMESTATE:IsSideJoined(PLAYER_2) then
 						self:effectcolor1(color("#7e7e7e"))
 					else
 						self:effectcolor1(color("#FFFFFF"))
+					end;
+				end;
+				CurrentCourseChangedMessageCommand=function(self)
+					if i > NumHeartsLeft[PLAYER_1]-3 then
+						self:effectcolor1(color("#7e7e7e"))
 					end;
 				end;
 			};

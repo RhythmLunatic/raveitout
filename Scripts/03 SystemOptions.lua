@@ -260,6 +260,37 @@ function HeartsPerPlayConfig()
 	return t;
 end;
 
+function SaveTypeConfig()
+	local t = {
+		Name = "SaveType";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		--False exports on screen exit
+		ExportOnChange = false;
+		Choices = {"USB and Local","USB and RFID"};
+		
+		-- Used internally, this will set the selection on the screen when it is loaded.
+		LoadSelections = function(self, list, pn)
+			if ReadPrefFromFile("SaveType") == "RFID" then
+				list[2] = true
+			else
+				list[1] = true
+			end;
+		end;
+		
+		SaveSelections = function(self, list, pn)
+			if list[2] then
+				WritePrefToFile("SaveType","RFID");
+			else
+				WritePrefToFile("SaveType","USB");
+			end;
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end;
+
 --Unimplemented. The default is S+.
 --[[function ExtraHeartsConfig()
 	local t = {
