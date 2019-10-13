@@ -216,4 +216,18 @@ item_scroller_mt= {
 			end
 			return ret
 		end,
+		--lol what???
+		--Parameters that are given to the anonymous function: the item actor, the info, the info index, the item index.
+		--It's the same as the set function.
+		run_anonymous_function=function(self,func)
+			for item_index= 1, #self.items do
+				local info_index= self:maybe_wrap_index(self.info_pos, item_index, self.info_set)
+				func(self.items[item_index],self.info_set[info_index],info_index,item_index)
+			end
+			
+			--[[local function call_item_set(self, item_index, info_index)
+				self.info_map[item_index]= info_index
+				self.items[item_index]:set(self.info_set[info_index],info_index,item_index)
+			end]]
+		end;
 }}

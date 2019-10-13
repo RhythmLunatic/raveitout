@@ -5,6 +5,11 @@ and was recoded by FlameyBoy and Inorizushi
 ...And then adapted AGAIN to Rave It Out by Accelerator.
 
 Does the code make no sense? I can't understand it either!
+
+Undocumneted features of ScreenSelectProfile:SetProfileIndex(pn, iProfileIndex)
+-1 as second argument calls JoinPlayer() on the player argument and returns false
+-2 as second argument Unjoins the player, unlocks their memory card, unmounts their memory card, and returns true
+values less than -2 will just return false
 ]]--
 local PROFILE_FRAME_WIDTH,PROFILE_FRAME_HEIGHT = 400,490
 
@@ -702,7 +707,7 @@ function UpdateInternal3(self, Player)
 				end;
 			--If there are no profiles
 			else
-				if SCREENMAN:GetTopScreen():SetProfileIndex(Player, 1) then
+				if not USING_RFID and SCREENMAN:GetTopScreen():SetProfileIndex(Player, 1) then
 					bigframe:visible(false);
 					scroller:SetDestinationItem(0);
 					self:queuecommand('UpdateInternal2');
@@ -731,7 +736,7 @@ function UpdateInternal3(self, Player)
 				playerNumSongs:settext(MemcardProfileInfocache[Player]["NumTotalSongsPlayed"]);
 				playerDP:settext(MemcardProfileInfocache[Player]["DancePoints"]);
 			else
-				playerName:settext("Missing stats");
+				--playerName:settext("Missing stats");
 				playerName:settext(MEMCARDMAN:GetName(Player));
 				--playerTitle:settext("This profile needs to be migrated!");
 			end;

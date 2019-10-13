@@ -77,11 +77,15 @@ t[#t+1] = Def.Actor {
 	LoadCommand=function()
 		--Workaround for SaveProfileCustom not being called by SM
 		for player in ivalues(GAMESTATE:GetHumanPlayers()) do
+			--Will return "" if the player is using the machine profile.
 			local profileDir = PROFILEMAN:GetProfileDir(ProfileSlot[PlayerNumber:Reverse()[player]+1]);
-			SaveProfileCustom(PROFILEMAN:GetProfile(player),profileDir);
-			
-			if GAMESTATE:IsCourseMode() and (NumHeartsLeft[player] < 1 or GAMESTATE:IsEventMode()) then
-				QUESTMODE:SaveCurrentProgress(player);
+			--Don't save if it's the machine profile.
+			if profileDir ~= "" then
+				SaveProfileCustom(PROFILEMAN:GetProfile(player),profileDir);
+				
+				if GAMESTATE:IsCourseMode() and (NumHeartsLeft[player] < 1 or GAMESTATE:IsEventMode()) then
+					QUESTMODE:SaveCurrentProgress(player);
+				end;
 			end;
 			
 			--If there are no stages left, save extra data needed for memory cards.

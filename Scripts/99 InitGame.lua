@@ -115,7 +115,6 @@ function Setup()
 	--It's global because musicwheel doesn't have a constructor and this needs to be loaded somewhere
 	MUSICWHEEL_SONG_NAMES = (ReadPrefFromFile("ShowSongNames") == "true");
 	
-	--Just in case?
-	USING_RFID = true;
-	--USING_RFID = (ReadPrefFromFile("SaveType") == "RFID");
+	--Just in case? There's probably no need to make this global.
+	USING_RFID = (ReadPrefFromFile("SaveType") == "RFID");
 end

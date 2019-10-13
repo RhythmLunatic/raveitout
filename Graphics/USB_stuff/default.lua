@@ -37,9 +37,13 @@ local function PlayerName(player)
 			local name = profile:GetDisplayName()
 			
 			if MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none' then
-				
+				--If name is blank, it's probably the machine profile... After all, the name entry screen doesn't allow blank names.
 				if name == "" then		
-					self:settext(string.upper("RIO-000"));
+					if player == PLAYER_1 then
+						self:settext("PLAYER 1");
+					else
+						self:settext("PLAYER 2");
+					end;
 				else
 					--TODO: Adjust maxwidth based on the number of hearts per play.
 					self:settext(string.upper(name)):maxwidth(160);
@@ -147,7 +151,12 @@ t[#t+1] = Def.ActorFrame {
 		Condition=(DoDebug and GAMESTATE:IsSideJoined(PLAYER_1));
 		InitCommand=function(self)
 			self:zoom(.5):horizalign(left):addx(100):addy(-10);
-			self:settext("Icon: "..getenv("profile_icon_P1").." Setting: "..tostring(ActiveModifiers["P1"]['ProfileIcon']));
+			if getenv("profile_icon_P1") then
+				self:settext("Icon: "..getenv("profile_icon_P1").." Setting: "..tostring(ActiveModifiers["P1"]['ProfileIcon']));
+			else
+				--self:settext("aaaa "..PROFILEMAN:GetProfileDir(ProfileSlot[PlayerNumber:Reverse()[PLAYER_1]+1]));
+				self:settext("Icon: None (profile_icon_P1 is nil)");
+			end;
 			--self:settext(THEME:GetPathG("","USB_stuff/avatars").."/"..ActiveModifiers["P1"]["ProfileIcon"]);
 		end;
 	};

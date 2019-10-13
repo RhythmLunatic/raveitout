@@ -3,9 +3,9 @@ local musicwheel; --Need a handle on the MusicWheel to work around a StepMania b
 --==========================
 --Special folders...
 --==========================
-
-
-
+local WHEELTYPE_NORMAL = 0
+local WHEELTYPE_PREFERRED = 1
+local WHEELTYPE_SORTORDER = 2
 --==========================
 --Item Scroller. Must be defined at the top to have 'scroller' var accessible to the rest of the lua.
 --==========================
@@ -72,14 +72,10 @@ local item_mt= {
 	set= function(self, info)
 		--self.container:GetChild("text"):settext(info);
 		local banner;
-		if info == "CO-OP Mode" then
-			banner = THEME:GetPathG("Banner","coop");
-		elseif info == "P1 Favorites" then
-			banner = THEME:GetPathG("Banner","P1Favorites");
-		elseif info == "P2 Favorites" then
-			banner = THEME:GetPathG("Banner","P2Favorites");
+		if info[1] ~= WHEELTYPE_NORMAL then
+			banner = THEME:GetPathG("Banner",info[2]);
 		else
-			banner = SONGMAN:GetSongGroupBannerPath(info);
+			banner = SONGMAN:GetSongGroupBannerPath(info[2]);
 		end;
 		if banner == "" then
 			self.container:GetChild("banner"):Load(THEME:GetPathG("common","fallback group"));
@@ -141,31 +137,61 @@ end;
 ]]
 
 --If the sort order is not default this will be overridden when the screen is on
-local groups;
+local groups = {};
 --SCREENMAN:SystemMessage(GAMESTATE:GetSortOrder())
-function genDefaultGroups()
-	groups = getAvailableGroups()
-	--Yes these are hardcoded at line 289....
+
+
+
+--"Why does this screen take so fucking long to init?!" -Someone out there.
+--Format is WHEELTYPE, name for audio and graphic (and folder name if preferred), sortorder or preferred sort file name.
+
+function insertSpecialFolders()
 	--Only show in multiplayer, since there's no need to show it in singleplayer.
 	if GAMESTATE:GetNumSidesJoined() > 1 then
-		table.insert(groups, 1, "CO-OP Mode")
+		table.insert(groups, 1, {WHEELTYPE_PREFERRED, "CO-OP Mode","CoopSongs.txt"})
 	end;
 
 	for i,pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
 		if getenv(pname(pn).."HasAnyFavorites") then
-			table.insert(groups, i, pname(pn).." Favorites")
+			table.insert(groups, i, {WHEELTYPE_PREFERRED, pname(pn).." Favorites", "Favorites.txt"})
 		end;
 	end;
+	
+	--Insert these... Somewhere.
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By All Levels (Singles)", "SortOrder_AllDifficultyMeter"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By All Levels (Doubles)", "SortOrder_DoubleAllDifficultyMeter"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Title", "SortOrder_Title"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Top Grades", "SortOrder_TopGrades"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Artist", "SortOrder_Artist"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By BPM", "SortOrder_BPM"});
+end;
+
+function genDefaultGroups()
+	groups = {};
+	for i,group in ipairs(getAvailableGroups()) do
+		groups[i] = {WHEELTYPE_NORMAL,group}
+	end;
+	
+	insertSpecialFolders();
 	
 	assert(GAMESTATE:GetCurrentSong(), "The current song should have been set in ScreenSelectPlayMode!");
 	local curGroup = GAMESTATE:GetCurrentSong():GetGroupName();
 	for key,value in pairs(groups) do
-		if curGroup == value then
+		if curGroup == value[2] then
 			selection = key;
 		end
 	end;
-	setenv("cur_group",groups[selection]);
+	setenv("cur_group",groups[selection][2]);
 end;
+function genSortOrderGroups()
+	groups = {};
+	for i,group in ipairs(musicwheel:GetCurrentSections()) do
+		groups[i] = {WHEELTYPE_NORMAL,group}
+	end;
+	table.insert(groups, #groups+1, {WHEELTYPE_SORTORDER, "Default Sort", "SortOrder_Group"});
+	insertSpecialFolders();
+end;
+
 
 if (GAMESTATE:GetSortOrder() == nil or GAMESTATE:GetSortOrder() == "SortOrder_Group" or GAMESTATE:GetSortOrder() == "SortOrder_Preferred") then
 	genDefaultGroups();
@@ -188,10 +214,18 @@ local function inputs(event)
 	if event.type == "InputEventType_Release" then return end
 	
 	if button == "Center" or button == "Start" then
-		--SCREENMAN:SystemMessage(scroller:get_info_at_focus_pos());
-		SCREENMAN:set_input_redirected(PLAYER_1, false);
-		SCREENMAN:set_input_redirected(PLAYER_2, false);
-		MESSAGEMAN:Broadcast("StartSelectingSong");
+		if groups[selection][1] == WHEELTYPE_SORTORDER then
+			MESSAGEMAN:Broadcast("SortChanged",{newSort=groups[selection][3]})
+			--Spin the groups cuz it will look cool.
+			--It doesn't work..
+			--[[scroller:run_anonymous_function(function(self, info)
+				self.container:linear(1):rotationy(360);
+			end)]]
+		else
+			SCREENMAN:set_input_redirected(PLAYER_1, false);
+			SCREENMAN:set_input_redirected(PLAYER_2, false);
+			MESSAGEMAN:Broadcast("StartSelectingSong");
+		end;
 	elseif button == "DownLeft" or button == "Left" or button == "MenuLeft" then
 		SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
 		if selection == 1 then
@@ -200,7 +234,7 @@ local function inputs(event)
 			selection = selection - 1 ;
 		end;
 		scroller:scroll_by_amount(-1);
-		setenv("cur_group",groups[selection]);
+		setenv("cur_group",groups[selection][2]);
 		MESSAGEMAN:Broadcast("GroupChange");
 		
 	elseif button == "DownRight" or button == "Right" or button == "MenuRight" then
@@ -211,7 +245,7 @@ local function inputs(event)
 			selection = selection + 1
 		end
 		scroller:scroll_by_amount(1);
-		setenv("cur_group",groups[selection]);
+		setenv("cur_group",groups[selection][2]);
 		MESSAGEMAN:Broadcast("GroupChange");
 	--elseif button == "UpLeft" or button == "UpRight" then
 		--SCREENMAN:AddNewScreenToTop("ScreenSelectSort");
@@ -228,17 +262,6 @@ local function inputs(event)
 		--local curItem = scroller:get_actor_item_at_focus_pos();
 		--SCREENMAN:SystemMessage(ListActorChildren(curItem.container));
 	else
-		button_history[1] = button_history[2]
-		button_history[2] = button_history[3]
-		button_history[3] = button_history[4]
-		button_history[4] = button
-		if button_history[1] == "UpLeft" and button_history[2] == "UpRight" and button_history[3] == "UpLeft" and button_history[4] == "UpRight" then
-			SCREENMAN:AddNewScreenToTop("ScreenSelectSort");
-			--[[if musicwheel:ChangeSort('SortOrder_BPM') then
-				--SCREENMAN:SystemMessage("SortChanged")
-				MESSAGEMAN:Broadcast("SortChanged")
-			end;]]
-		end;
 		--SCREENMAN:SystemMessage(strArrayToString(button_history));
 		--musicwheel:SetOpenSection("");
 		--SCREENMAN:SystemMessage(musicwheel:GetNumItems());
@@ -262,16 +285,16 @@ local t = Def.ActorFrame{
 		if (GAMESTATE:GetSortOrder() == nil or GAMESTATE:GetSortOrder() == "SortOrder_Group" or GAMESTATE:GetSortOrder() == "SortOrder_Preferred") then
 			scroller:set_info_set(groups, 1);
 		else
-			groups = musicwheel:GetCurrentSections()
+			genSortOrderGroups();
 			local curGroup = musicwheel:GetSelectedSection();
-			SCREENMAN:SystemMessage(curGroup);
+			--SCREENMAN:SystemMessage(curGroup);
 			for key,value in pairs(groups) do
-				if curGroup == value then
+				if curGroup == value[2] then
 					selection = key;
 				end
 			end;
 			assert(groups,"REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-			setenv("cur_group",groups[selection]);
+			setenv("cur_group",groups[selection][2]);
 			scroller:set_info_set(groups, 1);
 		end;
 		scroller:scroll_by_amount(selection-1)
@@ -321,13 +344,13 @@ local t = Def.ActorFrame{
 	
 	SortChangedMessageCommand=function(self,params)
 		--Reset button history when the sort selection screen closes.
-		button_history = {"none", "none", "none", "none"};
+		--button_history = {"none", "none", "none", "none"};
 	
 		if musicwheel:ChangeSort(params.newSort) then
 			if GAMESTATE:GetSortOrder() == "SortOrder_Group" then
 				genDefaultGroups();
 			else
-				groups = musicwheel:GetCurrentSections()
+				genSortOrderGroups();
 			end;
 			selection = 1
 			--SCREENMAN:SystemMessage("SortChanged")
@@ -350,18 +373,12 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 	StartSelectingSongMessageCommand=function(self)
 		SOUND:DimMusic(1,65536);
 		
-		--SCREENMAN:SystemMessage(lastSort or "None");
-		--Yeah this was a really shitty idea
-		if groups[selection] == "CO-OP Mode" then
+		--local sel = scroller:get_info_at_focus_pos();
+		if groups[selection][1] == WHEELTYPE_PREFERRED then
 			setSort("SortOrder_Preferred")
-			SONGMAN:SetPreferredSongs("CoopSongs.txt");
-			self:load(THEME:GetPathS("","Genre/co-op"));
-			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
-		elseif groups[selection] == "P1 Favorites" or groups[selection] == "P2 Favorites" then
-			setSort("SortOrder_Preferred")
-			SONGMAN:SetPreferredSongs("Favorites.txt");
-			self:load(THEME:GetPathS("","Genre/Favorites"));
-			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
+			SONGMAN:SetPreferredSongs(groups[selection][3]);
+			self:load(THEME:GetPathS("","Genre/"..groups[selection][2]));
+			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection][2]);
 		else
 			if GAMESTATE:GetSortOrder() == "SortOrder_Preferred" then
 				setSort("SortOrder_Group")
@@ -371,7 +388,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 				--[[SCREENMAN:GetTopScreen():CloseCurrentSection();
 				SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection("");
 				SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.1 );]]
-				SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
+				SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection][2]);
 				--[[SCREENMAN:GetTopScreen():GetMusicWheel():Move(1)
 				SCREENMAN:GetTopScreen():GetMusicWheel():Move(0);
 				SCREENMAN:SystemMessage(SCREENMAN:GetTopScreen():GetMusicWheel():GetSelectedSection())
@@ -380,7 +397,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 				SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
 				SCREENMAN:GetTopScreen():PostScreenMessage( 'SM_SongChanged', 0.1 );]]
 			end;
-			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection]);
+			SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection(groups[selection][2]);
 			--SCREENMAN:SystemMessage(groups[selection]);
 			--It works... But only if there's a banner.
 			local fir = SONGMAN:GetSongGroupBannerPath(getenv("cur_group"));

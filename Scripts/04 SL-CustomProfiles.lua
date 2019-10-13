@@ -1,6 +1,7 @@
 local path =  "UserPrefs/" .. THEME:GetThemeDisplayName() .. "/"
 
 -- Hook called during profile load
+-- This will NOT get called for the machine profile!!
 function LoadProfileCustom(profile, dir, isEdit)
 
 	local PrefPath =  dir .. path

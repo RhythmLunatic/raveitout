@@ -247,6 +247,7 @@ local t = Def.ActorFrame{
 				boxFrameActor:GetChild(tostring(#curName)):GetChild("TextActor"):settext("");
 				SOUND:PlayOnce(THEME:GetPathS("Codebox", "Enter"))
 			elseif txt == "END" then
+				--Don't allow blank names.
 				if curName ~= "" then
 					MESSAGEMAN:Broadcast("DoneSelecting",{Player=player});
 					PROFILEMAN:GetProfile(player):SetDisplayName(curName);

@@ -7,7 +7,7 @@ local SortTypes = {
 	["Artist"] = 'SortOrder_Artist',
 	["Genre"] = 'SortOrder_Genre',
 	["Level (Singles)"] = 'SortOrder_AllDifficultyMeter',
-	["Level (Doubles)"] = "DoubleAllDifficultyMeter"
+	["Level (Doubles)"] = "SortOrder_DoubleAllDifficultyMeter"
 	--"Heart Count"
 }
 
