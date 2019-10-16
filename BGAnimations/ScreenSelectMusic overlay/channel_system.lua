@@ -146,6 +146,23 @@ local groups = {};
 --Format is WHEELTYPE, name for audio and graphic (and folder name if preferred), sortorder or preferred sort file name.
 
 function insertSpecialFolders()
+	
+	--Insert these... Somewhere.
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By All Levels (Singles)", "SortOrder_AllDifficultyMeter"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By All Levels (Doubles)", "SortOrder_DoubleAllDifficultyMeter"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Title", "SortOrder_Title"});
+	--SM grading is stupid
+	--table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Top Grades", "SortOrder_TopGrades"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Artist", "SortOrder_Artist"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By BPM", "SortOrder_BPM"});
+end;
+
+function genDefaultGroups()
+	groups = {};
+	for i,group in ipairs(getAvailableGroups()) do
+		groups[i] = {WHEELTYPE_NORMAL,group}
+	end;
+	
 	--Only show in multiplayer, since there's no need to show it in singleplayer.
 	if GAMESTATE:GetNumSidesJoined() > 1 then
 		table.insert(groups, 1, {WHEELTYPE_PREFERRED, "CO-OP Mode","CoopSongs.txt"})
@@ -157,31 +174,19 @@ function insertSpecialFolders()
 		end;
 	end;
 	
-	--Insert these... Somewhere.
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By All Levels (Singles)", "SortOrder_AllDifficultyMeter"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By All Levels (Doubles)", "SortOrder_DoubleAllDifficultyMeter"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Title", "SortOrder_Title"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Top Grades", "SortOrder_TopGrades"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Artist", "SortOrder_Artist"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By BPM", "SortOrder_BPM"});
-end;
-
-function genDefaultGroups()
-	groups = {};
-	for i,group in ipairs(getAvailableGroups()) do
-		groups[i] = {WHEELTYPE_NORMAL,group}
-	end;
-	
 	insertSpecialFolders();
 	
-	assert(GAMESTATE:GetCurrentSong(), "The current song should have been set in ScreenSelectPlayMode!");
-	local curGroup = GAMESTATE:GetCurrentSong():GetGroupName();
-	for key,value in pairs(groups) do
-		if curGroup == value[2] then
-			selection = key;
-		end
+	if GAMESTATE:GetCurrentSong() then
+		local curGroup = GAMESTATE:GetCurrentSong():GetGroupName();
+		for key,value in pairs(groups) do
+			if curGroup == value[2] then
+				selection = key;
+			end
+		end;
+		setenv("cur_group",groups[selection][2]);
+	else
+		lua.ReportScriptError("The current song should have been set in ScreenSelectPlayMode!");
 	end;
-	setenv("cur_group",groups[selection][2]);
 end;
 function genSortOrderGroups()
 	groups = {};
