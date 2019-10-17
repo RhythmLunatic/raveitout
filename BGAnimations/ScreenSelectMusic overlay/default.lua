@@ -594,14 +594,20 @@ t[#t+1] = LoadActor("code_detector.lua")..{};
 --t[#t+1] = LoadActor("PlayerMods")..{};
 t[#t+1] = LoadActor("GenreSounds.lua")..{};
 if getenv("PlayMode") == "Arcade" or getenv("PlayMode") == "Pro" then 
+	
 	if GetSmallestNumHeartsLeftForAnyHumanPlayer() > 1 then
 		t[#t+1] = LoadActor("channel_system")..{};
 	else
-		assert(SONGMAN:DoesSongGroupExist(RIO_FOLDER_NAMES["SnapTracksFolder"]),"You are missing the snap tracks folder from SYSTEM_PARAMETERS.lua which is required. The game cannot continue.");
-		local folder = SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["SnapTracksFolder"]);
-		local randomSong = folder[math.random(1,#folder)]
-		GAMESTATE:SetCurrentSong(randomSong);
-		GAMESTATE:SetPreferredSong(randomSong);
+		if SONGMAN:DoesSongGroupExist(RIO_FOLDER_NAMES["SnapTracksFolder"]) then
+			--assert(SONGMAN:DoesSongGroupExist(RIO_FOLDER_NAMES["SnapTracksFolder"]),"You are missing the snap tracks folder from SYSTEM_PARAMETERS.lua which is required. The game cannot continue.");
+			local folder = SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["SnapTracksFolder"]);
+			local randomSong = folder[math.random(1,#folder)]
+			GAMESTATE:SetCurrentSong(randomSong);
+			GAMESTATE:SetPreferredSong(randomSong);
+		else
+			lua.ReportScriptError("You are missing the snap tracks folder from SYSTEM_PARAMETERS.lua which is required. The game will continue, but there will be glitches.");
+			t[#t+1] = LoadActor("channel_system")..{};
+		end;
 	end;
 end;
 
