@@ -98,6 +98,8 @@ if IsUsingWideScreen() then
 			end;
 			--Right now courses are 3 hearts each, that may be changed later.
 			CurrentCourseChangedMessageCommand=function(self)
+				--why the FUCK does ScreenSelectMusic broadcast CurrentCourseChanged when it's not changing the course?
+				if not GAMESTATE:IsCourseMode() then return end;
 				if i > NumHeartsLeft[PLAYER_1]-3 then
 					self:effectcolor1(color("#7e7e7e"))
 				end;

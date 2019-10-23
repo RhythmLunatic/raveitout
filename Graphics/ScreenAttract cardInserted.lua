@@ -20,9 +20,9 @@ end;
 
 return Def.ActorFrame{
 	
-	OnCommand=function(self)
+	--[[OnCommand=function(self)
 		SCREENMAN:GetTopScreen():AddInputCallback(inputs);
-	end;
+	end;]]
 	
 
 	

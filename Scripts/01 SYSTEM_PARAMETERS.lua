@@ -6,7 +6,7 @@ DISPLAY TYPE: HD
 ]]
 SysInfo = {
 	InternalName = "RIO4W",
-	Version = "2019-10-16",
+	Version = "2019-10-23",
 }
 
 RIO_FOLDER_NAMES = {

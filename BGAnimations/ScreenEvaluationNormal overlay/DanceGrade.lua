@@ -252,7 +252,7 @@ if css1:IsDisqualified()==false then
 	
 	--FS box is here since it relies on the positioning of the grade letter for now... Probably should be fixed later
 	--Also fast/slow is broken with routine so just don't do it
-	if (ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate") and ToEnumShortString(GAMESTATE:GetCurrentSteps(player):GetStepsType()) ~= "Pump_Routine" then
+	if ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate" and PREFSMAN:GetPreference("AllowW1") == "AllowW1_Everywhere" and ToEnumShortString(GAMESTATE:GetCurrentSteps(player):GetStepsType()) ~= "Pump_Routine" then
 		t[#t+1] = Def.ActorFrame{
 			InitCommand=cmd(xy,p1initx,SCREEN_BOTTOM-75;diffusealpha,0);
 			OnCommand=cmd(sleep,3;linear,.3;diffusealpha,1);

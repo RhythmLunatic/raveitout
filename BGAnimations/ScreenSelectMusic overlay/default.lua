@@ -474,7 +474,7 @@ else
 				};
 				--For the combo judgement only
 				Def.Sprite{
-					InitCommand=cmd(y,SCREEN_CENTER_Y+20;draworder,999);
+					InitCommand=cmd(y,SCREEN_CENTER_Y-116;draworder,999;zoom,.8);
 					OptionsMenuChangedMessageCommand=function(self,params)
 						if params.Player == pn then
 							if params.Menu == "JudgmentType" then

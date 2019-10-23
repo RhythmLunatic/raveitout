@@ -46,10 +46,15 @@ local sections = {
 	}},
 	{ "Season 2 Team", {
 		"Step Artist - Gio Shawn",
-		"Step Artist - Akira Sora (HaleyHalcyon)",
-		"Programming - Accelerator",
-		"Programming - José Varela",
-		"Programming - Tertu"
+		"Step Artist - Akira Sora \"HaleyHalcyon\"",
+		"Step Artist - Accelerator as \"Sanguis Ferri\"",
+		"Main Programmer - Accelerator",
+		"Supporting Programmer - José Varela",
+		"Supporting Programmer - Tertu"
+	}},
+	{ "Beta Testers", {
+		"dj505",
+		"Chrissy"
 	}},
 	{ "Special Thanks", {
 		"Everyone who liked our Facebook page",

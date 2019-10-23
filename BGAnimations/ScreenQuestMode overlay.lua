@@ -196,11 +196,12 @@ t[#t+1] = Def.ActorFrame{
 	Def.Quad{
 		InitCommand=cmd(diffuse,color("0,0,0,.5");setsize,300,50;xy,200,90;);
 	};
-	LoadFont("Common Normal")..{
+	LoadFont("facu/_zona pro bold 40px")..{
 		Text="Mission Group Name Goes here";
-		InitCommand=cmd(xy,200,90;wrapwidthpixels,300);
+		InitCommand=cmd(xy,200,90;zoom,.75;skewx,-0.255;maxwidth,300*1.25;);
 		OnCommand=function(self)
-			self:settext(GroupCache.currentGroup);
+			
+			self:settext(string.match(GroupCache.currentGroup," %- (.*)"));
 		end;
 		CurrentMissionGroupChangedMessageCommand=cmd(playcommand,"On");
 	

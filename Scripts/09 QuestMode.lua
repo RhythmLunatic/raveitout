@@ -35,19 +35,19 @@ you'd have the same grades for all the courses.
 ]]
 RIO_COURSE_GROUPS = {
 	["Easy World"] = {
-		"The First Step",
-		"The World Warrior",
-		"404 Not Found"
+		"EZ1 - The First Step",
+		"EZ2 - The World Warrior",
+		"EZ4 - 404 Not Found"
 	},
 	["Medium World"] = {
-		"The First Step",
-		"The World Warrior",
-		"404 Not Found"
+		"NM1 - The First Step",
+		"NM2 - The World Warrior",
+		"NM4 - 404 Not Found"
 	},
 	["Hard World"] = {
-		"The First Step",
-		"The World Warrior",
-		"404 Not Found"
+		"HD1 - The First Step",
+		"HD2 - The World Warrior",
+		"HD4 - 404 Not Found"
 	}
 }
 
