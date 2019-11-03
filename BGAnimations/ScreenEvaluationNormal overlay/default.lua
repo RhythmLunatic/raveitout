@@ -87,6 +87,10 @@ for i = 1,listcount do
 	};
 end;
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+	--More dumb routine shit that shouldn't really be here anyway
+	--It would be cool to one day show a different results if there's 3 or more players but whatever
+	if pn == "PlayerNumber_P3" or pn == "PlayerNumber_P4" then break end;
+	
 	t[#t+1] = LoadActor("DanceGrade",pn);
 end;
 --UnlockedOMES_RIO()
@@ -154,6 +158,10 @@ if not GAMESTATE:IsCourseMode() then
 	local bonus = {PLAYER_1 = false, PLAYER_2 = false}
 	if not GAMESTATE:IsEventMode() then
 		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+			--More dumb routine shit that shouldn't really be here anyway
+			if pn == "PlayerNumber_P3" or pn == "PlayerNumber_P4" then
+				break;
+			end;
 			RemoveHearts(pn, GetNumHeartsForSong());
 			if PREFSMAN:GetPreference("AllowExtraStage") and PlayerAchievedBonusHeart(pn) and GetNumHeartsForSong() >= 2 then
 				GiveBonusHeart(pn)
@@ -166,7 +174,7 @@ if not GAMESTATE:IsCourseMode() then
 		end;
 	end;
 	t[#t+1] = LoadActor(THEME:GetPathG("","USB_stuff"), bonus[PLAYER_1], bonus[PLAYER_2])..{};
-else
+else --If in course mode...
 	if not GAMESTATE:IsEventMode() then
 		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			RemoveHearts(pn, HEARTS_PER_MISSION);

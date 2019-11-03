@@ -22,15 +22,22 @@ function Reset_PIU_Hearts()
 	PREFSMAN:SetPreference("SongsPerPlay",math.ceil(HeartsPerPlay/2));
 	NumHeartsLeft = {
 		PlayerNumber_P1 = HeartsPerPlay,
-		PlayerNumber_P2 = HeartsPerPlay
+		PlayerNumber_P2 = HeartsPerPlay,
+		--Whatever
+		PlayerNumber_P3 = 999,
+		PlayerNumber_P4 = 999
 	};
 	BonusHeartsAdded = {
 		PlayerNumber_P1 = 0,
-		PlayerNumber_P2 = 0
+		PlayerNumber_P2 = 0,
+		PlayerNumber_P3 = 0,
+		PlayerNumber_P4 = 0
 	};
 	NumHeartsRemoved = {
 		PlayerNumber_P1 = 0,
-		PlayerNumber_P2 = 0
+		PlayerNumber_P2 = 0,
+		PlayerNumber_P3 = 0,
+		PlayerNumber_P4 = 0
 	}
 end
 

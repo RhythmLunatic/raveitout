@@ -10,6 +10,16 @@ local alignment = (pn == PLAYER_1) and right or left;
 local negativeOffset = (pn == PLAYER_1) and 1 or -1;
 local start = (pn == PLAYER_1) and SCREEN_LEFT or SCREEN_RIGHT;
 
+
+--[[
+This really shouldn't be here in the first place but somehow p3 and p4 don't get unjoined
+when you press esc and this is an easier fix than actually fixing the damn thing
+Somehow it doesn't completely crash the game so whatever I don't really give a shit
+]]
+if pn == "PlayerNumber_P3" or pn == "PlayerNumber_P4" then
+	return Def.ActorFrame{};
+end;
+
 return Def.ActorFrame{
 	InitCommand=cmd(x,start;y,_screen.cy+110;vertalign,middle,horizalign,alignment);
 	SongChosenMessageCommand=cmd(stoptweening;decelerate,0.125;x,SCREEN_CENTER_X);
