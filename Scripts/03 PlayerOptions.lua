@@ -28,7 +28,9 @@ PlayerDefaults = {
 --PerfectionistMode should NEVER be written to profile, so it's not in the PlayerDefaults table.
 PerfectionistMode = {
 	PlayerNumber_P1 = false,
-	PlayerNumber_P2 = false
+	PlayerNumber_P2 = false,
+	PlayerNumber_P3 = false,
+	PlayerNumber_P4 = false
 };
 
 --Set tables so you can do ActiveModifiers["P1"] to get the table of custom player modifiers, ex ActiveModifiers["P1"]["JudgmentType"]

@@ -37,11 +37,11 @@ local t = Def.ActorFrame{
 		LoadActor("new_elements");
 		LoadActor("score_system");
 		
-		--[[LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
 			Condition=DoDebug;
 			InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y;);
 			BeatCrossedMessageCommand=cmd(settext,GAMESTATE:GetSongBeat().."\nBPS: "..GAMESTATE:GetSongBPS().."\nSeconds: "..GAMESTATE:GetCurMusicSeconds().."\nCalculated: "..GAMESTATE:GetSongBeat()/GAMESTATE:GetSongBPS());
-		};]]
+		};
 		
 		--[[LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
 			Condition=DoDebug;
@@ -130,7 +130,12 @@ local t = Def.ActorFrame{
 
 local competitionMode = (ActiveModifiers["P1"]["CompetitionMode"] and ActiveModifiers["P2"]["CompetitionMode"]) and not CenterGameplayWidgets()
 
-for pn in ivalues(GAMESTATE:GetHumanPlayers()) do	
+for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+	--We don't really support P3/P4 yet, as cool as it would be
+	if pn == "PlayerNumber_P3" or pn == "PlayerNumber_P4" then
+		break
+	end;
+
 	local notefxp =	THEME:GetMetric("ScreenGameplay","Player"..pname(pn).."OnePlayerOneSideX")	--Note field X position P1/P2 (pname evaluates to P1/P2 so it would be doing ScreenGameplay PlayerP1OnePlayerOneSideX)
 	local style = ToEnumShortString(GAMESTATE:GetCurrentStyle():GetStyleType())
 	if (style == "OnePlayerOneSide" and PREFSMAN:GetPreference("Center1Player")) or style == "OnePlayerTwoSides" then

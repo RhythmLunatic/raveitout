@@ -104,12 +104,16 @@ function Setup()
 	ActiveModifiers = {
 		P1 = table.shallowcopy(PlayerDefaults),
 		P2 = table.shallowcopy(PlayerDefaults),
+		P3 = table.shallowcopy(PlayerDefaults),
+		P4 = table.shallowcopy(PlayerDefaults),
 		--MACHINE = table.shallowcopy(PlayerDefaults),
 		--Save values here if editing profile
 	}
 	PerfectionistMode = {
 		PlayerNumber_P1 = false,
-		PlayerNumber_P2 = false
+		PlayerNumber_P2 = false,
+		PlayerNumber_P3 = false,
+		PlayerNumber_P4 = false
 	};
 	
 	--It's global because musicwheel doesn't have a constructor and this needs to be loaded somewhere

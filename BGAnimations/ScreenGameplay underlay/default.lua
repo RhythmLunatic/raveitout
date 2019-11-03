@@ -32,6 +32,7 @@ local spawid =		320			--spacebar graphic width
 
 --Cortes usual dumb shit lol
 local cfsepx = 35		--cortes fix screen edge separation
+
 function GetOpositePlayer(pn)	--Obtiene el jugador "opuesto" by ROAD24
 	if pn == PLAYER_1 then
 		return PLAYER_2;
@@ -39,6 +40,7 @@ function GetOpositePlayer(pn)	--Obtiene el jugador "opuesto" by ROAD24
 		return PLAYER_1;
 	end;
 end;
+
 function GetBreakCombo()		-- by ROAD24 and NeobeatIKK
 	-- El combo en el que haremos break, la idea de aqui es poder variarlo
 	-- aun durante la ejecucion del programa, pero por el momento es fijo
@@ -160,6 +162,11 @@ end;
 --Hide elements if we're on the OMES
 if not getenv("IsOMES_RIO") then
 	for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+		
+		if pn == "PlayerNumber_P3" or pn == "PlayerNumber_P4" then
+			break
+		end;
+		
 		local negativeOffset = (pn == PLAYER_1) and -1 or 1;
 		local barposX = (pn == PLAYER_1) and 25*PREFSMAN:GetPreference("DisplayAspectRatio") or SCREEN_RIGHT-(25*PREFSMAN:GetPreference("DisplayAspectRatio"));
 		--setenv("BarPosX",barposX);
