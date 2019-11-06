@@ -28,6 +28,7 @@ if isExtraStage then
 		end;
 	end;
 end;
+
 return Def.ActorFrame{
 	
 		Def.Sprite{
@@ -97,7 +98,7 @@ return Def.ActorFrame{
 			end;
 		};
 		--TODO: Remove this when hiding songs works correctly!
-		Def.ActorFrame{
+		--[[Def.ActorFrame{
 			Condition=false;
 			InitCommand=cmd(x,_screen.cx;y,_screen.cy-30;visible,false);
 			CurrentSongChangedMessageCommand=function(self)
@@ -124,7 +125,7 @@ return Def.ActorFrame{
 				Text=THEME:GetString("ScreenSelectMusic","StreamUnsafe");
 				InitCommand=cmd(wrapwidthpixels,300;);
 			};
-		};
+		};]]
 	
 		LoadActor("preview_songinfo")..{
 			InitCommand=cmd(horizalign,center;zoomto,385,75;x,_screen.cx;y,_screen.cy+50;diffusealpha,1);
@@ -216,7 +217,7 @@ return Def.ActorFrame{
 					self:settext(speedvalue);
 					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)
 				else
-					self:stoptweening();self:linear(0.25);self:diffusealpha(0);
+					self:stoptweening():linear(0.25):diffusealpha(0);
 				end;
 			end;
 		};
@@ -295,7 +296,6 @@ return Def.ActorFrame{
 					self:stoptweening();self:linear(0.25);self:diffusealpha(0);
 				end;
 			end;
-
 		};
 		-- CURRENT SONG ARTIST
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{	

@@ -3,7 +3,8 @@ local npsxz = _screen.cx*0.5	--next/previous song X zoom
 local t = Def.ActorFrame {
 
 	LoadActor("sounds");	--lel sounds
-	};
+};
+
 if IsExtraStagePIU() then
 	t[#t+1] = Def.Sprite{
 		Texture=THEME:GetPathG("","_BGMovies/BGAOFF");
@@ -24,7 +25,10 @@ else
 		end;
 	};
 end;
-	
+
+
+--t[#t+1] = LoadActor("xx_bg");
+
 t[#t+1] = Def.ActorFrame{
 	LoadActor("songwheel")..{
 		InitCommand=cmd(horizalign,center;zoomto,SCREEN_WIDTH,183;x,_screen.cx;y,_screen.cy-30);
@@ -58,5 +62,6 @@ if DoDebug then
 	
 	};
 end;
+
 
 return t;

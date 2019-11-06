@@ -120,9 +120,9 @@ t[#t+1] = Def.ActorFrame {
 	
 	--TIME
 	LoadFont("monsterrat/_montserrat light 60px")..{
-			Text="TIME";
-			InitCommand=cmd(x,SCREEN_CENTER_X-25;y,SCREEN_BOTTOM-92;zoom,0.6;skewx,-0.2);
-		};
+		Text="TIME";
+		InitCommand=cmd(x,SCREEN_CENTER_X-25;y,SCREEN_BOTTOM-92;zoom,0.6;skewx,-0.2);
+	};
 
 	
 	--Current Group/Playlist
@@ -130,15 +130,17 @@ t[#t+1] = Def.ActorFrame {
 		InitCommand=cmd(x,SCREEN_LEFT;y,SCREEN_TOP+5;horizalign,left;vertalign,top;zoomx,1;cropbottom,0.3);
 	};
 	
-	LoadFont("monsterrat/_montserrat light 60px")..{	
+	LoadFont("monsterrat/_montserrat light 60px")..{
+		Text="CURRENT SONGLIST";
 		InitCommand=cmd(horizalign,left;x,SCREEN_LEFT+18;y,SCREEN_TOP+10;zoom,0.185;skewx,-0.1);
-		CurrentSongChangedMessageCommand=function(self)
+		--Wat? Why would this ever change?
+		--[[CurrentSongChangedMessageCommand=function(self)
 		local song = GAMESTATE:GetCurrentSong();
 			if song then
 				self:uppercase(true);
 				self:settext("Current songlist");
 			end
-		end;
+		end;]]
 	};
 	
 	LoadFont("monsterrat/_montserrat semi bold 60px")..{
@@ -180,8 +182,9 @@ t[#t+1] = Def.ActorFrame{
 		};
 		LoadFont("bebas/_bebas neue bold 90px")..{
 			Text="NOT PRESENT";
-			InitCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_1);x,-_screen.cx*0.7;y,-infy;zoom,0.3;skewx,-0.2);
-			PlayerJoinedMessageCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_1));
+			Condition=not GAMESTATE:IsHumanPlayer(PLAYER_1);
+			InitCommand=cmd(x,-_screen.cx*0.7;y,-infy;zoom,0.3;skewx,-0.2);
+			--PlayerJoinedMessageCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_1));
 		};
 	};
 	--Right side background
@@ -198,9 +201,10 @@ t[#t+1] = Def.ActorFrame{
 			--InitCommand=cmd(diffuse,color("0,0,0,"..bqalph);xy,0,SCREEN_CENTER_Y;horizalign,right;setsize,bqwid*2,bqalt+50;);
 		};
 		LoadFont("bebas/_bebas neue bold 90px")..{
+			Condition=not GAMESTATE:IsHumanPlayer(PLAYER_2);
 			Text="NOT PRESENT";
-			InitCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_2);x,_screen.cx*0.7;y,-infy;zoom,0.3;skewx,-0.2);
-			PlayerJoinedMessageCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_2));
+			InitCommand=cmd(x,_screen.cx*0.7;y,-infy;zoom,0.3;skewx,-0.2);
+			--PlayerJoinedMessageCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_2));
 		};
 	};
 	Def.Quad{		--White for Chart info P1 EFFECT JOINED
@@ -291,9 +295,12 @@ else
 		};
 	}
 	--Don't load if not used.
+	--[[
 	if THEME:GetMetric("ScreenSelectMusic","UseCustomOptionsList") then
 		t[#t+1] = LoadActor("CustomOptionsList");
-	elseif THEME:GetMetric("ScreenSelectMusic","UseOptionsList") then
+	else
+	]]
+	if THEME:GetMetric("ScreenSelectMusic","UseOptionsList") then
 		local function CurrentNoteSkin(p)
 			local state = GAMESTATE:GetPlayerState(p)
 			local mods = state:GetPlayerOptionsArray( 'ModsLevel_Preferred' )
