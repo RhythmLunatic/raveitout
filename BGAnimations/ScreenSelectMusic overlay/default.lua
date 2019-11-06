@@ -50,13 +50,14 @@ t[#t+1] = Def.ActorFrame{
 };
 
 --PREVIEW BOX
-t[#t+1] = LoadActor("songPreview");
+--t[#t+1] = LoadActor("songPreview");
+t[#t+1] = LoadActor("xx_overlay");
 
 
 ---DECORATIONS IN GENERAL
 t[#t+1] = Def.ActorFrame {
 	--MSG INFO
-	LoadActor("help_info/txt_box")..{
+	--[[LoadActor("help_info/txt_box")..{
 		InitCommand=cmd(x,_screen.cx;y,SCREEN_BOTTOM-50;zoomx,0.9;zoomy,0.65);
 	};
 	
@@ -116,18 +117,21 @@ t[#t+1] = Def.ActorFrame {
 		PickingSongCommand=cmd(stoptweening;linear,.2;diffusealpha,0);
 		SongChosenMessageCommand=cmd(stoptweening;linear,.2;diffusealpha,1;sleep,2;linear,.2;diffusealpha,0;queuecommand,"Set");
 	
-	};
+	};]]
 	
 	--TIME
 	LoadFont("monsterrat/_montserrat light 60px")..{
 		Text="TIME";
-		InitCommand=cmd(x,SCREEN_CENTER_X-25;y,SCREEN_BOTTOM-92;zoom,0.6;skewx,-0.2);
+		InitCommand=cmd(x,THEME:GetMetric("ScreenSelectMusic","TimerX")-100;y,THEME:GetMetric("ScreenSelectMusic","TimerY")+15;zoom,0.6;skewx,-0.2);
 	};
 
 	
 	--Current Group/Playlist
-	LoadActor("current_group")..{
+	--[[LoadActor("current_group")..{
 		InitCommand=cmd(x,SCREEN_LEFT;y,SCREEN_TOP+5;horizalign,left;vertalign,top;zoomx,1;cropbottom,0.3);
+	};]]
+	Def.Quad{
+		InitCommand=cmd(setsize,364,58;diffuse,Color("Black");faderight,1;x,SCREEN_LEFT;y,SCREEN_TOP+5;horizalign,left;vertalign,top;zoomx,1;cropbottom,0.3);
 	};
 	
 	LoadFont("monsterrat/_montserrat light 60px")..{
@@ -264,10 +268,11 @@ if getenv("PlayMode") == "Easy" then
 	};
 else
 
+	local YPOSITION = _screen.cy+60
 	--Difficulty List Orbs Shadows
 	for i=1,12 do
 		t[#t+1] = LoadActor("DifficultyList/background_orb") .. {
-			InitCommand=cmd(diffusealpha,0.85;zoom,0.375;x,_screen.cx-245+i*35;y,_screen.cy+107;horizalign,left);
+			InitCommand=cmd(diffusealpha,0.85;zoom,0.375;x,_screen.cx-245+i*35;y,YPOSITION+2;horizalign,left);
 		};
 	end;
 	--Difficulty List Orbs
@@ -281,7 +286,7 @@ else
 					self:rotationz(270);
 					self:linear(0.1);
 					self:x(_screen.cx-187);
-					self:y(_screen.cy+105);
+					self:y(YPOSITION);
 					self:zoom(0.7);
 				end;
 			end;

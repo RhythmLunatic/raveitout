@@ -1,5 +1,5 @@
-local scaw = 204		--banner scale width
-local scah = 204		--banner scale height
+local scaw = 125		--banner scale width
+local scah = 125		--banner scale height
 --reflect effect controls
 local ftop = 1	--fadetop
 local ctop = 0.25	--croptop

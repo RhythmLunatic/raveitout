@@ -27,11 +27,11 @@ else
 end;
 
 
---t[#t+1] = LoadActor("xx_bg");
+t[#t+1] = LoadActor("xx_bg");
 
 t[#t+1] = Def.ActorFrame{
 	LoadActor("songwheel")..{
-		InitCommand=cmd(horizalign,center;zoomto,SCREEN_WIDTH,183;x,_screen.cx;y,_screen.cy-30);
+		InitCommand=cmd(horizalign,center;zoomto,SCREEN_WIDTH,115;x,_screen.cx;y,THEME:GetMetric("ScreenSelectMusic","MusicWheelY"));
 	};
 		
 

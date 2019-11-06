@@ -1,6 +1,6 @@
 local isWheelCustom = ...
-local shine_index = 0;
-local streamSafeMode = (ReadPrefFromFile("StreamSafeEnabled") == "true");
+--local shine_index = 0;
+--local streamSafeMode = (ReadPrefFromFile("StreamSafeEnabled") == "true");
 
 --GAMESTATE:SetCurrentSong(SONGMAN:FindSong("3y3s"))
 extraStageSong = nil;
