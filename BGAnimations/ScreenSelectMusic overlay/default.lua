@@ -703,20 +703,5 @@ t[#t+1] = LoadActor("new_song") ..{
 	end;
 };
 
-
-t[#t+1] = LoadActor("_CommandWindow") ..{
-
-	InitCommand=cmd(draworder,999;x,SCREEN_CENTER_Y;y,0;visible,false;setevn,"CW_Active","false");
-
-	OptionsListOpenedMessageCommand = function(self, params)
-		self:visible(GAMESTATE:IsHumanPlayer(PLAYER_1));
-		setenv("CW_Active","true");
-	end;
-	OptionsListClosedMessageCommand = function(self, params)
-		self:visible(false);
-		setenv("CW_Active","false") ;
-	end;
-};
-
 --]]
 return t

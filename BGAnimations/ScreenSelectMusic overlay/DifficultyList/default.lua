@@ -1,3 +1,10 @@
+--[[
+WARNING: DO NOT USE CONDITION= FOR THESE!!!
+STEPMANIA REQUIRES ACTORS FOR ALL PLAYERS TO BE LOADED
+REGARDLESS OF THEM BEING JOINED OR NOT.
+YOU WILL CRASH THE GAME!!!
+]]
+
 return Def.ActorFrame {
 	InitCommand=cmd(draworder,250;);
 	CurrentSongChangedMessageCommand=function(self)
@@ -78,8 +85,7 @@ return Def.ActorFrame {
 		};
 
 		CursorP1 = Def.ActorFrame {
-			Condition=GAMESTATE:IsSideJoined(PLAYER_1);
-			InitCommand=cmd(draworder,201;);
+			InitCommand=cmd(draworder,201;visible,GAMESTATE:IsSideJoined(PLAYER_1););
 			OnCommand=cmd(rotationz,90;);
 			PlayerJoinedMessageCommand=function(self, params)
 
