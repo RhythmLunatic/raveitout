@@ -235,6 +235,7 @@ if css1:IsDisqualified()==false then
 	end;
 	
 	--Quest Mode stuff
+	--SCREENMAN:SystemMessage(css1:GetMachineHighScoreIndex())
 	if GAMESTATE:IsCourseMode() then
 		t[#t+1] = LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
 			InitCommand=function(self)
@@ -247,6 +248,15 @@ if css1:IsDisqualified()==false then
 				self:xy(p1initx,p1inity):draworder(100):diffusealpha(0):zoom(initzoomp1):skewx(-0.2);
 			end;
 			OnCommand=cmd(zoom,2;sleep,3;linear,.2;diffusealpha,1;zoom,1;linear,.3;zoom,.8);
+		};
+	elseif css1:GetMachineHighScoreIndex() == 0 then
+		t[#t+1] = Def.BitmapText{
+			Font="venacti/_venacti_outline 26px bold diffuse";
+			Text="New Record!!";
+			InitCommand=function(self)
+				self:xy(p1initx-7,p1inity+55):draworder(100):diffusealpha(0):zoom(initzoomp1):skewx(-0.2);
+			end;
+			OnCommand=cmd(zoom,2;sleep,3.4;linear,.15;diffusealpha,1;zoom,1;decelerate,.25;zoom,.7);
 		};
 	end;
 	
