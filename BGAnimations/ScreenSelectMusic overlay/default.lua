@@ -407,7 +407,8 @@ else
 					end;
 					
 					OptionsListStartMessageCommand=function(self,params)
-						if params.Player == pn then
+						self:playcommand("Adjust",params);
+						--[[if params.Player == pn then
 							if currentOpList == "NoteSkins" then
 								local curRow;
 								--This global var is exported by OptionRowAvailableNoteskins()
@@ -423,13 +424,13 @@ else
 									optionsListActor:stoptweening():linear(.2):y(SCREEN_CENTER_Y-100)
 								end;
 							end;
-						end;
+						end;]]
 					end;
 					OptionsMenuChangedMessageCommand=function(self,params)
 						--SCREENMAN:SystemMessage("MenuChanged: Menu="..params.Menu);
 						if params.Player == pn then
 							currentOpList=params.Menu
-							optionsListActor:y(SCREEN_CENTER_Y-100) --Reset the positioning
+							optionsListActor:stoptweening():y(SCREEN_CENTER_Y-100) --Reset the positioning
 							if params.Menu ~= "SongMenu" and params.Menu ~= "System" then
 								self:settext(THEME:GetString("OptionExplanations",params.Menu))
 							else
@@ -529,8 +530,9 @@ else
 					end;
 				};
 		
-				Def.Sprite{
-					InitCommand=cmd(x,1;y,_screen.cy-(olhei/2.25)+40;draworder,999);
+				--ActorFrame that holds the noteskin
+				Def.ActorFrame{
+					InitCommand=cmd(x,1;y,_screen.cy-(olhei/2.25)+40;draworder,999;zoom,.35);
 					OptionsMenuChangedMessageCommand=function(self,params)
 						if params.Player == pn then
 							if params.Menu == "NoteSkins" then
@@ -542,44 +544,18 @@ else
 						end;
 					end;
 					OnCommand=function(self)
-						local arrow = "UpLeft";
-						local name = "Tap note";
-						local highlightedNoteSkin = CurrentNoteSkin(pn);
-						--Constantly causes errors, just remove it
-						local path-- = NOTESKIN:GetPathForNoteSkin("", "__RIO_THUMB", CurrentNoteSkin(pn));
-						if not path then
-							if highlightedNoteSkin == "delta" then
-								name = "Ready Receptor";
-							elseif highlightedNoteSkin == "delta-note" or string.ends(highlightedNoteSkin, "rhythm") then
-								arrow = "_UpLeft";
-							end
-							path = NOTESKIN:GetPathForNoteSkin(arrow, name, CurrentNoteSkin(pn));
-						end
+						highlightedNoteSkin = CurrentNoteSkin(pn);
+						self:RemoveAllChildren()
+						self:AddChildFromPath(THEME:GetPathB("ScreenSelectMusic","overlay/Noteskin.lua"))
 						
-						self:Load(path);
-						self:croptop(0);
-						self:cropright(0);
-						self:zoom(0.35);
 					end;
 					AdjustCommand=function(self,params)
-						if params.Player == pn then
+						if params.Player == pn and currentOpList == "NoteSkins" then
 							if params.Selection < OPTIONSLIST_NUMNOTESKINS then
-								local highlightedNoteSkin = OPTIONSLIST_NOTESKINS[params.Selection+1];
-								local arrow = "UpLeft";
-								local name = "Tap note";
-								local path-- = NOTESKIN:GetPathForNoteSkin("", "__RIO_THUMB", highlightedNoteSkin);
-								if not path then
-									if highlightedNoteSkin == "delta" then
-										name = "Ready Receptor";
-									elseif highlightedNoteSkin == "delta-note" or string.ends(highlightedNoteSkin, "rhythm") then
-										arrow = "_UpLeft";
-									end
-									path = NOTESKIN:GetPathForNoteSkin(arrow, name, highlightedNoteSkin);
-								end
-								self:Load(path);
-								self:croptop(0);
-								self:cropright(0);
-								self:zoom(0.35);
+								--This is a global var, it's used in Noteskin.lua.
+								highlightedNoteSkin = OPTIONSLIST_NOTESKINS[params.Selection+1];
+								self:RemoveAllChildren()
+								self:AddChildFromPath(THEME:GetPathB("ScreenSelectMusic","overlay/Noteskin.lua"))
 							else
 								self:playcommand("On");
 							end;

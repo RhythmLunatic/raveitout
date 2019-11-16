@@ -231,14 +231,14 @@ local t = Def.ActorFrame{
 		if params.PlayerNumber ~= player then return end;
 		if isDone then return end;
 	
-		if params.Name == "Left" then
+		if params.Name == "Left" or params.Name == "MenuLeft" then
 			--SCREENMAN:SystemMessage("aasdas");
 			scroller:scroll_by_amount(-1);
 			SOUND:PlayOnce(THEME:GetPathS("Codebox", "Move"))
-		elseif params.Name == "Right" then
+		elseif params.Name == "Right" or params.Name == "MenuRight" then
 			scroller:scroll_by_amount(1);
 			SOUND:PlayOnce(THEME:GetPathS("Codebox", "Move"))
-		elseif params.Name == "Center" then
+		elseif params.Name == "Center" or params.Name == "Start" then
 			local txt = scroller:get_info_at_focus_pos();
 			scroller:get_actor_item_at_focus_pos().container:GetChild("BGQuad"):playcommand("Glow");
 			--SCREENMAN:SystemMessage(txt)

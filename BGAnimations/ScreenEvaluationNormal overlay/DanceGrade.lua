@@ -250,14 +250,14 @@ if css1:IsDisqualified()==false then
 			OnCommand=cmd(zoom,2;sleep,3;linear,.2;diffusealpha,1;zoom,1;linear,.3;zoom,.8);
 		};
 	elseif css1:GetMachineHighScoreIndex() == 0 then
-		t[#t+1] = Def.BitmapText{
+		--[[t[#t+1] = Def.BitmapText{
 			Font="venacti/_venacti_outline 26px bold diffuse";
 			Text="New Record!!";
 			InitCommand=function(self)
 				self:xy(p1initx-7,p1inity+55):draworder(100):diffusealpha(0):zoom(initzoomp1):skewx(-0.2);
 			end;
 			OnCommand=cmd(zoom,2;sleep,3.4;linear,.15;diffusealpha,1;zoom,1;decelerate,.25;zoom,.7);
-		};
+		};]]
 	end;
 	
 	--FS box is here since it relies on the positioning of the grade letter for now... Probably should be fixed later
