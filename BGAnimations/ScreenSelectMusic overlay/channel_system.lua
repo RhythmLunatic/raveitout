@@ -223,9 +223,10 @@ local function inputs(event)
 			MESSAGEMAN:Broadcast("SortChanged",{newSort=groups[selection][3]})
 			--Spin the groups cuz it will look cool.
 			--It doesn't work..
-			--[[scroller:run_anonymous_function(function(self, info)
-				self.container:linear(1):rotationy(360);
-			end)]]
+			--SCREENMAN:SystemMessage("Test!");
+			scroller:run_anonymous_function(function(self, info)
+				self.container:stoptweening():linear(.3):rotationy(360):sleep(0):rotationy(0);
+			end)
 		else
 			SCREENMAN:set_input_redirected(PLAYER_1, false);
 			SCREENMAN:set_input_redirected(PLAYER_2, false);
@@ -347,6 +348,7 @@ local t = Def.ActorFrame{
 		scroller:get_actor_item_at_focus_pos().container:GetChild("banner"):linear(.3):zoom(0);
 	end;
 	
+	--Why is this even here? It could be in the above function...
 	SortChangedMessageCommand=function(self,params)
 		--Reset button history when the sort selection screen closes.
 		--button_history = {"none", "none", "none", "none"};
@@ -360,7 +362,10 @@ local t = Def.ActorFrame{
 			selection = 1
 			--SCREENMAN:SystemMessage("SortChanged")
 			scroller:set_info_set(groups, 1);
+			setenv("cur_group",groups[selection][2]);
 			--scroller:set_info_set({"aaa","bbb","ccc","ddd"},1);
+			--Update the text that says the current group.
+			MESSAGEMAN:Broadcast("GroupChange");
 		end;
 	end;
 }

@@ -136,10 +136,12 @@ return Def.ActorFrame{
 			InitCommand=cmd(Load,nil;diffusealpha,0;zoomto,70,70;horizalign,left;x,_screen.cx-190;y,_screen.cy+50);
 			CurrentSongChangedMessageCommand=function(self)
 				(cmd(stoptweening;Load,nil;diffusealpha,0;))(self);
-				if GAMESTATE:GetCurrentSong():HasJacket() then
-					self:Load(GAMESTATE:GetCurrentSong():GetJacketPath());
-				else
-					self:LoadFromSongBanner(GAMESTATE:GetCurrentSong());
+				if GAMESTATE:GetCurrentSong() then
+					if GAMESTATE:GetCurrentSong():HasJacket() then
+						self:Load(GAMESTATE:GetCurrentSong():GetJacketPath());
+					else
+						self:LoadFromSongBanner(GAMESTATE:GetCurrentSong());
+					end;
 				end;
 				--Change to zoomto,100,100 for big to small animation
 				(cmd(zoomto,30,30;linear,0.05;decelerate,0.25;diffusealpha,1;zoomto,70,70))(self);
@@ -157,6 +159,7 @@ return Def.ActorFrame{
 		LoadFont("monsterrat/_montserrat light 60px")..{
 			InitCommand=cmd(horizalign,left;uppercase,true;x,_screen.cx-67.5;y,_screen.cy+25.5);
 			CurrentSongChangedMessageCommand=function(self)
+				if not GAMESTATE:GetCurrentSong() then return end;
 				self:settext(GAMESTATE:GetCurrentSong():GetGenre());
 				(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;skewx,-0.2)) (self)
 			end;
@@ -175,6 +178,7 @@ return Def.ActorFrame{
 			OnCommand=cmd(playcommand,"YearTag");
 			CurrentSongChangedMessageCommand=cmd(playcommand,"YearTag");
 			YearTagCommand=function(self)
+				if not GAMESTATE:GetCurrentSong() then return end;
 				local origin = GAMESTATE:GetCurrentSong():GetOrigin()
 				if origin == "" then
 					origin = "????"
