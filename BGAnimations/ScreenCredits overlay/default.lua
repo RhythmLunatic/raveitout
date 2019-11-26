@@ -50,7 +50,16 @@ local sections = {
 		"Step Artist - Accelerator as \"Sanguis Ferri\"",
 		"Main Programmer - Accelerator",
 		"Supporting Programmer - José Varela",
-		"Supporting Programmer - Tertu"
+		"Supporting Programmer - Tertu",
+		"Supporting Programmer - Jousway",
+	}},
+	{ "Open Source Libraries", {
+		"Profile management, target score graph, etc by dbk2",
+		"json.lua is Copyright (c) 2019 rxi",
+		"item_scroller is by Kyzentun",
+		--Client credits
+		"COM port and http support by pk",
+		"Card Reader libraries by Alex123123"
 	}},
 	{ "Beta Testers", {
 		"dj505",

@@ -72,8 +72,8 @@ local item_mt= {
 	set= function(self, info)
 		--self.container:GetChild("text"):settext(info);
 		local banner;
-		if info[1] ~= WHEELTYPE_NORMAL then
-			banner = THEME:GetPathG("Banner",info[2]);
+		if info[1] == WHEELTYPE_SORTORDER then
+			banner = THEME:GetPathG("Banner",info[3]);
 		else
 			banner = SONGMAN:GetSongGroupBannerPath(info[2]);
 		end;
@@ -148,13 +148,14 @@ local groups = {};
 function insertSpecialFolders()
 	
 	--Insert these... Somewhere.
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By All Levels (Singles)", "SortOrder_AllDifficultyMeter"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By All Levels (Doubles)", "SortOrder_DoubleAllDifficultyMeter"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Title", "SortOrder_Title"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_AllDifficultyMeter"),			"SortOrder_AllDifficultyMeter"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_DoubleAllDifficultyMeter"),	"SortOrder_DoubleAllDifficultyMeter"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Title"), 						"SortOrder_Title"});
 	--SM grading is stupid
 	--table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Top Grades", "SortOrder_TopGrades"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Artist", "SortOrder_Artist"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By BPM", "SortOrder_BPM"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Artist"),	"SortOrder_Artist"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_BPM"),		"SortOrder_BPM"});
+	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Origin"),	"SortOrder_Origin"});
 end;
 
 function genDefaultGroups()
@@ -193,7 +194,7 @@ function genSortOrderGroups()
 	for i,group in ipairs(musicwheel:GetCurrentSections()) do
 		groups[i] = {WHEELTYPE_NORMAL,group}
 	end;
-	table.insert(groups, #groups+1, {WHEELTYPE_SORTORDER, "Default Sort", "SortOrder_Group"});
+	table.insert(groups, #groups+1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Group"), "SortOrder_Group"});
 	insertSpecialFolders();
 end;
 

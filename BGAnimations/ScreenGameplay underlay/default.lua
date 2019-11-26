@@ -52,14 +52,7 @@ function GetBreakCombo()		-- by ROAD24 and NeobeatIKK
 	end;
 	return tonumber(Combo);
 end;
-function IsBreakOn()			--Is StageBreak On? by ROAD24
-	if getenv("StageBreak") == nil then
-		lua.Warn("No se asigno valor para el break usando valor por defecto");
-		setenv("StageBreak",true);
-		return true;
-	end
-	return getenv("StageBreak");
-end;
+
 -- Cambios -- ROAD24
 local iOldCombo = 0;
 -- Aqui se pueden tomar varias decisiones referentes al comportamiento del gameplay
@@ -110,12 +103,16 @@ local t = Def.ActorFrame{
 		OffCommand=EndScreen;
 	};
 }
---yeah this isn't really good code
-activeModP1 = ActiveModifiers["P1"]["BGAMode"]
-activeModP2 = ActiveModifiers["P2"]["BGAMode"]
+--[[
+yeah this isn't really good code
+To be honest I kind of hate this feature -Accelerator
+]]
+local activeModP1 = ActiveModifiers["P1"]["BGAMode"]
+local activeModP2 = ActiveModifiers["P2"]["BGAMode"]
 if activeModP1 == "Black" or activeModP2 == "Black" then
 	t[#t+1] = Def.Quad{InitCommand=cmd(setsize,SCREEN_WIDTH,SCREEN_HEIGHT;diffuse,Color("Black");Center)};
-elseif activeModP1 == "Off" or activeModP2 == "Off" or (ReadPrefFromFile("StreamSafeEnabled") == "true" and has_value(STREAM_UNSAFE_VIDEO, GAMESTATE:GetCurrentSong():GetDisplayFullTitle())) then
+--or (ReadPrefFromFile("StreamSafeEnabled") == "true" and has_value(STREAM_UNSAFE_VIDEO, GAMESTATE:GetCurrentSong():GetDisplayFullTitle()))
+elseif activeModP1 == "Off" or activeModP2 == "Off" or false then
 	local BGAOffcolors = {
 		["Special"] = "#F3CE71",
 		["Pro"] = "#F3718D",
@@ -178,6 +175,10 @@ if not getenv("IsOMES_RIO") then
 			InitCommand=cmd(xy,barposX+negativeOffset*100,50);
 			OnCommand=cmd(sleep,1.5;accelerate,0.25;x,barposX);
 		};
+		if ActiveModifiers[pname(pn)]["TargetScore"] then
+			t[#t+1] = LoadActor("PerPlayer/TargetScore",pn);
+		end;
+		
 	end;
 end;
 --/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +227,7 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 			end;
 		end;
 		
-		if IsBreakOn() then			-- Si no esta activado el break no tiene caso revisar todo lo demas
+		if getenv("StageBreak") then			-- Si no esta activado el break no tiene caso revisar todo lo demas
 			if THEME:GetMetric("CustomRIO","GamePlayMenu") == false then
 				if GAMESTATE:IsPlayerEnabled( OpositePlayer ) then
 					bFailed = bFailed and bOpositePlayerFailed;
@@ -234,7 +235,7 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 				if bFailed then
 					GTS:PostScreenMessage("SM_BeginFailed",0);
 					if stage == "Stage_1st" and Enjoy1stStage == true then
-						return nil
+						return
 					else				-- No creo que haya problema en forzar el fail de ambos players, ya que el break requiere que ambos deben alcanzar el combo miss -NeobeatIKK
 						PSS1:FailPlayer();
 						PSS2:FailPlayer();
@@ -244,23 +245,13 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 			end;
 		end;
 	end;
-	JudgmentMessageCommand=function(self,params)
-	--if not IsComoSeLlameModeEnabled then	--activar cuando este el modo listo
-		if 	params.TapNoteScore == 'TapNoteScore_HitMine' then
-				local Combo = getenv("BreakCombo");
-				-- Disminuyo el combo
-				setenv("BreakCombo",Combo-1);
-				--SCREENMAN:SystemMessage("BreakCombo: "..GetBreakCombo());
-		end;
-	--end;
-	end;
 	LoadFont("Common Normal")..{	--Stage break + value, message
 		InitCommand=cmd(x,_screen.cx;y,SCREEN_BOTTOM-30;zoom,0.5);
 		OnCommand=function(self)
 			--don't do shit if Perfectionist Mode is activated, don't show if it's the demo stage.
 			if (PerfectionistMode[PLAYER_1] and PerfectionistMode[PLAYER_2]) or stage == "Stage_Demo" then
 				self:visible(false)
-				return false
+				return
 			end;
 			self:settext("Limit Break: "..GetBreakCombo());
 			--[[local p1stype;
@@ -279,9 +270,21 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 				self:y(SCREEN_BOTTOM-60);
 			end;
 		end;
-		LifeChangedMessageCommand=function(self)	--ya que las effortbar reaccionan tan bien al limit break entonces pensé "porqué no actualizarlas de igual forma?" xD -NeobeatIKK
+		--[[LifeChangedMessageCommand=function(self)	--ya que las effortbar reaccionan tan bien al limit break entonces pensé "porqué no actualizarlas de igual forma?" xD -NeobeatIKK
 			self:settext("Limit Break: "..GetBreakCombo());
+		end;]]
+		JudgmentMessageCommand=function(self,params)
+			--if not IsComoSeLlameModeEnabled then	--activar cuando este el modo listo
+			if params.TapNoteScore == 'TapNoteScore_HitMine' then
+				local Combo = getenv("BreakCombo");
+				-- Disminuyo el combo
+				setenv("BreakCombo",Combo-1);
+				--SCREENMAN:SystemMessage("BreakCombo: "..GetBreakCombo());
+				self:settext("Limit Break: "..Combo);
+			end;
+		--end;
 		end;
+		
 	};
 };
 

@@ -28,3 +28,7 @@ Check the operator menu. Edit 01 SYSTEM_PARAMETERS.lua.
 ## Adding new songs
 
 Check Song Structure Documentation.txt.
+
+## Who worked on this?
+
+Check BGAnimations/ScreenCredits Overlay/default.lua for credits and open source libraries used.

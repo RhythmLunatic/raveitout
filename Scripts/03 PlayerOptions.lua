@@ -12,9 +12,11 @@ function table.shallowcopy(orig)
     return copy
 end
 
---This defines the custom player options. PlayerDefaults is initialized from InitGame
---Use ActiveModifiers["P1"] or ActiveModifiers["P2"] to access options. ActiveModifiers
---is automatically set when the profile is loaded.
+--[[
+This defines the custom player options. PlayerDefaults is initialized from InitGame.lua
+Use ActiveModifiers["P1"] or ActiveModifiers["P2"] to access options. ActiveModifiers
+is automatically set when the profile is loaded.
+]]
 PlayerDefaults = {
 	DetailedPrecision = false, --Options: false, EarlyLate, ProTiming
 	ReverseGrade = false, --Like the PIU thing? Perfect is shown as bad
@@ -22,7 +24,14 @@ PlayerDefaults = {
 	BGAMode = "On", --Options: Black, Off, Dark, On
 	ProfileIcon = false, -- Technically not an OptionsList option, but it gets saved at ScreenProfileSave so it's here anyway. Don't set it to nil the SL-CustomProfiles code is retarded and won't iterate over it
 	JudgmentGraphic = "Season2", --Judgment graphic
-	CompetitionMode = false --Show score and HP in the middle to make things more exciting
+	CompetitionMode = false, --Show score and HP in the middle to make things more exciting
+	--[[
+	Like IIDX, Simply Love, etc.
+	Possible values: 70%, 80%, 90%, 95%, 100%, Player's Best, Machine Best
+	We use percentages, not grades for target score
+	because PIU/RIO grading is weird and you can't get an S if you miss a note.
+	]]
+	TargetScore = false,
 }
 
 --PerfectionistMode should NEVER be written to profile, so it's not in the PlayerDefaults table.
@@ -32,25 +41,6 @@ PerfectionistMode = {
 	PlayerNumber_P3 = false,
 	PlayerNumber_P4 = false
 };
-
---Set tables so you can do ActiveModifiers["P1"] to get the table of custom player modifiers, ex ActiveModifiers["P1"]["JudgmentType"]
---No metatable because it was too hard to implement
---[[ActiveModifiers = {
-	P1 = table.shallowcopy(PlayerDefaults),
-	P2 = table.shallowcopy(PlayerDefaults),
-	MACHINE = table.shallowcopy(PlayerDefaults),
-}]]
-
---Test
---[[local AM = { P1 = setmetatable({}, {JT = "Normal"})}
-local AM = {{"Test"}, {"Test2"}}
-local AM = { P1 = {JT = "Normal"}}
-ActiveModifiers = {
-	P1 = setmetatable({}, PlayerDefaults),
-	P2 = setmetatable({}, PlayerDefaults),
-	MACHINE = setmetatable({}, PlayerDefaults)
-}
-]]
 
 --Requires string:split
 function OptionRowAvailableNoteskins()
@@ -288,18 +278,62 @@ function OptionRowDetailedPrecision()
 	return t;
 end;
 
+function OptionRowTargetScore()
+	local t = {
+		Name = "UserPrefTargetScore";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = false;
+		ExportOnChange = true;
+		--Choices that get shown, not the actual choices.
+		Choices = {"None", "70%", "80%", "90%", "95%", "100%", "Player's Best", "Machine Best"};
+		--The actual choices that get saved and loaded. 17 and 18 are special values for code that I stole from Simply Love. But if you do anything other than that it will work as a percentage.
+		ChoiceValues = {false, .7, .8, .9, .95, 1, 18, 17};
+		
+		LoadSelections = function(self, list, pn)
+			local opt = ActiveModifiers[pname(pn)]["TargetScore"]
+			--A for loop might not be necessary here since opt is false if first choice is selected.
+			local found = false;
+			for i=1,#list do
+				if self.ChoiceValues[i] == opt then
+					list[i] = true;
+					found = true;
+				end;
+			end;
+			if not found then
+				list[1] = true;
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			for i=1,#list do
+				if list[i] == true then
+					ActiveModifiers[pname(pn)]["TargetScore"] = self.ChoiceValues[i];
+					break
+				end
+			end
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end;
+
 function OptionRowJudgmentGraphic()
-	--The true name of the graphic is stored in ActiveModifiers to make it easier to load.
-	local judgementNames = {"Season 1", "Season 2", "Zona", "Simply Love", "Mikado", "Ace", "None"}
 	local t = {
 		Name="JudgmentType",
 		LayoutType = "ShowAllInRow",
 		SelectType = "SelectOne",
 		OneChoiceForAllPlayers = false,
 		ExportOnChange = false,
-		Choices = judgementNames,
-		--Embedded in the metatable because the ScreenSelectMusic needs to access it too
-		judgementFileNames = { "Season1", "Season2", "Zona", "Simply Love", "Mikado", "Ace", "None"},
+		
+		--[[
+			The Choices line is just the NAME of the choices. the judgementFileNames name is the
+			actual file name of the graphic.
+			Ex. With a file named "Judgment Ace 1x6 (doubleres).png", you can put whatever you want on the first line,
+			then "Ace" on the second line.
+		]]
+		Choices = 			 {"Season 1", "Season 2", "Zona", "Simply Love", "Mikado", "Ace", "None"},
+		judgementFileNames = {"Season1",  "Season2",  "Zona", "Simply Love", "Mikado", "Ace", "None"},
+		
 		LoadSelections = function(self, list, pn)
 			local found = false;
 			for i=1,#list do
@@ -312,17 +346,14 @@ function OptionRowJudgmentGraphic()
 				list[2] = true;
 				--Need to replace the setting in the modifiers table too
 				ActiveModifiers[pname(pn)]["JudgmentGraphic"] = self.judgementFileNames[2]
-				assert(found, "Should have defaulted to S2 judgement, but none was found")
+				lua.Warn("Should have defaulted to S2 judgement, but none was found")
 			end;
 		end,
 		SaveSelections = function(self, list, pn)
-			local found = false
 			for i=1,#list do
-				if not found then
-					if list[i] == true then
-						ActiveModifiers[pname(pn)]["JudgmentGraphic"] = self.judgementFileNames[i];
-						found = true
-					end
+				if list[i] == true then
+					ActiveModifiers[pname(pn)]["JudgmentGraphic"] = self.judgementFileNames[i];
+					break
 				end
 			end
 		end,

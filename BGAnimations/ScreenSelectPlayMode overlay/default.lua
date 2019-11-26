@@ -280,10 +280,9 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		self:diffusealpha(0):FullScreen();
 	end;
 	
-	RefreshCommand=function(self)
-	end;
-	--TODO: Why does animation not work here? decelerate,.5;
-	--ANSWER: Check ScreenSelectPlayMode out.lua
+	--[[RefreshCommand=function(self)
+	end;]]
+	
 	OffCommand=function(self)
 		local sel = SCREENMAN:GetTopScreen():GetSelectionIndex(GAMESTATE:GetMasterPlayerNumber())
 		self:Center():Cover()
@@ -299,15 +298,15 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		WriteGamePrefToFile("DefaultFail","");
 		setenv("StageBreak",true);
 		
-		if choice ~= "Pro" and choice ~= "Special" then
-			PREFSMAN:SetPreference("AllowW1",'AllowW1_Never');
-			for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
-				GAMESTATE:ApplyGameCommand( "mod,3x,rio,30% mini;", pn );
-			end
-		end;
+		--I don't really like this but it's the RIO 'style'
+		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+			--Don't force 3x and noteskins!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			GAMESTATE:ApplyGameCommand( "mod,30% mini;", pn );
+		end
 
 		--Don't hardcode the positions of the items.
 		if choice == "Easy" then
+			PREFSMAN:SetPreference("AllowW1",'AllowW1_Never');
 			-- Easy Mode
 			setenv("PlayMode","Easy");
 			setenv("HeaderTitle","SELECT MUSIC");
@@ -317,6 +316,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 			GAMESTATE:SetCurrentSong(randomSong);
 			GAMESTATE:SetPreferredSong(randomSong);
 		elseif choice == "Arcade" then
+			PREFSMAN:SetPreference("AllowW1",'AllowW1_Never');
 			-- Arcade Mode
 			setenv("PlayMode","Arcade");
 			setenv("HeaderTitle","SELECT MUSIC");

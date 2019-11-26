@@ -36,7 +36,7 @@ Pro Mode:
 Special Mode:
 - Used to be called Mod Mode
 - Play unique charts in a folder, such as WinDEU Hates You and UKSRT stuff.
-- Currently removed in favor of Quest Mode.
+- Currently removed in favor of Mission Mode.
 
 Rave Mode:
 - Was never implemented, so you can ignore this. Rave songs are available during normal gameplay.
@@ -50,7 +50,7 @@ Mixtape Mode:
 - Play courses. Hurr.
 - Removed because the code was impossible to maintain.
 
-Quest Mode:
+Mission Mode:
 - Like DJMax Respect's mission mode. Exactly the same, in fact.
 - Unique quest mode exclusive charts and songs are in this mode, because they don't
   meet the criteria for being in RIO normally.

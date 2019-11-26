@@ -155,6 +155,7 @@ function SpecialModeConfig()
 	return t;
 end;
 
+--The functionality was removed, this doesn't do anything.
 function StreamSafeConfig()
 	local t = {
 		Name = "StreamSafeConfig";

@@ -456,7 +456,7 @@ function CenterGameplayWidgets()
 	if not PREFSMAN:GetPreference("Center1Player") then
 		if GAMESTATE then
 			local style = GAMESTATE:GetCurrentStyle()
-			if style and style:GetStyleType() ~= 'StyleType_OnePlayerOneSide' then
+			if style and style:GetStyleType() == 'StyleType_OnePlayerOneSide' then
 				return false
 			end
 		end
