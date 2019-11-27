@@ -78,10 +78,6 @@ local t = Def.ActorFrame{
 	OnCommand=function(self)
 		scroller:set_info_set(names, 1);
 	end;
-	Def.Sprite{
-		Texture=THEME:GetPathG("","_BGMovies/Arcade");
-		InitCommand=cmd(Center);
-	};
 	
 };
 

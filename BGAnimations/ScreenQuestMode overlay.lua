@@ -1,5 +1,9 @@
 local t = Def.ActorFrame{};
 
+--======================
+-- HELPER FUNCTIONS
+--======================
+
 local function GetTagValue(readfile,tag)
 	local fnd = string.find(readfile , "#"..tag..":")
 	if not fnd then return nil end
@@ -167,6 +171,29 @@ end;
 updateGroupCache();
 
 
+--======================
+-- FRAMES
+--======================
+
+--This is a bunch of math to make sure it fits in 4:3
+
+--SCREENMAN:SystemMessage(GetScreenAspectRatio())
+local scale_factor;
+if IsUsingWideScreen() then
+	scale_factor = 1;
+else
+	scale_factor = .86;
+end;
+
+--Should be 300 for 16:9
+local LEFT_WIDTH = 300*scale_factor;
+--Should be 160 for 4:3, 200 for 16:9 (or higher?)
+local LEFT_X_POS = LEFT_WIDTH/2+(IsUsingWideScreen() and 60 or 10);
+local RIGHT_X_POS = LEFT_X_POS+LEFT_WIDTH/2+10;
+--Default is 410.
+local RIGHT_WIDTH = 410*scale_factor;
+local REQUIREMENTS_WIDTH = RIGHT_WIDTH*.95;
+
 t[#t+1] = Def.ActorFrame{
 	--Header stuff
 	LoadActor(THEME:GetPathB("","ScreenSelectMusic overlay/current_group"))..{
@@ -194,11 +221,11 @@ t[#t+1] = Def.ActorFrame{
 	};]]
 	
 	Def.Quad{
-		InitCommand=cmd(diffuse,color("0,0,0,.5");setsize,300,50;xy,200,90;);
+		InitCommand=cmd(diffuse,color("0,0,0,.5");setsize,LEFT_WIDTH,50;xy,LEFT_X_POS,90;);
 	};
 	LoadFont("facu/_zona pro bold 40px")..{
 		Text="Mission Group Name Goes here";
-		InitCommand=cmd(xy,200,90;zoom,.75;skewx,-0.255;maxwidth,300*1.25;);
+		InitCommand=cmd(xy,LEFT_X_POS,90;zoom,.75;skewx,-0.255;maxwidth,LEFT_WIDTH*1.25;);
 		OnCommand=function(self)
 			
 			self:settext(string.match(GroupCache.currentGroup," %- (.*)"));
@@ -207,11 +234,11 @@ t[#t+1] = Def.ActorFrame{
 	
 	};
 	Def.Quad{
-		InitCommand=cmd(diffuse,color("0,0,0,.5");setsize,120,20;xy,200+160,90-50/2;horizalign,left;vertalign,top;);
+		InitCommand=cmd(diffuse,color("0,0,0,.5");setsize,120,20;xy,RIGHT_X_POS,90-50/2;horizalign,left;vertalign,top;);
 	};
 	Def.ActorMultiVertex{
 		InitCommand=function(self)
-			self:xy(200+160+120,90-50/2);
+			self:xy(RIGHT_X_POS+120,90-50/2);
 			self:SetDrawState{Mode="DrawMode_Triangles"}
             self:SetVertices({
                 {{0, 0, 0}, color("0,0,0,.5")},
@@ -238,19 +265,19 @@ t[#t+1] = Def.ActorFrame{
 
 	--Mission info..
 	Def.Quad{
-		InitCommand=cmd(setsize,410,300;diffuse,color("0,0,0,.5");xy,200+160,100;horizalign,left;vertalign,top;);
+		InitCommand=cmd(setsize,RIGHT_WIDTH,300;diffuse,color("0,0,0,.5");xy,RIGHT_X_POS,100;horizalign,left;vertalign,top;);
 	};
 	--Mission title
 	LoadFont("monsterrat/_montserrat semi bold 60px")..{	
-		InitCommand=cmd(xy,200+160+410/2,110;vertalign,top;zoom,0.6;skewx,-0.255;maxwidth,650);
+		InitCommand=cmd(xy,RIGHT_X_POS+RIGHT_WIDTH/2,110;vertalign,top;zoom,0.6;skewx,-0.255;maxwidth,RIGHT_WIDTH+120);
 		--Text="aaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-		OnCommand=cmd(settext,GroupCache.courses[currentMissionNum]:GetDisplayFullTitle();stoptweening;diffusealpha,0;x,200+160+410/2+75;decelerate,0.5;x,200+160+410/2;diffusealpha,1;);
+		OnCommand=cmd(settext,GroupCache.courses[currentMissionNum]:GetDisplayFullTitle();stoptweening;diffusealpha,0;x,RIGHT_X_POS+RIGHT_WIDTH/2+75;decelerate,0.5;x,RIGHT_X_POS+RIGHT_WIDTH/2;diffusealpha,1;);
 		CurrentCourseChangedMessageCommand=cmd(playcommand,"On");
 		CurrentMissionGroupChangedMessageCommand=cmd(playcommand,"On");
 	};
 	--Title underline
 	Def.Quad{
-		InitCommand=cmd(setsize,410,2;diffuse,color("1,1,1,1");xy,200+160,140;horizalign,left;vertalign,top;fadeleft,.8;faderight,.8;);
+		InitCommand=cmd(setsize,RIGHT_WIDTH,2;diffuse,color("1,1,1,1");xy,RIGHT_X_POS,140;horizalign,left;vertalign,top;fadeleft,.8;faderight,.8;);
 	};
 	--Mission requirements
 	--[[Def.Sprite{
@@ -294,23 +321,37 @@ t[#t+1] = Def.ActorFrame{
 			
 		end;
 	
-		InitCommand=cmd(xy,200+160+410/2,110+220;);
+		InitCommand=cmd(xy,RIGHT_X_POS+RIGHT_WIDTH/2,110+220;);
+		--Debug helpers.
+		--[[Def.Quad{
+			InitCommand=cmd(x,-REQUIREMENTS_WIDTH/2;setsize,REQUIREMENTS_WIDTH/4,100;diffuse,Color("Red");horizalign,left);
+		};
+		Def.Quad{
+			InitCommand=cmd(x,-REQUIREMENTS_WIDTH/4;setsize,REQUIREMENTS_WIDTH/4,100;diffuse,Color("Blue");horizalign,left);
+		};
+		Def.Quad{
+			InitCommand=cmd(setsize,REQUIREMENTS_WIDTH/4,100;diffuse,Color("Red");horizalign,left);
+		};
+		Def.Quad{
+			InitCommand=cmd(x,REQUIREMENTS_WIDTH/4;setsize,REQUIREMENTS_WIDTH/4,100;diffuse,Color("Blue");horizalign,left);
+		};]]
+		
 		Def.Sprite{
 			Name="MissionBG";
 			Texture=THEME:GetPathG("QuestMode","MissionBG");
-			InitCommand=cmd(zoom,.67);
+			InitCommand=cmd(zoom,.67;zoomtowidth,RIGHT_WIDTH-10);
 			--InitCommand=cmd(zoomy,.2;zoomx,.46;diffusealpha,.5);
 		};
 		--left
 		Def.Sprite{
 			Name="BreakBG";
 			Texture=THEME:GetPathG("QuestMode","BreakRequirement");
-			InitCommand=cmd(zoom,.67;addx,-180+360/4*1-360/4/2);
+			InitCommand=cmd(zoom,.67;addx,(-REQUIREMENTS_WIDTH)/2+REQUIREMENTS_WIDTH/8);
 		};
 		LoadFont("monsterrat/_montserrat light 60px")..{
 			Name="BreakText";
 			--(SCREEN_WIDTH/numChoices*i-SCREEN_WIDTH/numChoices/2)
-			InitCommand=cmd(zoom,.5;addy,-5;addx,-180+360/4*1-360/4/2;maxwidth,130);
+			InitCommand=cmd(zoom,.5;addy,-5;addx,(-REQUIREMENTS_WIDTH)/2+REQUIREMENTS_WIDTH/8;maxwidth,130);
 			OnCommand=function(self)
 				--self:uppercase(true);
 				self:settext("123");
@@ -321,11 +362,11 @@ t[#t+1] = Def.ActorFrame{
 		Def.Sprite{
 			Name="ComboBG";
 			Texture=THEME:GetPathG("QuestMode","ComboRequirement");
-			InitCommand=cmd(zoom,.67;addx,-180+360/4*2-360/4/2);
+			InitCommand=cmd(zoom,.67;addx,-REQUIREMENTS_WIDTH/8);
 		};
 		LoadFont("monsterrat/_montserrat light 60px")..{
 			Name="ComboText";
-			InitCommand=cmd(zoom,.5;addy,-5;addx,-180+360/4*2-360/4/2;maxwidth,130);
+			InitCommand=cmd(zoom,.5;addy,-5;addx,-REQUIREMENTS_WIDTH/8;maxwidth,130);
 			OnCommand=function(self)
 				--self:uppercase(true);
 				self:settext("456");
@@ -335,11 +376,11 @@ t[#t+1] = Def.ActorFrame{
 		Def.Sprite{
 			Name="AccuracyBG";
 			Texture=THEME:GetPathG("QuestMode","AccuracyRequirement");
-			InitCommand=cmd(zoom,.67;addx,-180+360/4*3-360/4/2);
+			InitCommand=cmd(zoom,.67;addx,REQUIREMENTS_WIDTH/8);
 		};
 		LoadFont("monsterrat/_montserrat light 60px")..{
 			Name="AccuracyText";
-			InitCommand=cmd(zoom,.5;addy,-5;addx,-180+360/4*3-360/4/2;maxwidth,130);
+			InitCommand=cmd(zoom,.5;addy,-5;addx,REQUIREMENTS_WIDTH/8;maxwidth,130);
 			OnCommand=function(self)
 				self:settext("15%");
 			end;
@@ -348,13 +389,13 @@ t[#t+1] = Def.ActorFrame{
 			Def.Sprite{
 			Name="GradeBG";
 			Texture=THEME:GetPathG("QuestMode","GradeRequirement");
-			InitCommand=cmd(zoom,.67;addx,-180+360/4*4-360/4/2);
+			InitCommand=cmd(zoom,.67;addx,REQUIREMENTS_WIDTH/4+REQUIREMENTS_WIDTH/8);
 		};
 		Def.Sprite{
 			Name="GradeText";
 			Texture=THEME:GetPathG("","GradeDisplayEval/B");
 			--The grade icons are 2px off for whatever dumb reason
-			InitCommand=cmd(zoom,.25;addy,-5;addx,-182+360/4*4-360/4/2;);
+			InitCommand=cmd(zoom,.25;addy,-5;addx,REQUIREMENTS_WIDTH/4+REQUIREMENTS_WIDTH/8);
 		};
 	};
 	
@@ -362,7 +403,7 @@ t[#t+1] = Def.ActorFrame{
 	--Mission description, if there is one
 	LoadFont("facu/_zona pro bold 40px")..{
 		Text="Mission Description Goes Here";
-		InitCommand=cmd(xy,360+410/2,288;vertalign,bottom;maxwidth,700;skewx,-0.255;zoom,.5);
+		InitCommand=cmd(xy,RIGHT_X_POS+RIGHT_WIDTH/2,288;vertalign,bottom;maxwidth,RIGHT_WIDTH*1.8;skewx,-0.255;zoom,.5);
 		OnCommand=cmd(settext,GroupCache.courses[currentMissionNum]:GetDescription();stoptweening;diffusealpha,0;decelerate,.2;diffusealpha,1;);
 		CurrentCourseChangedMessageCommand=cmd(playcommand,"On");
 	};
@@ -372,7 +413,7 @@ t[#t+1] = Def.ActorFrame{
 	};]]
 	
 	Def.Quad{
-		InitCommand=cmd(diffuse,color("1,1,1,.5");setsize,300,35;xy,200,135;);
+		InitCommand=cmd(diffuse,color("1,1,1,.5");setsize,LEFT_WIDTH,35;xy,LEFT_X_POS,135;);
 		CodeMessageCommand=function(self, params)
 			if params.Name == "UpLeft" then
 				if currentGroupNum > 1 then
@@ -413,7 +454,7 @@ t[#t+1] = Def.ActorFrame{
 				end
 			end;
 		end;
-		CurrentMissionGroupChangedMessageCommand=cmd(stoptweening;decelerate,.2;xy,200,135;);
+		CurrentMissionGroupChangedMessageCommand=cmd(stoptweening;decelerate,.2;xy,LEFT_X_POS,135;);
 	};
 };
 
@@ -421,7 +462,7 @@ t[#t+1] = Def.ActorFrame{
 
 --I don't think this is correct
 local q = Def.ActorFrame{
-	InitCommand=cmd(xy,75,100);
+	InitCommand=cmd(xy,LEFT_X_POS-LEFT_WIDTH/2+20,100);
 };
 for i = 1,6 do
 	q[i] = Def.ActorFrame{
@@ -449,7 +490,7 @@ for i = 1,6 do
 		};
 		LoadFont("letters/_ek mukta Bold 24px")..{
 			Text="Mission title goes here";
-			InitCommand=cmd(horizalign,left;x,20;addy,2);
+			InitCommand=cmd(horizalign,left;x,20;addy,2;maxwidth,LEFT_WIDTH-40);
 			OnCommand=function(self)
 				self:stoptweening():diffusealpha(0);
 				if i <= GroupCache.numCourses then
@@ -466,7 +507,7 @@ end;
 t[#t+1] = q;
 
 local j = Def.ActorFrame{
-	InitCommand=cmd(xy,200+160+15,130;);
+	InitCommand=cmd(xy,RIGHT_X_POS+15,130;);
 };
 --I don't expect there to be more than 4 songs.
 for i = 1,4 do
@@ -548,7 +589,7 @@ for i = 1,4 do
 		LoadFont("facu/_zona pro bold 40px")..{
 			Name="SongName";
 			Text="Song names here";
-			InitCommand=cmd(horizalign,left;zoom,.5;addx,15;maxwidth,700);
+			InitCommand=cmd(horizalign,left;zoom,.5;addx,15;maxwidth,RIGHT_WIDTH+120);
 
 		};
 	};
