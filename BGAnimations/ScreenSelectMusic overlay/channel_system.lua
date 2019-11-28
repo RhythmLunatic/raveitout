@@ -1,7 +1,7 @@
 local musicwheel; --Need a handle on the MusicWheel to work around a StepMania bug. Also needed to get the folders.
 
 --==========================
---Special folders...
+--Special folders... lua doesn't have enums so this is as close as it gets.
 --==========================
 local WHEELTYPE_NORMAL = 0
 local WHEELTYPE_PREFERRED = 1
@@ -74,6 +74,9 @@ local item_mt= {
 		local banner;
 		if info[1] == WHEELTYPE_SORTORDER then
 			banner = THEME:GetPathG("Banner",info[3]);
+		elseif info[1] == WHEELTYPE_PREFERRED then
+			--Maybe it would be better to use info[3] and a graphic named CoopSongs.txt.png? I'm not sure.
+			banner = THEME:GetPathG("Banner",info[2]);
 		else
 			banner = SONGMAN:GetSongGroupBannerPath(info[2]);
 		end;
