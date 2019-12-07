@@ -76,13 +76,17 @@ local artist =		GAMESTATE:GetCurrentSong():GetDisplayArtist()
 
 --this is the dim for the numbers, it's kind of confusing right now since the numbers and bg is separated
 local listcount = (PREFSMAN:GetPreference("AllowW1") == "AllowW1_Never") and 8 or 9;
+if (ActiveModifiers[pname(PLAYER_1)]["DetailedPrecision"] == "EarlyLate" or ActiveModifiers[pname(PLAYER_2)]["DetailedPrecision"] == "EarlyLate") and PREFSMAN:GetPreference("AllowW1") == "AllowW1_Everywhere" and ToEnumShortString(GAMESTATE:GetCurrentSteps(GAMESTATE:GetMasterPlayerNumber()):GetStepsType()) ~= "Pump_Routine" then
+	listcount=listcount+1
+end;
+
 for i = 1,listcount do
 	local initsleeps = {}
     for n=0,listcount do
       initsleeps[n] = 1.7+(0.15*n)
     end
 	t[#t+1] = Def.Quad {
-		InitCommand=cmd(xy,_screen.cx,100+(i*25)+2;diffuse,0,0,0,0;);
+		InitCommand=cmd(xy,_screen.cx,100+(i*25)+1;diffuse,0,0,0,0;);
 		OnCommand=cmd(sleep,initsleeps[i];accelerate,0.1;diffuse,0,0,0,0.55;zoomto,SCREEN_WIDTH,22;);
 	};
 end;

@@ -63,6 +63,38 @@ if noFantastics then
 	datalabelslist = {gs("W2"),gs("W3"),gs("W4"),gs("Miss"),gs("MaxCombo"),"PRECISION","TOTAL SCORE","CALORIE (KCAL)"};
 	p1datalist =	{p1ravins+p1w2,string.format("%03d",p1w3),string.format("%03d",p1w4),string.format("%03d",p1misses),maxcp1,p1accuracy.."%",p1score,p1kcal};
 end;
+
+--fast/slow is broken with routine so just don't do it
+if ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate" and PREFSMAN:GetPreference("AllowW1") == "AllowW1_Everywhere" and ToEnumShortString(GAMESTATE:GetCurrentSteps(player):GetStepsType()) ~= "Pump_Routine" then
+	--[[t[#t+1] = Def.ActorFrame{
+		InitCommand=cmd(xy,p1initx,SCREEN_BOTTOM-75;diffusealpha,0);
+		OnCommand=cmd(sleep,3;linear,.3;diffusealpha,1);
+		Def.Quad{
+			InitCommand=cmd(setsize,125,50;diffuse,0,0,0,0.55;);
+		};
+		--Have I mentioned that I don't like this font? Cuz I don't.
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			Text="FASTS";
+			InitCommand=cmd(zoom,datazoom-0.25;horizalign,left;xy,-62,-12);
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			Text="SLOWS";
+			InitCommand=cmd(zoom,datazoom-0.25;horizalign,left;xy,-62,12);
+		};
+		LoadFont("monsterrat/_montserrat light 60px")..{
+			Text=string.format("%03d",getenv("NumFasts"..pname(player)));
+			InitCommand=cmd(horizalign,right;xy,62,-12;zoom,datazoom-0.15;);
+		};
+		LoadFont("monsterrat/_montserrat light 60px")..{
+			Text=string.format("%03d",getenv("NumSlows"..pname(player)));
+			InitCommand=cmd(horizalign,right;xy,62,12;zoom,datazoom-0.15;);
+		};
+	}]]
+	datalabelslist[#datalabelslist+1] = "FAST/SLOW";
+	p1datalist[#p1datalist+1] = string.format("%03d",getenv("NumFasts"..pname(player))).."/"..string.format("%03d",getenv("NumSlows"..pname(player)));
+end;
+
+
 	
 t[#t+1] = Def.ActorFrame{
 	InitCommand=cmd(y,SCREEN_TOP+37;zoom,0;rotationz,0;);
@@ -258,35 +290,6 @@ if css1:IsDisqualified()==false then
 			end;
 			OnCommand=cmd(zoom,2;sleep,3.4;linear,.15;diffusealpha,1;zoom,1;decelerate,.25;zoom,.7);
 		};]]
-	end;
-	
-	--FS box is here since it relies on the positioning of the grade letter for now... Probably should be fixed later
-	--Also fast/slow is broken with routine so just don't do it
-	if ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate" and PREFSMAN:GetPreference("AllowW1") == "AllowW1_Everywhere" and ToEnumShortString(GAMESTATE:GetCurrentSteps(player):GetStepsType()) ~= "Pump_Routine" then
-		t[#t+1] = Def.ActorFrame{
-			InitCommand=cmd(xy,p1initx,SCREEN_BOTTOM-75;diffusealpha,0);
-			OnCommand=cmd(sleep,3;linear,.3;diffusealpha,1);
-			Def.Quad{
-				InitCommand=cmd(setsize,125,50;diffuse,0,0,0,0.55;);
-			};
-			--Have I mentioned that I don't like this font? Cuz I don't.
-			LoadFont("monsterrat/_montserrat semi bold 60px")..{
-				Text="FASTS";
-				InitCommand=cmd(zoom,datazoom-0.25;horizalign,left;xy,-62,-12);
-			};
-			LoadFont("monsterrat/_montserrat semi bold 60px")..{
-				Text="SLOWS";
-				InitCommand=cmd(zoom,datazoom-0.25;horizalign,left;xy,-62,12);
-			};
-			LoadFont("monsterrat/_montserrat light 60px")..{
-				Text=string.format("%03d",getenv("NumFasts"..pname(player)));
-				InitCommand=cmd(horizalign,right;xy,62,-12;zoom,datazoom-0.15;);
-			};
-			LoadFont("monsterrat/_montserrat light 60px")..{
-				Text=string.format("%03d",getenv("NumSlows"..pname(player)));
-				InitCommand=cmd(horizalign,right;xy,62,12;zoom,datazoom-0.15;);
-			};
-		}
 	end;
 	
 	if DoDebug then
