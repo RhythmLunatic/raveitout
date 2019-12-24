@@ -4,7 +4,7 @@ Implementation: Hearts are removed during ScreenEvaluation init. If a player got
 ]]
 
 -- Set to true to test obtaining extra hearts without any of the hard work.
-local Debug_AlwaysGetBonusHearts = true;
+local Debug_AlwaysGetBonusHearts = false;
 
 
 --[[
@@ -94,7 +94,7 @@ end;
 function PlayerAchievedBonusHeart(player)
 	--Can only earn up to 2 bonus hearts.
 	--Not sure why IsSideJoined has to be checked but if I don't it shows the bonus heart message for the wrong player
-	if BonusHeartsAdded[player] >= 2 or GAMESTATE:IsSideJoined(player) == false --[[or GetNumHeartsForSong() < 2]] then
+	if BonusHeartsAdded[player] >= 2 or GAMESTATE:IsSideJoined(player) == false or GetNumHeartsForSong() < 2 then
 		return false;
 	end;
 	local acc = getenv(pname(player).."_accuracy") or 0
