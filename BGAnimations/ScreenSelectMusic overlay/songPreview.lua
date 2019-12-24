@@ -10,7 +10,7 @@ if isExtraStage then
 	if USE_ES_SONG then
 		local song = SONGMAN:FindSong(ES_SONG)
 		if song then
-			GAMESTATE;SetPreferredSong(song);
+			GAMESTATE:SetPreferredSong(song);
 		end;
 	else
 		local sDir = GAMESTATE:GetCurrentSong():GetSongDir()
@@ -34,6 +34,7 @@ if isExtraStage then
 				SCREENMAN:SystemMessage("Couldn't find the extra stage song!");
 			end;
 		end;
+	end;
 end;
 
 return Def.ActorFrame{
