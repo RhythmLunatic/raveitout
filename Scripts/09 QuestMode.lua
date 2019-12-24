@@ -45,8 +45,8 @@ RIO_COURSE_GROUPS = {
 		"NM4 - 404 Not Found"
 	},
 	["Hard World"] = {
-		"HD1 - The First Step",
-		"HD2 - The World Warrior",
+		"EZ1 - The First Step",
+		"EZ2 - The World Warrior",
 		"HD4 - 404 Not Found"
 	}
 }

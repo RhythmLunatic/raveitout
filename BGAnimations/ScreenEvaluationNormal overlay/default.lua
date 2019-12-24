@@ -167,7 +167,7 @@ if not GAMESTATE:IsCourseMode() then
 				break;
 			end;
 			RemoveHearts(pn, GetNumHeartsForSong());
-			if PREFSMAN:GetPreference("AllowExtraStage") and PlayerAchievedBonusHeart(pn) and GetNumHeartsForSong() >= 2 then
+			if PREFSMAN:GetPreference("AllowExtraStage") and PlayerAchievedBonusHeart(pn) then
 				GiveBonusHeart(pn)
 				--After giving the bonus heart PlayerAchievedBonusHeart will return false, so we have to keep the result in memory
 				bonus[pn] = true;

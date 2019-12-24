@@ -152,7 +152,10 @@ function insertSpecialFolders()
 	
 	--Insert these... Somewhere.
 	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_AllDifficultyMeter"),			"SortOrder_AllDifficultyMeter"});
+	--This should only show up in single player
+	if GAMESTATE:GetNumSidesJoined() == 1 then
 	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_DoubleAllDifficultyMeter"),	"SortOrder_DoubleAllDifficultyMeter"});
+	end
 	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Title"), 						"SortOrder_Title"});
 	--SM grading is stupid
 	--table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Top Grades", "SortOrder_TopGrades"});

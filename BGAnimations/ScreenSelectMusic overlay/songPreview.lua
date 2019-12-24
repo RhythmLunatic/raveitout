@@ -1,32 +1,39 @@
 local isWheelCustom = ...
 local shine_index = 0;
-local streamSafeMode = (ReadPrefFromFile("StreamSafeEnabled") == "true");
+--local streamSafeMode = (ReadPrefFromFile("StreamSafeEnabled") == "true");
+local streamSafeMode = false;
 
 --GAMESTATE:SetCurrentSong(SONGMAN:FindSong("3y3s"))
 extraStageSong = nil;
 local isExtraStage = IsExtraStagePIU()
 if isExtraStage then
-	local sDir = GAMESTATE:GetCurrentSong():GetSongDir()
-	local arr = split("/",sDir)
-	--SCREENMAN:SystemMessage(strArrayToString(arr));
-	sDir = arr[2].."/"..arr[3].."/extra1.crs"
-	--SCREENMAN:SystemMessage(sDir);
-	--sDir = arr[1].."/"
-	if FILEMAN:DoesFileExist(sDir) then
-		local songName = split(":",GetTagValue(sDir,"SONG"))[1];
-		--SCREENMAN:SystemMessage(songName);
-		local songsInGroup = SONGMAN:GetSongsInGroup(arr[3])
-		for i,song in ipairs(songsInGroup) do
-			if song:GetMainTitle() == songName then
-				extraStageSong = song:GetMainTitle()
-				GAMESTATE:SetPreferredSong(song);
-				break
+	if USE_ES_SONG then
+		local song = SONGMAN:FindSong(ES_SONG)
+		if song then
+			GAMESTATE;SetPreferredSong(song);
+		end;
+	else
+		local sDir = GAMESTATE:GetCurrentSong():GetSongDir()
+		local arr = split("/",sDir)
+		--SCREENMAN:SystemMessage(strArrayToString(arr));
+		sDir = arr[2].."/"..arr[3].."/extra1.crs"
+		--SCREENMAN:SystemMessage(sDir);
+		--sDir = arr[1].."/"
+		if FILEMAN:DoesFileExist(sDir) then
+			local songName = split(":",GetTagValue(sDir,"SONG"))[1];
+			--SCREENMAN:SystemMessage(songName);
+			local songsInGroup = SONGMAN:GetSongsInGroup(arr[3])
+			for i,song in ipairs(songsInGroup) do
+				if song:GetMainTitle() == songName then
+					extraStageSong = song:GetMainTitle()
+					GAMESTATE:SetPreferredSong(song);
+					break
+				end;
+			end;
+			if not extraStageSong then
+				SCREENMAN:SystemMessage("Couldn't find the extra stage song!");
 			end;
 		end;
-		if not extraStageSong then
-			SCREENMAN:SystemMessage("Couldn't find the extra stage song!");
-		end;
-	end;
 end;
 
 return Def.ActorFrame{

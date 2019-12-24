@@ -6,7 +6,7 @@ DISPLAY TYPE: HD
 ]]
 SysInfo = {
 	InternalName = "RIO4W",
-	Version = "2019-11-26",
+	Version = "2019-11-28",
 }
 
 RIO_FOLDER_NAMES = {
@@ -30,6 +30,10 @@ MAX_SECONDS_FOR_SHORTCUT = 95
 --Number of hearts a mission will take in quest mode.
 HEARTS_PER_MISSION = 3
 
+--Extra stage song.
+--If true, uses the song below, if false, uses extra1.crs.
+USE_ES_SONG = true
+ES_SONG = "09-Season 2 FINAL/Faded"
 --The song that gets picked for the One More Extra Stage.
 OMES_SONG = "Ace For Aces (OMES Test)"
 
