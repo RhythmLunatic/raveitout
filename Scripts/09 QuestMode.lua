@@ -37,7 +37,9 @@ RIO_COURSE_GROUPS = {
 	["Easy World"] = {
 		"EZ1 - The First Step",
 		"EZ2 - The World Warrior",
-		"EZ4 - 404 Not Found"
+		"EZ4 - 404 Not Found",
+		"EZ5 - Dancing Lunacy",
+		"EZ6 - It Gets Harder"
 	},
 	["Medium World"] = {
 		"NM1 - The First Step",
