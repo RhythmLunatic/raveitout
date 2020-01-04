@@ -3,13 +3,15 @@ local shine_index = 0;
 --local streamSafeMode = (ReadPrefFromFile("StreamSafeEnabled") == "true");
 local streamSafeMode = false;
 
---GAMESTATE:SetCurrentSong(SONGMAN:FindSong("3y3s"))
+
+--This is a global variable so other screens can check it
 extraStageSong = nil;
 local isExtraStage = IsExtraStagePIU()
 if isExtraStage then
 	if USE_ES_SONG then
 		local song = SONGMAN:FindSong(ES_SONG)
 		if song then
+			extraStageSong = song
 			GAMESTATE:SetPreferredSong(song);
 		end;
 	else
@@ -25,17 +27,22 @@ if isExtraStage then
 			local songsInGroup = SONGMAN:GetSongsInGroup(arr[3])
 			for i,song in ipairs(songsInGroup) do
 				if song:GetMainTitle() == songName then
-					extraStageSong = song:GetMainTitle()
+					extraStageSong = song
 					GAMESTATE:SetPreferredSong(song);
 					break
 				end;
 			end;
-			if not extraStageSong then
-				SCREENMAN:SystemMessage("Couldn't find the extra stage song!");
-			end;
 		end;
 	end;
+	if not extraStageSong then
+		SCREENMAN:SystemMessage("Couldn't find the extra stage song!");
+	end;
 end;
+
+--Test
+--[[extraStageSong = SONGMAN:FindSong("A")
+GAMESTATE:SetPreferredSong(extraStageSong)
+isExtraStage = true]]
 
 return Def.ActorFrame{
 	
@@ -296,7 +303,7 @@ return Def.ActorFrame{
 					
 					self:diffusealpha(0);
 					if isExtraStage then
-						if extraStageSong == song:GetMainTitle() then
+						if extraStageSong == song then
 							self:diffuseshift():effectcolor1(Color("Red")):effectcolor2(Color("White")):effectperiod(1);
 						else
 							self:effectcolor1(Color("White"))
