@@ -19,7 +19,7 @@ local phrases = {
 	"Brought to you by Music Game Hell",
 	"Brought to you by MAX300 Hell",
 	"Guys what's sows",
-	"Actually, my name's Rick Djarc.",
+	--"Actually, my name's Rick Djarc.",
 	"An osu original",
 	"& Knuckles",
 	"I like rhythm games",
@@ -32,6 +32,7 @@ local phrases = {
 	"Also check out Melty Blood Actress Again Current Code for SM5!",
 	"Also check out Pump It Up: Delta 2!",
 	"Also check out DanceDanceRevolution: SuperNOVA 3!",
+	"Also check out DanceDanceRevolution: Starlight!",
 	"Also check out Sushi Violation!",
 	"stole the precious thing",
 	"stole this theme (Sorry Cortes)",
@@ -45,7 +46,8 @@ local phrases = {
 	"RIP BeatStream",
 	"Academy City's #1",
 	"Are you tired of reading these yet?",
-	"https://youtu.be/dQw4w9WgXcQ"
+	"https://youtu.be/dQw4w9WgXcQ",
+	"What is a man? A miserable little pile of secrets!"
 
 };
 

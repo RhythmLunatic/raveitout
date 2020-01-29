@@ -81,6 +81,11 @@ t[#t+1] = Def.ActorFrame {
 	HideSystemMessageMessageCommand = cmd(finishtweening);
 };
 
+--[[t[#t+1] = Def.Sprite{
+	Texture=THEME:GetPathG("Network","Icon");
+	InitCommand=cmd(animate,false;xy,SCREEN_CENTER_X+95,SCREEN_BOTTOM-12);
+}]]
+
 --[[
 t[#t+1] = Def.ActorFrame{
 	InitCommand=cmd(playcommand,'Refresh');

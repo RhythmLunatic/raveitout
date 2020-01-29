@@ -438,10 +438,26 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 
 --THE BACKGROUND VIDEO
 t[#t+1] = LoadActor(THEME:GetPathG("","background/common_bg"))..{
-		InitCommand=cmd(diffusealpha,0);
-		StartSelectingGroupMessageCommand=cmd(stoptweening;linear,0.35;diffusealpha,1);
-		StartSelectingSongMessageCommand=cmd(stoptweening;linear,0.3;diffusealpha,0);
-	};
+	InitCommand=cmd(diffusealpha,0);
+	StartSelectingGroupMessageCommand=cmd(stoptweening;linear,0.35;diffusealpha,1);
+	StartSelectingSongMessageCommand=cmd(stoptweening;linear,0.3;diffusealpha,0);
+};
+--[[t[#t+1] = Def.ActorFrame{
+
+	--InitCommand=cmd(diffusealpha,0);
+	--StartSelectingGroupMessageCommand=cmd(stoptweening;linear,0.35;diffusealpha,1);
+	StartSelectingGroupMessageCommand=function(self)
+		--self:SetTarget(backgroundProxy):diffusealpha(0);
+		--self:stoptweening():linear(0.35):diffusealpha(1);
+	end;
+	--StartSelectingSongMessageCommand=cmd(stoptweening;linear,0.3;diffusealpha,0);
+	Def.ActorProxy{
+		OnCommand=function(self)
+			self:SetTarget(backgroundProxy);
+		end;
+
+	}
+}]]
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(Center;zoomto,SCREEN_WIDTH,SCREEN_HEIGHT;diffuse,0,0,0,0;fadetop,1;blend,Blend.Add);
