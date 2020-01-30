@@ -4,7 +4,7 @@ This is a StepMania theme that's mainly for the 'pump' game mode.
 # Features
 - Customizable loading screen wallpapers: Put as many wallpapers as you want in Graphics/_RandomWalls/HDWalls/ to have them show up.
 - Favorites folder: Press DownLeft+DownRight during evaluation to favorite a song. A favorites folder will appear in the group select.
-- Change Sort: Folders to change the sort are in the music wheel. Sort by group, title, artist name, or level singles or level doubles.
+- Change Sort: Folders to change the sort are in the music wheel. Sort by group, title, artist name, origin/year, or level singles or level doubles.
 - Auto Velocity: Set the speed of the notes to whatever you prefer.
 - Target Score Graph: Target your best score, machine best score, or a percentage (70%, 80%, 90%, 95%, 100%)
 - Customizable Judgment Graphic: Choose from a variety of options to change how the judgment graphic looks when you hit a note.

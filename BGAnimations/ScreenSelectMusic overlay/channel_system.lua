@@ -6,6 +6,15 @@ local musicwheel; --Need a handle on the MusicWheel to work around a StepMania b
 local WHEELTYPE_NORMAL = 0
 local WHEELTYPE_PREFERRED = 1
 local WHEELTYPE_SORTORDER = 2
+local WHEELTYPE_FROMSORT = 3
+--Optimization. Set to the string of the current sort when sort is changed.
+local curSort;
+if GAMESTATE:GetSortOrder() then
+	curSort = ToEnumShortString(GAMESTATE:GetSortOrder())
+else
+	curSort = "Group";
+end;
+
 --==========================
 --Item Scroller. Must be defined at the top to have 'scroller' var accessible to the rest of the lua.
 --==========================
@@ -38,6 +47,7 @@ local item_mt= {
 			};
 			--[[Def.BitmapText{
 				Name= "text",
+				Text="HELLO WORLD!!!!!!!!!";
 				Font= "Common Normal",
 				InitCommand=cmd(addy,100;DiffuseAndStroke,Color("White"),Color("Black");shadowlength,1);
 			};]]
@@ -77,6 +87,32 @@ local item_mt= {
 		elseif info[1] == WHEELTYPE_PREFERRED then
 			--Maybe it would be better to use info[3] and a graphic named CoopSongs.txt.png? I'm not sure.
 			banner = THEME:GetPathG("Banner",info[2]);
+		elseif info[1] == WHEELTYPE_FROMSORT then
+			if curSort == "DoubleAllDifficultyMeter" or curSort == "AllDifficultyMeter" then
+				if tonumber(info[2]) < 24 then
+					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/"..info[2]);
+				else
+					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/24");
+				end;
+			elseif curSort == "BPM" then
+				local a = string.gsub(info[2],"-%d+","")
+				if tonumber(a) < 500 then
+					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/"..info[2]);
+				else
+					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/500");
+				end;
+				--self.container:GetChild("text"):settext(string.gsub(info[2],"-%d+",""))
+			elseif curSort == "Origin" then
+				local num = tonumber(info[2])
+				if num and num >=1990 and num <= 2020 then
+					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/"..info[2]);
+				else
+					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/unknown");
+				end;
+			else
+				banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/"..info[2]);
+				--banner = "";
+			end;
 		else
 			banner = SONGMAN:GetSongGroupBannerPath(info[2]);
 		end;
@@ -151,17 +187,21 @@ local groups = {};
 function insertSpecialFolders()
 	
 	--Insert these... Somewhere.
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_AllDifficultyMeter"),			"SortOrder_AllDifficultyMeter"});
-	--This should only show up in single player
-	if GAMESTATE:GetNumSidesJoined() == 1 then
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_DoubleAllDifficultyMeter"),	"SortOrder_DoubleAllDifficultyMeter"});
-	end
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Title"), 						"SortOrder_Title"});
+	--table.insert(groups, 1, );
+
+	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Title"), 						"SortOrder_Title"};
 	--SM grading is stupid
 	--table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Top Grades", "SortOrder_TopGrades"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Artist"),	"SortOrder_Artist"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_BPM"),		"SortOrder_BPM"});
-	table.insert(groups, 1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Origin"),	"SortOrder_Origin"});
+	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Artist"),	"SortOrder_Artist"};
+	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_BPM"),		"SortOrder_BPM"};
+	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Origin"),	"SortOrder_Origin"};
+	
+	--I like it close to the end since it's faster to access
+	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_AllDifficultyMeter"),			"SortOrder_AllDifficultyMeter"}
+	--This should only show up in single player
+	if GAMESTATE:GetNumSidesJoined() == 1 then
+		groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_DoubleAllDifficultyMeter"),	"SortOrder_DoubleAllDifficultyMeter"};
+	end
 end;
 
 function genDefaultGroups()
@@ -170,18 +210,18 @@ function genDefaultGroups()
 		groups[i] = {WHEELTYPE_NORMAL,group}
 	end;
 	
-	--Only show in multiplayer, since there's no need to show it in singleplayer.
+	--Only show in multiplayer since there's no need to show it in singleplayer.
 	if GAMESTATE:GetNumSidesJoined() > 1 then
-		table.insert(groups, 1, {WHEELTYPE_PREFERRED, "CO-OP Mode","CoopSongs.txt"})
+		groups[#groups+1] = {WHEELTYPE_PREFERRED, "CO-OP Mode","CoopSongs.txt"}
 	end;
 
+	insertSpecialFolders();
+	
 	for i,pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
 		if getenv(pname(pn).."HasAnyFavorites") then
-			table.insert(groups, i, {WHEELTYPE_PREFERRED, pname(pn).." Favorites", "Favorites.txt"})
+			groups[#groups+1] = {WHEELTYPE_PREFERRED, pname(pn).." Favorites", "Favorites.txt"}
 		end;
 	end;
-	
-	insertSpecialFolders();
 	
 	if GAMESTATE:GetCurrentSong() then
 		local curGroup = GAMESTATE:GetCurrentSong():GetGroupName();
@@ -192,15 +232,17 @@ function genDefaultGroups()
 		end;
 		setenv("cur_group",groups[selection][2]);
 	else
+		--This can occur when changing sorts since sometimes it will kick you out of the folder (because that song isn't in any of the sort generated folders)
+		--Not sure what to do other than ignore it, since it's not a real bug
 		lua.ReportScriptError("The current song should have been set in ScreenSelectPlayMode!");
 	end;
 end;
 function genSortOrderGroups()
 	groups = {};
 	for i,group in ipairs(musicwheel:GetCurrentSections()) do
-		groups[i] = {WHEELTYPE_NORMAL,group}
+		groups[i] = {WHEELTYPE_FROMSORT,group}
 	end;
-	table.insert(groups, #groups+1, {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Group"), "SortOrder_Group"});
+	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Group"), "SortOrder_Group"};
 	insertSpecialFolders();
 end;
 
@@ -227,13 +269,28 @@ local function inputs(event)
 	
 	if button == "Center" or button == "Start" then
 		if groups[selection][1] == WHEELTYPE_SORTORDER then
-			MESSAGEMAN:Broadcast("SortChanged",{newSort=groups[selection][3]})
-			--Spin the groups cuz it will look cool.
-			--It doesn't work..
-			--SCREENMAN:SystemMessage("Test!");
-			scroller:run_anonymous_function(function(self, info)
-				self.container:stoptweening():linear(.3):rotationy(360):sleep(0):rotationy(0);
-			end)
+			--MESSAGEMAN:Broadcast("SortChanged",{newSort=groups[selection][3]})
+			if musicwheel:ChangeSort(groups[selection][3]) then
+				curSort = ToEnumShortString(GAMESTATE:GetSortOrder())
+				if GAMESTATE:GetSortOrder() == "SortOrder_Group" then
+					genDefaultGroups();
+				else
+					genSortOrderGroups();
+				end;
+				selection = 1
+				--SCREENMAN:SystemMessage("SortChanged")
+				scroller:set_info_set(groups, 1);
+				setenv("cur_group",groups[selection][2]);
+				--scroller:set_info_set({"aaa","bbb","ccc","ddd"},1);
+				--Update the text that says the current group.
+				MESSAGEMAN:Broadcast("GroupChange");
+				--Spin the groups cuz it will look cool.
+				--It doesn't work..
+				--SCREENMAN:SystemMessage("Test!");
+				scroller:run_anonymous_function(function(self, info)
+					self.container:stoptweening():linear(.3):rotationy(360):sleep(0):rotationy(0);
+				end)
+			end;
 		else
 			SCREENMAN:set_input_redirected(PLAYER_1, false);
 			SCREENMAN:set_input_redirected(PLAYER_2, false);
@@ -356,25 +413,12 @@ local t = Def.ActorFrame{
 	end;
 	
 	--Why is this even here? It could be in the above function...
-	SortChangedMessageCommand=function(self,params)
+	--[[SortChangedMessageCommand=function(self,params)
 		--Reset button history when the sort selection screen closes.
 		--button_history = {"none", "none", "none", "none"};
 	
-		if musicwheel:ChangeSort(params.newSort) then
-			if GAMESTATE:GetSortOrder() == "SortOrder_Group" then
-				genDefaultGroups();
-			else
-				genSortOrderGroups();
-			end;
-			selection = 1
-			--SCREENMAN:SystemMessage("SortChanged")
-			scroller:set_info_set(groups, 1);
-			setenv("cur_group",groups[selection][2]);
-			--scroller:set_info_set({"aaa","bbb","ccc","ddd"},1);
-			--Update the text that says the current group.
-			MESSAGEMAN:Broadcast("GroupChange");
-		end;
-	end;
+
+	end;]]
 }
 
 

@@ -45,6 +45,9 @@ local sections = {
 		"Karl Chavarria",
 	}},
 	{ "Season 2 Team", {
+		"Lead Graphic Designer - Facu Manuel",
+		"Supporting Graphic Designers:",
+		"Gio Shawn, Akira Sora, and Accelerator",
 		"Step Artist - Gio Shawn",
 		"Step Artist - Akira Sora \"HaleyHalcyon\"",
 		"Step Artist - Accelerator as \"Sanguis Ferri\"",
@@ -67,6 +70,7 @@ local sections = {
 	}},
 	{ "Special Thanks", {
 		"Everyone who liked our Facebook page",
+		"Everyone who beta tested the client",
 		"And YOU!"
 	}}
 }
