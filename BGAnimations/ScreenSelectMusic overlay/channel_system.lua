@@ -99,7 +99,7 @@ local item_mt= {
 				if tonumber(a) < 500 then
 					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/"..info[2]);
 				else
-					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/500");
+					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/500.png");
 				end;
 				--self.container:GetChild("text"):settext(string.gsub(info[2],"-%d+",""))
 			elseif curSort == "Origin" then
@@ -107,10 +107,10 @@ local item_mt= {
 				if num and num >=1990 and num <= 2020 then
 					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/"..info[2]);
 				else
-					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/unknown");
+					banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/unknown.png");
 				end;
 			else
-				banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/"..info[2]);
+				banner = THEME:GetPathG("SortOrder","Banners/"..curSort.."/"..info[2]..".png");
 				--banner = "";
 			end;
 		else
