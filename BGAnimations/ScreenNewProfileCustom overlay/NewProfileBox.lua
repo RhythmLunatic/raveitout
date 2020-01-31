@@ -265,6 +265,8 @@ local t = Def.ActorFrame{
 			else
 				
 			end;
+		elseif params.Name == "Back" then
+			SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToPrevScreen");
 		else
 			SCREENMAN:SystemMessage("unknown input: "..params.Name);
 		end;

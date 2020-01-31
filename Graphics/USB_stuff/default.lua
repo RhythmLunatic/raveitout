@@ -35,6 +35,7 @@ local function PlayerName(player)
 			--self:settext("bla");
 			local profile = PROFILEMAN:GetProfile(player)
 			local name = profile:GetDisplayName()
+			--SCREENMAN:SystemMessage(name)
 			
 			if MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none' then
 				--If name is blank, it's probably the machine profile... After all, the name entry screen doesn't allow blank names.
@@ -49,7 +50,7 @@ local function PlayerName(player)
 					self:settext(string.upper(name)):maxwidth(160);
 				end
 			else
-				self:settext(string.upper(MEMCARDMAN:GetName(player))):maxwidth(160);
+				self:settext(string.upper(name)):maxwidth(160);
 			end
 			
 			self:visible(GAMESTATE:IsSideJoined(player));

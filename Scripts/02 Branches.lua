@@ -107,6 +107,7 @@ Branch = {
 
 		--return CHARMAN:GetAllCharacters() ~= nil and "ScreenSelectCharacter" or "ScreenGameInformation"
 	end,
+	--This function isn't used, AfterProfileLoad is used
 	AfterSelectProfile = function()
 		if ( THEME:GetMetric("Common","AutoSetStyle") == true ) then
 			-- use SelectStyle in online...
@@ -116,6 +117,17 @@ Branch = {
 		end
 	end,
 	AfterProfileLoad = function()
+		for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
+			--ProfileFromMemoryCardIsNew checks if it's a memory card internally so no need to check additionally
+			if PROFILEMAN:ProfileFromMemoryCardIsNew(pn) then
+				return "ScreenNewProfileCustom"
+			else
+				--If it's an RFID scanned (local) profile
+				if PROFILEMAN:IsPersistentProfile(pn) and PROFILEMAN:GetProfile(pn):GetTotalNumSongsPlayed() == 0 then
+					return "ScreenNewProfileCustom"
+				end;
+			end;
+		end;
 		return "ScreenSelectPlayMode"
 	end,
 	AfterProfileSave = function()

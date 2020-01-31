@@ -88,14 +88,16 @@ t[#t+1] = Def.Actor {
 				end;
 			end;
 			
-			--If there are no stages left, save extra data needed for memory cards.
-			if NumHeartsLeft[player] < 1 then
+			--If there are no stages left, save data needed for memory cards. StepMania is supposed to handle this but it's broken...
+			if NumHeartsLeft[player] < 1 or GAMESTATE:IsEventMode() then
 				if PROFILEMAN:ProfileWasLoadedFromMemoryCard(player) then
-					SaveMemcardProfileData(player);
+					PROFILEMAN:SaveProfile(player);
 				end;
+			end;
+			
+			if NumHeartsLeft[player] < 1 then
 				--Remove player manually because SM doesn't know when to do it because we're using hearts.
 				GAMESTATE:UnjoinPlayer(player)
-				--SCREENMAN:SystemMessage("Unjoined "..player)
 			end;
 		end;
 		

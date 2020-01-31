@@ -33,16 +33,6 @@ function(table, ind)
 end
 })
 
-local MemcardProfileInfocache = {
-	["PlayerNumber_P1"] = nil,
-	["PlayerNumber_P2"] = nil
-};
-for player in ivalues({PLAYER_1, PLAYER_2}) do
-	if MEMCARDMAN:GetCardState(player) == 'MemoryCardState_ready' then
-		--Nonfunctional right now.
-		--MemcardProfileInfocache[player] = LoadMemcardProfileData(player)
-	end;
-end;
 
 function GetLocalProfiles()
 	local t = {};
@@ -730,16 +720,11 @@ function UpdateInternal3(self, Player)
 			joinframe:visible(false);
 			loginframe:visible(false);
 			bigframe:visible(true);
-			if MemcardProfileInfocache[Player] ~= nil then
-				playerName:settext(MemcardProfileInfocache[Player]["DisplayName"]);
-				playerLv:settext(calcPlayerLevel(MemcardProfileInfocache[Player]["NumTotalSongsPlayed"]));
-				playerNumSongs:settext(MemcardProfileInfocache[Player]["NumTotalSongsPlayed"]);
-				playerDP:settext(MemcardProfileInfocache[Player]["DancePoints"]);
+			if MEMCARDMAN:GetName(Player) == "" then
+				playerName:settext("NEW PLAYER");
 			else
-				--playerName:settext("Missing stats");
 				playerName:settext(MEMCARDMAN:GetName(Player));
-				--playerTitle:settext("This profile needs to be migrated!");
-			end;
+			end
 			SCREENMAN:GetTopScreen():SetProfileIndex(Player, 0);
 		end;
 	else
@@ -772,13 +757,6 @@ local t = Def.ActorFrame {
 				else
 					--SCREENMAN:SystemMessage(curProfileScreen[params.PlayerNumber]);
 					
-					for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
-						local ind = SCREENMAN:GetTopScreen():GetProfileIndex(pn);
-						if ind > 0 and PROFILEMAN:GetLocalProfileFromIndex(ind-1):GetTotalNumSongsPlayed() == 0 then
-							SCREENMAN:SetNewScreen("ScreenNewProfileCustom");
-							break;
-						end;
-					end;
 					SCREENMAN:GetTopScreen():Finish();
 				end;
 			end;
