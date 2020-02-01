@@ -292,6 +292,69 @@ function SaveTypeConfig()
 	return t;
 end;
 
+function USBSongConfig()
+	local t = {
+		Name = "AllowUSBSongs";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = false;
+		Choices = {"Disabled", "Enabled"};
+		LoadSelections = function(self, list, pn)
+			if PREFSMAN:GetPreference("CustomSongsEnable") == true then
+				list[2] = true;
+			else
+				list[1] = true;
+			end;
+		end;
+		SaveSelections = function(self, list, pn)
+			if list[1] then
+				PREFSMAN:SetPreference("CustomSongsEnable",false);
+			else
+				PREFSMAN:SetPreference("CustomSongsEnable",true);
+			end;
+			PREFSMAN:SavePreferences();
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end;
+
+function CustomSongsMaxSeconds()
+	local t = {
+		Name = "CustomSongsMaxSeconds";
+		LayoutType = "ShowAllInRow";
+		SelectType = "SelectOne";
+		OneChoiceForAllPlayers = true;
+		ExportOnChange = false;
+		Choices = {"60", "90", "120 (default)","150","180","210","240","270","300"};
+		LoadSelections = function(self, list, pn)
+			local c = PREFSMAN:GetPreference("CustomSongsMaxSeconds")
+			if c%30 == 0 and (c-30)/30 < #self.Choices then
+				list[(c-30)/30] = true
+				return;
+			end;
+			--If we got here, no choice was found
+			lua.ReportScriptError("Song seconds was set to "..c.." which isn't a valid choice.")
+			list[3] = true
+		end;
+		SaveSelections = function(self, list, pn)
+			local found = false
+			for i=1, #list do
+				if list[i] then
+					PREFSMAN:SetPreference("CustomSongsMaxSeconds",30+30*i);
+					PREFSMAN:SavePreferences();
+					return;
+				end;
+			end;
+			--If we got here, nothing was found
+			--lua.ReportScriptError("No choice found!");
+		end;
+	};
+	setmetatable( t, t );
+	return t;
+end;
+
 --Unimplemented. The default is S+.
 --[[function ExtraHeartsConfig()
 	local t = {
