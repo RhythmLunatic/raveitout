@@ -21,7 +21,7 @@ return Def.ActorFrame {
 	};
 	
 	LoadFont("_fixedsys")..{
-		Text="RAVE IT OUT FOR WEABOOS\n© 2016-2019 RIO DEVS & RHYTHM LUNATIC.";
+		Text="RAVE IT OUT FOR WEABOOS\n© 2016-2020 RIO DEVS & RHYTHM LUNATIC.";
 		InitCommand=cmd(xy,20,SCREEN_HEIGHT-20;SetTextureFiltering,false;horizalign,left;vertalign,bottom;zoom,textsize;);
 	};
 	LoadFont("_fixedsys")..{

@@ -14,7 +14,8 @@ This is a StepMania theme that's mainly for the 'pump' game mode.
 - Customizable song related items: Show a special background in the loading screen after playing a song, show a message before playing a song, etc... Check Song Structure Documentation.txt for more information.
 - Quest Mode: Play through some missions. Since this requires having the songs, I'd leave this disabled.
 - Card Reader support: Join in with a supported card and card reader. You need the RIO fork to use this feature.
-- USB Profile support: This theme fully supports USB profiles including a screen for setting your name. (USB song loading coming soon!)
+- USB Profile support: This theme fully supports USB profiles including a screen for setting your name.
+- USB Songs: You can play songs from USB, just stick them in the Songs directory of your profile directory. Make sure to enable from machine settings.
 
 ## Usage
 Works on 5.1-new+ only. Auto Velocity will not work if you do not compile the [latest 5.1-new branch](https://github.com/stepmania/stepmania/tree/5_1-new) of StepMania or [the RIO fork](https://github.com/RhythmLunatic/stepmania/tree/starworlds). My fork is required to use level sort and card readers.

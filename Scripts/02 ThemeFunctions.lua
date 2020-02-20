@@ -142,12 +142,29 @@ end;
 
 --Get available choices for ScreenSelectPlayMode
 --TODO: Is ReadPrefFromFile slow? Need to check
-function getPlayModeChoices()
-	if ReadPrefFromFile("SpecialModeEnabled") == "true" then
-		return "Easy,Arcade,Pro,Special"
-	else
-		return "Easy,Arcade,Pro";
+local function isMixtapesAvailable()
+	if ReadPrefFromFile("MixtapeModeEnabled") == "true" then
+		return ",Mixtapes"
 	end;
+	
+	return "";
+end;
+
+local function isSpecialAvailable()
+	if ReadPrefFromFile("SpecialModeEnabled") == "true" then
+		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+			if PROFILEMAN:IsPersistentProfile(pn) then
+				return ",Special"
+			end;
+		end;
+	end;
+	
+	return "";
+end;
+
+--This will be changed eventually, it's not a function for no reason
+function getPlayModeChoices()
+	return "Easy,Arcade,Pro"..isMixtapesAvailable()..isSpecialAvailable();
 end;
 
 --Take a wild guess as to what this does

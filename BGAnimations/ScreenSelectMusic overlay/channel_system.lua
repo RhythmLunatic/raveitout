@@ -23,9 +23,6 @@ end;
 local scroller = setmetatable({disable_wrapping= false}, item_scroller_mt)
 local numWheelItems = 15
 
---Item scroller starts at 0, duh.
-local currentItemIndex = 0;
-
 -- Scroller function thingy
 local item_mt= {
   __index= {
@@ -142,6 +139,7 @@ groups = {};
 local shine_index = 1;
 local names = SONGMAN:GetSongGroupNames()
 
+--Why the fuck is this global?
 selection = 1;
 local spacing = 210;
 local numplayers = GAMESTATE:GetHumanPlayers();

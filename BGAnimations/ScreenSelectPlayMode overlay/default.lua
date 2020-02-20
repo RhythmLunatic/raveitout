@@ -278,6 +278,14 @@ t[#t+1] = Def.ActorFrame{
 t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 	OnCommand=function(self)
 		self:diffusealpha(0):FullScreen();
+		
+		--Debug profile check, ignore me..
+		--[[local p = PROFILEMAN:GetProfile(PLAYER_1)
+		if PROFILEMAN:IsPersistentProfile(PLAYER_1) then
+			SCREENMAN:SystemMessage("true");
+		else
+			SCREENMAN:SystemMessage("false");
+		end;]]
 	end;
 	
 	--[[RefreshCommand=function(self)
@@ -295,6 +303,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 	Off2Command=function(self)
 		
 		local choice = Choices[SCREENMAN:GetTopScreen():GetSelectionIndex(GAMESTATE:GetMasterPlayerNumber())+1]
+		--Does this function even do anything?
 		WriteGamePrefToFile("DefaultFail","");
 		setenv("StageBreak",true);
 		
@@ -308,7 +317,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		if choice == "Easy" then
 			PREFSMAN:SetPreference("AllowW1",'AllowW1_Never');
 			-- Easy Mode
-			setenv("PlayMode","Easy");
+			--setenv("PlayMode","Easy");
 			setenv("HeaderTitle","SELECT MUSIC");
 			assert(SONGMAN:DoesSongGroupExist(RIO_FOLDER_NAMES["EasyFolder"]),"Easy folder is missing!")
 			local folder = SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["EasyFolder"]);
@@ -318,7 +327,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		elseif choice == "Arcade" then
 			PREFSMAN:SetPreference("AllowW1",'AllowW1_Never');
 			-- Arcade Mode
-			setenv("PlayMode","Arcade");
+			--setenv("PlayMode","Arcade");
 			setenv("HeaderTitle","SELECT MUSIC");
 			
 			--[[ we don't want them to be able to access a song from Easy or Special mode, so if the last played song was from there,
@@ -343,7 +352,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		elseif choice == "Pro" then
 			-- Pro Mode
 			setenv("HeaderTitle","SELECT MUSIC");
-			setenv("PlayMode","Pro");
+			--setenv("PlayMode","Pro");
 			
 			--same as above
 			local lastPlayedSong = PROFILEMAN:GetProfile(GAMESTATE:GetMasterPlayerNumber()):GetLastPlayedSong();
@@ -374,7 +383,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 			for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
 				QUESTMODE:LoadCurrentProgress(pn);
 			end;
-			setenv("PlayMode","Special");
+			--setenv("PlayMode","Special");
 		end
 		
 	end;

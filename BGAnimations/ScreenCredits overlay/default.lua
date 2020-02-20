@@ -48,13 +48,17 @@ local sections = {
 		"Lead Graphic Designer - Facu Manuel",
 		"Supporting Graphic Designers:",
 		"Gio Shawn, Akira Sora, and Accelerator",
-		"Step Artist - Gio Shawn",
-		"Step Artist - Akira Sora \"HaleyHalcyon\"",
-		"Step Artist - Accelerator as \"Sanguis Ferri\"",
+		"Step Artists:",
+		"Chris Cortes"
+		"Gio Shawn",
+		"Akira Sora \"HaleyHalcyon\"",
+		"Accelerator as \"Sangvis Ferri\"",
 		"Main Programmer - Accelerator",
 		"Supporting Programmer - José Varela",
 		"Supporting Programmer - Tertu",
 		"Supporting Programmer - Jousway",
+		"Mission Mode - Accelerator",
+		"Mission Mode Ideas - UKSRT, WinDEU, PIU, DDR"
 	}},
 	{ "Open Source Libraries", {
 		"Profile management, target score graph, etc by dbk2",
@@ -66,11 +70,13 @@ local sections = {
 	}},
 	{ "Beta Testers", {
 		"dj505",
-		"Chrissy"
+		"Chrissy",
+		"Cody"
 	}},
 	{ "Special Thanks", {
 		"Everyone who liked our Facebook page",
 		"Everyone who beta tested the client",
+		"The StepF2 Team and The StepPrime Team",
 		"And YOU!"
 	}}
 }

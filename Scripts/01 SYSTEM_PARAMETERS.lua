@@ -24,6 +24,21 @@ RIO_FOLDER_NAMES = {
 	--If this is empty all groups will be shown.
 	PREDEFINED_GROUP_LIST = {}
 }
+
+--[[
+What course folders will show in mixtapes mode.
+It's necessary because we have mission mode folders
+and we don't want them to pollute the mixtapes folders...
+
+]]
+RIO_COURSE_FOLDERS = {
+	"Class (Singles)",
+	"Class (Doubles)",
+	"Mixtapes",
+	"Leggendaria",
+	"Default"
+}
+
 --Take a wild guess. #SONGTYPE:shortcut will override this.
 MAX_SECONDS_FOR_SHORTCUT = 95
 
@@ -82,6 +97,7 @@ STEPMAKER_NAMES_BLACKLIST = {
 	--S2 names
 	"A.Sora",
 	"Accelerator",
+	"S. Ferri",
 	"G.Shawn"
 }
 
