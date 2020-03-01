@@ -61,14 +61,16 @@ local sections = {
 		"Mission Mode Ideas - UKSRT, WinDEU, PIU, DDR"
 	}},
 	{ "Open Source Libraries", {
-		"Profile management, target score graph, etc by dbk2",
+		"Profile management & PlayerOptions by dbk2",
+		"Target Score Graph, panel info, eval screen info by dbk2",
+		"MusicWheel Favorites by leadbman",
 		"json.lua is Copyright (c) 2019 rxi",
-		"item_scroller is by Kyzentun",
+		"item_scroller.lua by Kyzentun",
 		--Client credits
 		"COM port and http support by pk",
 		"Card Reader libraries by Alex123123"
 	}},
-	{ "Beta Testers", {
+	{ "Season 2 Beta Testers", {
 		"dj505",
 		"Chrissy",
 		"Cody"

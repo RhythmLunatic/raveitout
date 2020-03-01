@@ -30,8 +30,9 @@ end;
 local function PlayerName(player)
 
 	--return LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
-	return LoadFont("common normal")..{
-		SetCommand=function(self)
+	return LoadFont("facu/_zona pro bold 40px")..{
+		InitCommand=function(self)
+			self:skewx(-.2)
 			--self:settext("bla");
 			local profile = PROFILEMAN:GetProfile(player)
 			local name = profile:GetDisplayName()
@@ -47,19 +48,13 @@ local function PlayerName(player)
 					end;
 				else
 					--TODO: Adjust maxwidth based on the number of hearts per play.
-					self:settext(string.upper(name)):maxwidth(160);
+					self:settext(string.upper(name)):maxwidth(200);
 				end
 			else
-				self:settext(string.upper(name)):maxwidth(160);
+				self:settext(string.upper(name)):maxwidth(200);
 			end
 			
-			self:visible(GAMESTATE:IsSideJoined(player));
 		end;
-		PlayerJoinedMessageCommand=cmd(playcommand,"Set");
-		CoinInsertedMessageCommand=cmd(playcommand,"Set");
-		CoinModeChangedMessageCommand=cmd(playcommand,"Set");
-		ScreenChangedMessageCommand=cmd(playcommand,"Set");
-		StorageDevicesChangedMessageCommand=cmd(playcommand,"Set");
 	};
 end
 
@@ -121,64 +116,45 @@ else
 	};
 end;
 
-t[#t+1] = Def.ActorFrame {
+if GAMESTATE:IsSideJoined(PLAYER_1) then
+	t[#t+1] = Def.ActorFrame {
 
-	InitCommand=cmd(x,5;y,SCREEN_BOTTOM-18;);
-	OnCommand=cmd(visible,GAMESTATE:IsSideJoined(PLAYER_1));
-	ScreenChangedMessageCommand=cmd(playcommand,"On");
-	PlayerJoinedMessageCommand=cmd(playcommand,"On");
-	CoinInsertedMessageCommand=cmd(playcommand,"On");
-	CoinModeChangedMessageCommand=cmd(playcommand,"On");
-	ScreenChangedMessageCommand=cmd(playcommand,"On");
-	StorageDevicesChangedMessageCommand=cmd(playcommand,"On");
+		InitCommand=cmd(x,5;y,SCREEN_BOTTOM-18;);
 
-	LoadActor("p1_indicator") .. {
-		InitCommand=cmd(horizalign,left;zoom,.75;addy,1;);
-	};
-	LoadActor("avatars/blank") .. {
-		InitCommand=cmd(zoom,1;addx,35;horizalign,left;);
-		OnCommand=function(self)
-			self:Load(getenv("profile_icon_P1"));
-			self:setsize(30,30);
-		end;
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		PlayerJoinedMessageCommand=cmd(playcommand,"On");
-		CoinInsertedMessageCommand=cmd(playcommand,"On");
-		CoinModeChangedMessageCommand=cmd(playcommand,"On");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		StorageDevicesChangedMessageCommand=cmd(playcommand,"On");
-
-	};
-
-	LoadFont("Common Normal")..{
-		Condition=(DoDebug and GAMESTATE:IsSideJoined(PLAYER_1));
-		InitCommand=function(self)
-			self:zoom(.5):horizalign(left):addx(100):addy(-10);
-			if getenv("profile_icon_P1") then
-				self:settext("Icon: "..getenv("profile_icon_P1").." Setting: "..tostring(ActiveModifiers["P1"]['ProfileIcon']));
-			else
-				--self:settext("aaaa "..PROFILEMAN:GetProfileDir(ProfileSlot[PlayerNumber:Reverse()[PLAYER_1]+1]));
-				self:settext("Icon: None (profile_icon_P1 is nil)");
+		LoadActor("p1_indicator") .. {
+			InitCommand=cmd(horizalign,left;zoom,.75;addy,1;);
+		};
+		Def.Sprite{
+			Texture=getenv("profile_icon_P1");
+			InitCommand=cmd(zoom,1;addx,35;horizalign,left;setsize,30,30);
+		};
+		LoadFont("Common Normal")..{
+			Condition=(DoDebug and GAMESTATE:IsSideJoined(PLAYER_1));
+			InitCommand=function(self)
+				self:zoom(.5):horizalign(left):addx(100):addy(-10);
+				if getenv("profile_icon_P1") then
+					self:settext("Icon: "..getenv("profile_icon_P1").." Setting: "..tostring(ActiveModifiers["P1"]['ProfileIcon']));
+				else
+					--self:settext("aaaa "..PROFILEMAN:GetProfileDir(ProfileSlot[PlayerNumber:Reverse()[PLAYER_1]+1]));
+					self:settext("Icon: None (profile_icon_P1 is nil)");
+				end;
+				--self:settext(THEME:GetPathG("","USB_stuff/avatars").."/"..ActiveModifiers["P1"]["ProfileIcon"]);
 			end;
-			--self:settext(THEME:GetPathG("","USB_stuff/avatars").."/"..ActiveModifiers["P1"]["ProfileIcon"]);
-		end;
-	};
+		};
+		PlayerName(PLAYER_1)..{
+			InitCommand=cmd(zoom,0.5;addx,68;addy,7;horizalign,left;);
+		};
+		PlayerLevel(PLAYER_1)..{
+			InitCommand=cmd(zoom,0.45;addx,68;addy,-7;horizalign,left;);
+		};
+	}
 	
-	PlayerName(PLAYER_1)..{
-		InitCommand=cmd(zoom,0.8;addx,68;addy,7;horizalign,left;);
-	};
-
-	--[[LoadActor("level") .. {
-		InitCommand=cmd(zoom,0.6;x,213;y,SCREEN_BOTTOM-15;horizalign,left;);
+	--[[t[#t+1] = LoadActor("alternate",PLAYER_1)..{
+		InitCommand=cmd(zoom,.75;xy,250/2-28,SCREEN_BOTTOM-22;);
+		OnCommand=cmd(addy,55;decelerate,0.5;addy,-55;diffusealpha,1);
+		OffCommand=cmd(decelerate,0.5;addy,55;diffusealpha,0);
 	};]]
-	
-	PlayerLevel(PLAYER_1)..{
-		InitCommand=cmd(zoom,0.45;addx,68;addy,-7;horizalign,left;);
-	};
-	
-	
-}
-
+end;
 
 
 t[#t+1] = Def.ActorFrame{
@@ -190,13 +166,6 @@ t[#t+1] = Def.ActorFrame{
 
 	LoadActor("p2_indicator") .. {
 		InitCommand=cmd(zoom,.75;addy,.5;horizalign,right;);
-		OnCommand=cmd(playcommand,"Init");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		PlayerJoinedMessageCommand=cmd(playcommand,"On");
-		CoinInsertedMessageCommand=cmd(playcommand,"On");
-		CoinModeChangedMessageCommand=cmd(playcommand,"On");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		StorageDevicesChangedMessageCommand=cmd(playcommand,"On");
 	};
 	LoadActor("avatars/blank") .. {
 		InitCommand=cmd(zoom,1;addx,-35;horizalign,right;draworder,350;);
@@ -204,12 +173,6 @@ t[#t+1] = Def.ActorFrame{
 			self:Load(getenv("profile_icon_P2"));
 			self:setsize(30,30);
 		end;
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		PlayerJoinedMessageCommand=cmd(playcommand,"On");
-		CoinInsertedMessageCommand=cmd(playcommand,"On");
-		CoinModeChangedMessageCommand=cmd(playcommand,"On");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		StorageDevicesChangedMessageCommand=cmd(playcommand,"On");
 
 	};
 	LoadFont("Common Normal")..{
@@ -230,35 +193,10 @@ t[#t+1] = Def.ActorFrame{
 	
 	PlayerName(PLAYER_2)..{
 		InitCommand=cmd(zoom,0.8;addx,-68;addy,7;horizalign,right;);
-		OnCommand=cmd(playcommand,"Set");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		PlayerJoinedMessageCommand=cmd(playcommand,"On");
-		CoinInsertedMessageCommand=cmd(playcommand,"On");
-		CoinModeChangedMessageCommand=cmd(playcommand,"On");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		StorageDevicesChangedMessageCommand=cmd(playcommand,"On");
 	};
-	
-	--[[LoadActor("level") .. {
-		InitCommand=cmd(visible,GAMESTATE:IsSideJoined(PLAYER_2);zoom,0.6;x,SCREEN_CENTER_X+102;y,SCREEN_BOTTOM-15;horizalign,right;);
-		OnCommand=cmd(playcommand,"Init");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		PlayerJoinedMessageCommand=cmd(playcommand,"On");
-		CoinInsertedMessageCommand=cmd(playcommand,"On");
-		CoinModeChangedMessageCommand=cmd(playcommand,"On");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		StorageDevicesChangedMessageCommand=cmd(playcommand,"On");
-	};]]
 
 	PlayerLevel(PLAYER_2)..{
 		InitCommand=cmd(zoom,0.45;addx,-68;addy,-7;horizalign,right;);
-		OnCommand=cmd(playcommand,"Set");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		PlayerJoinedMessageCommand=cmd(playcommand,"On");
-		CoinInsertedMessageCommand=cmd(playcommand,"On");
-		CoinModeChangedMessageCommand=cmd(playcommand,"On");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		StorageDevicesChangedMessageCommand=cmd(playcommand,"On");
 	};
 
 }

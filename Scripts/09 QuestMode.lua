@@ -83,8 +83,8 @@ QUESTMODE.CheckAndUpdateMissionStatus=function(self,player)
 	assert(self[player][currentWorld][GAMESTATE:GetCurrentCourse():GetDisplayFullTitle()] ~= nil);]]
 	
 	--If it's not already passed, update the clear status. Since we don't want to set a cleared mission back to uncleared.
-	if self[player][self.currentWorld][GAMESTATE:GetCurrentCourse():GetDisplayFullTitle()] ~= true then
-		self[player][self.currentWorld][GAMESTATE:GetCurrentCourse():GetDisplayFullTitle()] = clearStatus;
+	if self[player][self.currentWorld][GAMESTATE:GetCurrentCourse():GetTranslitFullTitle()] ~= true then
+		self[player][self.currentWorld][GAMESTATE:GetCurrentCourse():GetTranslitFullTitle()] = clearStatus;
 	end;
 	return clearStatus;
 end;
@@ -154,7 +154,8 @@ QUESTMODE.GenerateNewFile=function()
 		tempArr[crsWorldName] = {};
 		for crsGroup in ivalues(crsWorld) do
 			for crs in ivalues(SONGMAN:GetCoursesInGroup(crsGroup,false)) do
-				tempArr[crsWorldName][crs:GetDisplayFullTitle()] = false
+				--Always get TranslitFullTitle since it doesn't depend on user settings
+				tempArr[crsWorldName][crs:GetTranslitFullTitle()] = false
 			end;
 		end;
 	end;

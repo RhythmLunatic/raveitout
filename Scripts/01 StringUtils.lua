@@ -92,6 +92,8 @@ function strArrayToString(a)
 	return s;
 end
 
+
+--https://stackoverflow.com/a/27028488
 function dumpTable(o)
    if type(o) == 'table' then
       local s = '{ '
