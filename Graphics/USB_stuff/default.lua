@@ -192,7 +192,7 @@ t[#t+1] = Def.ActorFrame{
 	};
 	
 	PlayerName(PLAYER_2)..{
-		InitCommand=cmd(zoom,0.8;addx,-68;addy,7;horizalign,right;);
+		InitCommand=cmd(zoom,0.5;addx,-68;addy,7;horizalign,right;);
 	};
 
 	PlayerLevel(PLAYER_2)..{

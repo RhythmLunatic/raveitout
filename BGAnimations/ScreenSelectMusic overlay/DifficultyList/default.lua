@@ -75,10 +75,12 @@ return Def.ActorFrame {
 						p2_id = p2_steps:GetMeter();
 					end;
 
+					--Some dude out there really used THEME:GetCurrentThemeDirectory()../bganimations huh
+					--For anyone else reading this, don't do that, do THEME:GetPathB() instead
 					if #GAMESTATE:GetEnabledPlayers() == 2 and p1_id == p2_id then
-						self:Load(THEME:GetCurrentThemeDirectory().."Bganimations/ScreenSelectMusic overlay/DifficultyList/2p_bothplayers.png")
+						self:Load(THEME:GetPathB("ScreenSelectMusic","overlay/DifficultyList/2p_bothplayers.png"))
 					else
-						self:Load(THEME:GetCurrentThemeDirectory().."Bganimations/ScreenSelectMusic overlay/DifficultyList/player2cur.png")
+						self:Load(THEME:GetPathB("ScreenSelectMusic","overlay/DifficultyList/player2cur.png"));
 					end;
 				end;
 			};

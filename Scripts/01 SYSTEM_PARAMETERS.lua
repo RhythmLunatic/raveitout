@@ -30,10 +30,13 @@ What course folders will show in mixtapes mode.
 It's necessary because we have mission mode folders
 and we don't want them to pollute the mixtapes folders...
 
+Class types: Normal, Pro, Gauntlet
 ]]
 RIO_COURSE_FOLDERS = {
 	"Class (Singles)",
 	"Class (Doubles)",
+	--"PIU Class (Singles)",
+	--"PIU Class (Doubles)",
 	"Mixtapes",
 	"Leggendaria",
 	"Default"
@@ -104,7 +107,7 @@ STEPMAKER_NAMES_BLACKLIST = {
 
 --Based on GAMESTATE:GetCurrentSong():GetDisplayFullTitle().."||"..GAMESTATE:GetCurrentSong():GetDisplayArtist()
 --List of songs that will get your recording blocked worldwide
-STREAM_UNSAFE_AUDIO = {
+--[[STREAM_UNSAFE_AUDIO = {
 	"Breaking The Habit||Linkin Park",
 	"She Wolf (Falling to Pieces)||David Guetta ft. Sia",
 	"Untouched||The Veronicas",
@@ -124,6 +127,6 @@ STREAM_UNSAFE_VIDEO = {
 	"Through the Fire and Flames",
 	"How I Feel",
 	"Don't Stop The Party"
-}
+}]]
 
 --Looking for titles and avatars? Check unlocks.lua.

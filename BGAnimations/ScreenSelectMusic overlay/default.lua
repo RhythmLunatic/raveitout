@@ -146,6 +146,7 @@ t[#t+1] = Def.ActorFrame {
 	LoadFont("monsterrat/_montserrat semi bold 60px")..{
 		InitCommand=cmd(horizalign,left;x,SCREEN_LEFT+16;y,SCREEN_TOP+30;zoom,0.6;skewx,-0.25;uppercase,true);
 		OnCommand=function(self)
+			assert(getenv("cur_group"),"current group not set!");
 			self:settext(string.gsub(getenv("cur_group"),"^%d%d? ?%- ?", ""));
 		end;
 		StartSelectingSongMessageCommand=function(self)

@@ -70,7 +70,7 @@ end;
 
 QUESTMODE.GetSaveDataPath=function(self,player)
 	local profileDir = PROFILEMAN:GetProfileDir(ProfileSlot[PlayerNumber:Reverse()[player]+1])
-	assert(profileDir ~= '',"No profile is loaded. Cannot save mission data.")
+	assert(profileDir ~= '',"No profile is loaded for "..player.." ("..ProfileSlot[PlayerNumber:Reverse()[player]+1].."). Cannot load/save mission data.")
 	return profileDir..self.savefile
 end;
 
