@@ -577,7 +577,7 @@ end;
  
 t[#t+1] = LoadActor("code_detector.lua")..{};
 --t[#t+1] = LoadActor("PlayerMods")..{};
-t[#t+1] = LoadActor("GenreSounds.lua")..{};
+--t[#t+1] = LoadActor("GenreSounds.lua")..{};
 if getenv("PlayMode") == "Arcade" or getenv("PlayMode") == "Pro" then 
 	
 	if GetSmallestNumHeartsLeftForAnyHumanPlayer() > 1 then

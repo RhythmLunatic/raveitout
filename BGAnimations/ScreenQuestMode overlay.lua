@@ -80,7 +80,7 @@ function rectGen(width, height, lineSize, bgColor)
     };
 end;
 
-function CanSafelyEnterGameplayCourse()
+local function CanSafelyEnterGameplayCourse()
 	for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
 		if GAMESTATE:GetCurrentTrail(pn) == nil and GAMESTATE:IsPlayerEnabled(pn) then
 			return false,"Trail for "..pname(pn).." was not set.";

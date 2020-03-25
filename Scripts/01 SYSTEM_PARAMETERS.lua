@@ -6,7 +6,7 @@ DISPLAY TYPE: HD
 ]]
 SysInfo = {
 	InternalName = "RIO4W",
-	Version = "2020-01-31",
+	Version = "2020-03-25",
 }
 
 RIO_FOLDER_NAMES = {
@@ -30,16 +30,31 @@ What course folders will show in mixtapes mode.
 It's necessary because we have mission mode folders
 and we don't want them to pollute the mixtapes folders...
 
+Trail is not needed unless you specifically want to pull the trails of that stepstype. If it's
+not specified it will default to whatever StepMania generates first, which can be good or bad depending on how you look at it.
+
+SM generates trails for every stepstype regardless of what you put in the course (#STYLE:DOUBLE does not affect trail generation).
+In fact, the only thing #STYLE does is determine what style to set when you select that course...
+
 Class types: Normal, Pro, Gauntlet
 ]]
 RIO_COURSE_FOLDERS = {
-	"Class (Singles)",
-	"Class (Doubles)",
+	["Class (Singles)"] = {
+		Lifebar="Pro",
+		Style='StepsType_Pump_Single'
+	},
+	["Class (Doubles)"] = {
+		Lifebar="Pro",
+		Style='StepsType_Pump_Double'
+	},
 	--"PIU Class (Singles)",
 	--"PIU Class (Doubles)",
-	"Mixtapes",
-	"Leggendaria",
-	"Default"
+	["Nonstop"] = {
+	},
+	["Leggendaria"] = {
+	},
+	["Default"] = {
+	}
 }
 
 --Take a wild guess. #SONGTYPE:shortcut will override this.

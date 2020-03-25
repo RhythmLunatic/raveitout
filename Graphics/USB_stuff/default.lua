@@ -92,11 +92,13 @@ if IsUsingWideScreen() then
 					self:effectcolor1(color("#FFFFFF"))
 				end;
 			end;
-			--Right now courses are 3 hearts each, that may be changed later.
+			--Mixtapes mode is all hearts, but special mode is only 3 hearts
 			CurrentCourseChangedMessageCommand=function(self)
 				--why the FUCK does ScreenSelectMusic broadcast CurrentCourseChanged when it's not changing the course?
 				if not GAMESTATE:IsCourseMode() then return end;
-				if i > NumHeartsLeft[PLAYER_1]-3 then
+				if getenv("PlayMode") == "Mixtapes" then
+					self:effectcolor1(color("#7e7e7e"))
+				elseif i > NumHeartsLeft[PLAYER_1]-3 then
 					self:effectcolor1(color("#7e7e7e"))
 				end;
 			end;
@@ -221,7 +223,10 @@ if GAMESTATE:IsSideJoined(PLAYER_2) then
 					end;
 				end;
 				CurrentCourseChangedMessageCommand=function(self)
-					if i > NumHeartsLeft[PLAYER_1]-3 then
+					if not GAMESTATE:IsCourseMode() then return end;
+					if getenv("PlayMode") == "Mixtapes" then
+						self:effectcolor1(color("#7e7e7e"))
+					elseif i > NumHeartsLeft[PLAYER_1]-3 then
 						self:effectcolor1(color("#7e7e7e"))
 					end;
 				end;

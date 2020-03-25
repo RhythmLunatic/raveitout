@@ -1,3 +1,31 @@
+local function CanSafelyEnterGameplayCourse()
+	for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
+		if GAMESTATE:GetCurrentTrail(pn) == nil and GAMESTATE:IsPlayerEnabled(pn) then
+			return false,"Trail for "..pname(pn).." was not set.";
+		end
+	end;
+	if not GAMESTATE:GetCurrentCourse() then
+		return false,"No course was set."
+	end;
+	if GAMESTATE:GetCurrentSong() then
+		return false,"There is a song set in GAMESTATE."
+	end;
+	if not GAMESTATE:IsCourseMode() then
+		return false,"The IsCourseMode flag was not set."
+	end;
+	return true
+end
+--We don't want any songs set! Though I'm not sure how this is possible.
+GAMESTATE:SetCurrentSong(nil);
+
+--We want the names of the items in the RIO_COURSE_FOLDERS so we need a separate table
+local folderNames = {};
+for k,v in pairs(RIO_COURSE_FOLDERS) do
+	folderNames[#folderNames+1] = k
+end;
+assert(#folderNames > 0,"Wat?");
+--TrailCache;
+
 local numWheelItems = 15
 
 -- Scroller for the courses
@@ -153,12 +181,12 @@ local item_mt_group= {
 	set= function(self, info)
 		--self.container:GetChild("text"):settext(info);
 		--TODO
-		local banner = "";
-		if banner == "" then
+		--local banner = SONGMAN:GetCourseGroupBannerPath(info);
+
+		if FILEMAN:DoesFileExist("/Courses/"..info.."/banner.png") then
+			self.container:GetChild("banner"):Load("/Courses/"..info.."/banner.png");
+		else
 			self.container:GetChild("banner"):Load(THEME:GetPathG("common","fallback group"));
-  		else
-  			self.container:GetChild("banner"):Load(banner);
-  			--self.container:GetChild("text"):visible(false);
 		end;
 		self.container:GetChild("banner"):scaletofit(-500,-200,500,200);
 	end,
@@ -168,8 +196,14 @@ local item_mt_group= {
 	end,]]
 }}
 
-local isSelectingCourse = false;
+local STATE_PICKING_FOLDER = 0;
+local STATE_PICKING_COURSE = 1;
+local STATE_READY = 2;
+
+local curState = STATE_PICKING_FOLDER;
 local currentCourseGroup;
+local lastSelectedGroupIndex = 0;
+
 local function inputs(event)
 	
 	local pn= event.PlayerNumber
@@ -183,10 +217,39 @@ local function inputs(event)
 
 	-- If it's a release, ignore it.
 	if event.type == "InputEventType_Release" then return end
-	
-	if isSelectingCourse then
+	if curState == STATE_READY then
 		if button == "UpRight" or button == "UpLeft" or button == "Up" or button == "MenuUp" then
-			isSelectingCourse = false
+			curState = STATE_PICKING_COURSE;
+			MESSAGEMAN:Broadcast("SongUnchosen");
+		elseif button == "Center" or button == "Start" then
+			local course = GAMESTATE:GetCurrentCourse();
+			local trail = TrailCache;
+			if trail then
+				--Is this actually necessary? AutoSetStyle should take care of it.
+				--if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
+				--	GAMESTATE:SetCurrentStyle(string.match(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'],"_([^_]+)$"))
+				--end;
+				for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
+					GAMESTATE:SetCurrentTrail(pn, trail)
+					--GAMESTATE:SetCurrentSteps(pn, trail:GetTrailEntry(0):GetSteps());
+				end;
+			else
+				SCREENMAN:SystemMessage("Trail was nil! Number of trails: "..#course:GetAllTrails().. " | Course: "..course:GetDisplayFullTitle());
+			end;
+	
+			local can, reason = CanSafelyEnterGameplayCourse();
+			if can then
+				if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Lifebar'] == "Pro" then
+					setenv("Lifebar","Pro")
+				end;
+				SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToNextScreen");
+			else
+				SCREENMAN:SystemMessage(reason);
+			end;
+		end;
+	elseif curState == STATE_PICKING_COURSE then
+		if button == "UpRight" or button == "UpLeft" or button == "Up" or button == "MenuUp" then
+			curState = STATE_PICKING_FOLDER;
 			MESSAGEMAN:Broadcast("StartSelectingGroup");
 		elseif button == "DownLeft" or button == "Left" or button == "MenuLeft" then
 			SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
@@ -197,6 +260,12 @@ local function inputs(event)
 			end;
 			courseScroller:scroll_by_amount(-1);
 			GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection])
+			if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
+				TrailCache = currentCourseGroup[courseSelection]:GetTrails(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'])[1];
+			else
+				TrailCache = currentCourseGroup[courseSelection]:GetAllTrails()[1];
+			end;
+			--assert(TrailCache);
 			MESSAGEMAN:Broadcast("CurrentCourseChanged",{Selection=courseSelection,Total=#currentCourseGroup});
 		elseif button == "DownRight" or button == "Right" or button == "MenuRight" then
 			SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
@@ -207,38 +276,54 @@ local function inputs(event)
 			end
 			courseScroller:scroll_by_amount(1);
 			GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection])
+			if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
+				TrailCache = currentCourseGroup[courseSelection]:GetTrails(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'])[1];
+			else
+				TrailCache = currentCourseGroup[courseSelection]:GetAllTrails()[1];
+			end;
+			--assert(TrailCache);
 			MESSAGEMAN:Broadcast("CurrentCourseChanged",{Selection=courseSelection,Total=#currentCourseGroup});
+		elseif button == "Center" or button == "Start" then
+			curState = STATE_READY;
+			MESSAGEMAN:Broadcast("SongChosen");
 		end;
 	else
 		if button == "Center" or button == "Start" then
 			--[[SCREENMAN:set_input_redirected(PLAYER_1, false);
 			SCREENMAN:set_input_redirected(PLAYER_2, false);]]
-			currentCourseGroup = SONGMAN:GetCoursesInGroup(RIO_COURSE_FOLDERS[groupSelection],true)
-			assert(#currentCourseGroup > 0,"Hey idiot, you don't have any courses in this group.")
-			courseScroller:set_info_set(currentCourseGroup,1);
+			if lastSelectedGroupIndex ~= groupSelection then
+				currentCourseGroup = SONGMAN:GetCoursesInGroup(folderNames[groupSelection],true)
+				assert(#currentCourseGroup > 0,"Hey idiot, you don't have any courses in this group.")
+				courseScroller:set_info_set(currentCourseGroup,1);
+				courseSelection = 1;
+				GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection])
+				lastSelectedGroupIndex = groupSelection;
+			end;
+			--SOUND:PlayOnce(THEME:GetPathS("", "SongChosen"), true);
 			MESSAGEMAN:Broadcast("StartSelectingSong");
-			isSelectingCourse = true;
+			curState = STATE_PICKING_COURSE;
+			
 		elseif button == "DownLeft" or button == "Left" or button == "MenuLeft" then
 			SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
 			if groupSelection == 1 then
-				groupSelection = #RIO_COURSE_FOLDERS;
+				groupSelection = #folderNames;
 			else
 				groupSelection = groupSelection - 1 ;
 			end;
 			groupScroller:scroll_by_amount(-1);
-			setenv("cur_group",RIO_COURSE_FOLDERS[groupSelection]);
+			setenv("cur_group",folderNames[groupSelection]);
 			MESSAGEMAN:Broadcast("GroupChange");
 			MESSAGEMAN:Broadcast("PreviousGroup");
 			
 		elseif button == "DownRight" or button == "Right" or button == "MenuRight" then
 			SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
-			if groupSelection == #RIO_COURSE_FOLDERS then
+			if groupSelection == #folderNames then
 				groupSelection = 1;
 			else
 				groupSelection = groupSelection + 1
 			end
 			groupScroller:scroll_by_amount(1);
-			setenv("cur_group",RIO_COURSE_FOLDERS[groupSelection]);
+			setenv("cur_group",folderNames[groupSelection]);
 			MESSAGEMAN:Broadcast("GroupChange");
 			MESSAGEMAN:Broadcast("NextGroup");
 		--elseif button == "UpLeft" or button == "UpRight" then
@@ -280,30 +365,62 @@ local t = Def.ActorFrame{
 
 --CourseScroller frame
 local s = Def.ActorFrame{
+
+	--READY COMMAND
+	LoadActor(THEME:GetPathS("","ready/select.mp3"))..{
+		--SongChosenMessageCommand=cmd(play);
+		--StepsChosenMessageCommand=cmd(playcommand,"Check2";);
+		--[[Check2Command=function(self)
+			if state == 2 then state = 3; self:stoptweening(); self:play(); end;
+		end;]]
+	};
+	
+		LoadActor(THEME:GetPathS("","SongChosen"))..{
+		SongChosenMessageCommand=cmd(play);
+		StartSelectingSongMessageCommand=cmd(play);
+	};
+	
+	--UPRIGHT/UPLEFT
+	LoadActor(THEME:GetPathS("","SongUnchosen"))..{
+		TwoPartConfirmCanceledMessageCommand=cmd(play);
+		StartSelectingGroupMessageCommand=cmd(play);
+		SongUnchosenMessageCommand=cmd(play);
+		--[[StepsUnchosenMessageCommand=cmd(playcommand,"Check";);
+		SongUnchosenMessageCommand=cmd(playcommand,"Check";);
+		TwoPartConfirmCanceledMessageCommand=cmd(playcommand,"Check");
+		StartSelectingGroupMessageCommand=cmd(playcommand,"Check");
+		CheckCommand=function(self)
+			if state == 1 then--StartGroupSelection
+				self:stoptweening(); self:play();
+				state = 0;
+			elseif state == 2 then--SelectSongSelectingAgain
+				self:stoptweening(); self:play();
+				state = 1;
+			elseif state == 3 then--SelectSongSelectingAgain
+				self:stoptweening(); self:play();
+				state = 2;
+			end;
+		end;]]
+	};
+	LoadActor(THEME:GetPathS("","ready/offcommand"))..{
+		OffCommand=cmd(play);
+	};
 }
 --THE BACKGROUND VIDEO
 s[#s+1] = LoadActor(THEME:GetPathG("","background/common_bg"))..{};
 s[#s+1] = courseScroller:create_actors("foo", numWheelItems, item_mt_course, SCREEN_CENTER_X, SCREEN_CENTER_Y-25);
-s[#s+1] = LoadActor("difficultyIcons");
 s[#s+1] = LoadActor("coursePreview");
+s[#s+1] = LoadActor("otherDecorations");
+s[#s+1] = LoadActor("difficultyIcons");
 
 --GroupScroller frame
 local g = Def.ActorFrame{
 	
 	--InitCommand=cmd(diffusealpha,0);
 	OnCommand=function(self)
-		groupScroller:set_info_set(RIO_COURSE_FOLDERS, 1);
+		groupScroller:set_info_set(folderNames, 1);
 	end;
 
-	SongChosenMessageCommand=function(self)
-		isPickingDifficulty = true;
-	end;
-	TwoPartConfirmCanceledMessageCommand=cmd(sleep,.1;queuecommand,"PickingSong");
-	SongUnchosenMessageCommand=cmd(sleep,.1;queuecommand,"PickingSong");
-	
-	PickingSongCommand=function(self)
-		isPickingDifficulty = false;
-	end;
 	
 	--[[CodeMessageCommand=function(self,param)
 		local codeName = param.Name		-- code name, matches the one in metrics
@@ -327,7 +444,7 @@ local g = Def.ActorFrame{
 		--SCREENMAN:SystemMessage(ListActorChildren(curItem.container));
 		curItem.container:GetChild("banner"):stoptweening():scaletofit(-500,-200,500,200);
 		self:stoptweening():linear(.5):diffusealpha(1);
-		SOUND:DimMusic(0.3,65536);
+		--SOUND:DimMusic(0.3,65536);
 		MESSAGEMAN:Broadcast("GroupChange");
 	end;
 
@@ -411,7 +528,7 @@ t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{
 		--StartSelectingSongMessageCommand=cmd(stoptweening;linear,0.3;diffusealpha,0);
 		GroupChangeMessageCommand=cmd(playcommand,"UpdateText");
 		UpdateTextCommand=function(self)
-			self:settext(RIO_COURSE_FOLDERS[groupSelection]);
+			self:settext(folderNames[groupSelection]);
 		end;
 	};
 t[#t+1] = 	LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/arrow_shine"))..{};

@@ -84,8 +84,58 @@ return Def.ActorFrame{
 			end;
 		};
 
-		--Genre display
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			InitCommand=cmd(horizalign,left;x,_screen.cx-115;y,_screen.cy+25.75;zoom,0.6;skewx,-0.2;maxwidth,700);
+			CurrentCourseChangedMessageCommand=function(self)
+				--self:settext("1.");
+				local trailEntries = TrailCache:GetTrailEntries();
+				if #trailEntries > 0 then
+					self:settext("1. "..trailEntries[1]:GetSong():GetDisplayFullTitle());
+					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)
+				else
+					self:settext("");
+				end;
+			end;
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			InitCommand=cmd(horizalign,left;x,_screen.cx-115;y,_screen.cy+25.75+15;zoom,0.6;skewx,-0.2;maxwidth,700);
+			CurrentCourseChangedMessageCommand=function(self)
+				local trailEntries = TrailCache:GetTrailEntries();
+				if #trailEntries > 1 then
+					self:settext("2. "..trailEntries[2]:GetSong():GetDisplayFullTitle());
+					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)
+				else
+					self:settext("");
+				end;
+			end;
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			InitCommand=cmd(horizalign,left;x,_screen.cx+40;y,_screen.cy+25.75;zoom,0.6;skewx,-0.2;maxwidth,700);
+			CurrentCourseChangedMessageCommand=function(self)
+				--self:settext("1.");
+				local trailEntries = TrailCache:GetTrailEntries();
+				if #trailEntries > 2 then
+					self:settext("3. "..trailEntries[3]:GetSong():GetDisplayFullTitle());
+					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)
+				else
+					self:settext("");
+				end;
+			end;
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			InitCommand=cmd(horizalign,left;x,_screen.cx+40;y,_screen.cy+25.75+15;zoom,0.6;skewx,-0.2;maxwidth,700);
+			CurrentCourseChangedMessageCommand=function(self)
+				local trailEntries = TrailCache:GetTrailEntries();
+				if #trailEntries > 3 then
+					self:settext("4. "..trailEntries[4]:GetSong():GetDisplayFullTitle());
+					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)
+				else
+					self:settext("");
+				end;
+			end;
+		};
+		--Genre display
+		--[[LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			InitCommand=cmd(horizalign,left;x,_screen.cx-115;y,_screen.cy+25.75;zoom,0.6;skewx,-0.2);
 			CurrentSongChangedMessageCommand=function(self)
 				self:settext("GENRE:");
@@ -122,7 +172,7 @@ return Def.ActorFrame{
 				self:settext(origin);
 				(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;skewx,-0.2)) (self)
 			end;
-		};
+		};]]
 		
 		
 		--HEART
@@ -167,7 +217,7 @@ return Def.ActorFrame{
 			CurrentCourseChangedMessageCommand=function(self)
 				local song = GAMESTATE:GetCurrentCourse()
 				if song then
-					self:settext(song:GetDisplayFullTitle());
+					self:settext(string.gsub(song:GetDisplayFullTitle(),"^%d%d? ?%- ?", ""));
 					self:finishtweening();
 					
 					self:diffusealpha(0);

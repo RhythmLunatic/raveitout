@@ -14,7 +14,7 @@ local namesp =		10			--additional name spacing
 local lfbpsy =	175 --life bar position Y			--local lfbpsy =	200			--life bar position Y
 local PSS1 =		STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 
-local isProLifebar = (getenv("PlayMode") == "Pro")
+local isProLifebar = (getenv("Lifebar") == "Pro")
 --This is the width and height of the lifebar graphic. Simple right? So don't fuck it up
 LIFEBAR_WIDTH, LIFEBAR_HEIGHT = 320,26;
 

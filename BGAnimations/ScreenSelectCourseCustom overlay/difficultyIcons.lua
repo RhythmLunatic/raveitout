@@ -20,6 +20,15 @@ for i=1,numOrbs,1 do
 			Texture=THEME:GetPathG("StepsDisplayListRow","frame/cdiffcourse.png");
 			InitCommand=cmd(zoom,.8);
 		};
+		Def.Sprite{
+			Name="Cursor";
+			Texture=THEME:GetPathB("ScreenSelectMusic","overlay/DifficultyList/player1cur.png");
+			InitCommand=cmd(y,-10;thump,1;zoom,.8;effectmagnitude,1,1.05,4;effectclock,'beat';visible,false);
+			SongChosenMessageCommand=function(self)
+				self:visible(self:GetParent():GetChild("Label"):GetVisible())
+			end;
+			SongUnchosenMessageCommand=cmd(visible,false);
+		};
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			Name="Label";
 			InitCommand=cmd(skewx,-0.15;y,2);
@@ -27,9 +36,10 @@ for i=1,numOrbs,1 do
 		CurrentCourseChangedMessageCommand=function(self)
 			local c = GAMESTATE:GetCurrentCourse();
 			if c then
-				local trailEntries = GAMESTATE:GetCurrentCourse():GetAllTrails()[1]:GetTrailEntries();
+				local trailEntries = TrailCache:GetTrailEntries();
 				self:GetChild("LabelBG"):visible(i <= #trailEntries)
 				self:GetChild("Label"):visible(i <= #trailEntries)
+				--self:GetChild("Cursor"):visible(i <= #trailEntries)
 				if i <= #trailEntries then
 					local steps = trailEntries[i]:GetSteps()
 					local meter = steps:GetMeter();
