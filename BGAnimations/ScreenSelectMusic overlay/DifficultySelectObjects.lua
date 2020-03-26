@@ -84,6 +84,7 @@ return Def.ActorFrame{
 		};
 		LoadActor(THEME:GetPathG("","_Figures/circle"))..{
 			InitCommand=cmd(x,(-infx-txxtune)*negativeOffset;setsize,30,30;x,-40*negativeOffset;y,-175+7.5;);
+			Name="Circle";
 			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=function(self)
 				if GAMESTATE:GetCurrentSteps(pn) then
 					if GAMESTATE:GetCurrentSteps(pn):GetAuthorCredit() ~= "" then
@@ -125,6 +126,7 @@ return Def.ActorFrame{
 						self:visible(true);
 						self:Load(THEME:GetCurrentThemeDirectory().."Graphics/USB_stuff/avatars/"..author..".jpg")
 						self:setsize(30,30);
+						self:GetParent():GetChild("Circle"):visible(false);
 					else
 						self:visible(false);
 					end
