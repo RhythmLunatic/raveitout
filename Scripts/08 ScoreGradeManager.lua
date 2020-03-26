@@ -30,7 +30,7 @@ function getGradeFromStats(player)
 		else 
 			return "S2"; -- S_plus
 		end;
-	elseif p1accuracy >= 96 and p1misses == 0 and p1w4 == 0 then
+	elseif p1accuracy >= 96 and stats:GetTapNoteScores("TapNoteScore_Miss") == 0 and stats:GetTapNoteScores("TapNoteScore_W4") == 0 then
 		return "S1"; -- S_normal
 	elseif p1accuracy >= 80 then
 		return "A";
