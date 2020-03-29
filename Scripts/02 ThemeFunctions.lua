@@ -277,14 +277,6 @@ function getNumberOfElements(t)
 	return count;
 end
 
-function setScores(PlayerScores)
-	setenv("PlayerScores",PlayerScores);
-end;
-
-function getScores()
-	return getenv("PlayerScores");
-end;
-
 function soundext(filename)
 	if FILEMAN:DoesFileExist(filename..".wav") then
 		file_path = filename..".wav";

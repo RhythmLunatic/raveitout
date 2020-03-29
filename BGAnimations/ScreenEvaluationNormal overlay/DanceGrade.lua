@@ -29,11 +29,9 @@ local maxcp1 =		css1:MaxCombo()											--Max Combo for this stage
 --TODO: getScores is returning nil
 --css1:SetScore(getScores()[player]);
 
-local p1score =		css1:GetScore()			--score :v
-
---TODO: Why are you declaring a variable and then assigning it on the next line wtf
---local p1accuracy =	tonumber(string.format("%.02f",(p1score/stagemaxscore)*100))	--Player 1 accuracy formatted number	--"%.3f" thanks CH32, se cambia el numero para mas decimales
-local p1accuracy = getenv(pname(player).."_accuracy") or 0;
+--local p1score =		css1:GetScore()			--score :v
+local p1score = getScores()[player]
+local p1accuracy = string.format("%.02f",getenv(pname(player).."_accuracy") or 0);
 
 
 local p1ravins =	p1holdstr+p1w1
@@ -268,7 +266,7 @@ if css1:IsDisqualified()==false then
 	
 	--Quest Mode stuff
 	--SCREENMAN:SystemMessage(css1:GetMachineHighScoreIndex())
-	if GAMESTATE:IsCourseMode() then
+	if getenv("PlayMode") == "Special" then
 		t[#t+1] = LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
 			InitCommand=function(self)
 				--This function updates clear status in memory while checking

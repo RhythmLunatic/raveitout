@@ -204,6 +204,18 @@ local curState = STATE_PICKING_FOLDER;
 local currentCourseGroup;
 local lastSelectedGroupIndex = 0;
 
+local function updateCurrentCourse()
+	assert(currentCourseGroup[courseSelection],"This course selection is nil! Selection:"..courseSelection);
+	GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection])
+	if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
+		setenv("TrailCache",currentCourseGroup[courseSelection]:GetTrails(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'])[1]);
+	else
+		setenv("TrailCache",currentCourseGroup[courseSelection]:GetAllTrails()[1]);
+	end;
+	--assert(TrailCache);
+	MESSAGEMAN:Broadcast("CurrentCourseChanged",{Selection=courseSelection,Total=#currentCourseGroup});
+end;
+
 local function inputs(event)
 	
 	local pn= event.PlayerNumber
@@ -223,8 +235,8 @@ local function inputs(event)
 			MESSAGEMAN:Broadcast("SongUnchosen");
 		elseif button == "Center" or button == "Start" then
 			local course = GAMESTATE:GetCurrentCourse();
-			local trail = TrailCache;
-			if trail then
+			local trail = getenv("TrailCache");
+			if trail ~= nil then
 				--Is this actually necessary? AutoSetStyle should take care of it.
 				--if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
 				--	GAMESTATE:SetCurrentStyle(string.match(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'],"_([^_]+)$"))
@@ -259,14 +271,8 @@ local function inputs(event)
 				courseSelection = courseSelection - 1 ;
 			end;
 			courseScroller:scroll_by_amount(-1);
-			GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection])
-			if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
-				TrailCache = currentCourseGroup[courseSelection]:GetTrails(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'])[1];
-			else
-				TrailCache = currentCourseGroup[courseSelection]:GetAllTrails()[1];
-			end;
-			--assert(TrailCache);
-			MESSAGEMAN:Broadcast("CurrentCourseChanged",{Selection=courseSelection,Total=#currentCourseGroup});
+			updateCurrentCourse()
+
 		elseif button == "DownRight" or button == "Right" or button == "MenuRight" then
 			SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
 			if courseSelection == #currentCourseGroup then
@@ -275,14 +281,7 @@ local function inputs(event)
 				courseSelection = courseSelection + 1
 			end
 			courseScroller:scroll_by_amount(1);
-			GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection])
-			if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
-				TrailCache = currentCourseGroup[courseSelection]:GetTrails(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'])[1];
-			else
-				TrailCache = currentCourseGroup[courseSelection]:GetAllTrails()[1];
-			end;
-			--assert(TrailCache);
-			MESSAGEMAN:Broadcast("CurrentCourseChanged",{Selection=courseSelection,Total=#currentCourseGroup});
+			updateCurrentCourse()
 		elseif button == "Center" or button == "Start" then
 			curState = STATE_READY;
 			MESSAGEMAN:Broadcast("SongChosen");
@@ -296,7 +295,7 @@ local function inputs(event)
 				assert(#currentCourseGroup > 0,"Hey idiot, you don't have any courses in this group.")
 				courseScroller:set_info_set(currentCourseGroup,1);
 				courseSelection = 1;
-				GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection])
+				updateCurrentCourse()
 				lastSelectedGroupIndex = groupSelection;
 			end;
 			--SOUND:PlayOnce(THEME:GetPathS("", "SongChosen"), true);

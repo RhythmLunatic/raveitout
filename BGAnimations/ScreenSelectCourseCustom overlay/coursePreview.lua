@@ -88,7 +88,7 @@ return Def.ActorFrame{
 			InitCommand=cmd(horizalign,left;x,_screen.cx-115;y,_screen.cy+25.75;zoom,0.6;skewx,-0.2;maxwidth,700);
 			CurrentCourseChangedMessageCommand=function(self)
 				--self:settext("1.");
-				local trailEntries = TrailCache:GetTrailEntries();
+				local trailEntries = getenv("TrailCache"):GetTrailEntries();
 				if #trailEntries > 0 then
 					self:settext("1. "..trailEntries[1]:GetSong():GetDisplayFullTitle());
 					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)
@@ -100,7 +100,7 @@ return Def.ActorFrame{
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			InitCommand=cmd(horizalign,left;x,_screen.cx-115;y,_screen.cy+25.75+15;zoom,0.6;skewx,-0.2;maxwidth,700);
 			CurrentCourseChangedMessageCommand=function(self)
-				local trailEntries = TrailCache:GetTrailEntries();
+				local trailEntries = getenv("TrailCache"):GetTrailEntries();
 				if #trailEntries > 1 then
 					self:settext("2. "..trailEntries[2]:GetSong():GetDisplayFullTitle());
 					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)
@@ -113,7 +113,7 @@ return Def.ActorFrame{
 			InitCommand=cmd(horizalign,left;x,_screen.cx+40;y,_screen.cy+25.75;zoom,0.6;skewx,-0.2;maxwidth,700);
 			CurrentCourseChangedMessageCommand=function(self)
 				--self:settext("1.");
-				local trailEntries = TrailCache:GetTrailEntries();
+				local trailEntries = getenv("TrailCache"):GetTrailEntries();
 				if #trailEntries > 2 then
 					self:settext("3. "..trailEntries[3]:GetSong():GetDisplayFullTitle());
 					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)
@@ -125,7 +125,7 @@ return Def.ActorFrame{
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			InitCommand=cmd(horizalign,left;x,_screen.cx+40;y,_screen.cy+25.75+15;zoom,0.6;skewx,-0.2;maxwidth,700);
 			CurrentCourseChangedMessageCommand=function(self)
-				local trailEntries = TrailCache:GetTrailEntries();
+				local trailEntries = getenv("TrailCache"):GetTrailEntries();
 				if #trailEntries > 3 then
 					self:settext("4. "..trailEntries[4]:GetSong():GetDisplayFullTitle());
 					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;)) (self)

@@ -4,8 +4,13 @@ local master_player = GAMESTATE:GetMasterPlayerNumber();
 local stage = GAMESTATE:GetCurrentStage();
 
 local numStages = 1;
-if GAMESTATE:IsCourseMode() then
-	numStages = GAMESTATE:GetCurrentCourse():GetEstimatedNumStages()
+--Courses are always out of 100000000
+if not GAMESTATE:IsCourseMode() then
+	if GAMESTATE:GetCurrentSong():IsLong() then
+		numStages = 2;
+	elseif GAMESTATE:GetCurrentSong():IsMarathon() then
+		numStages = 3;
+	end;
 end;
 
 local stagemaxscore = 100000000*numStages -- GAMESTATE:GetNumStagesForCurrentSongAndStepsOrCourse() returns 3 no matter what... Must be broken
@@ -211,8 +216,15 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				end;
 			};
 		};
-		LoadFont("monsterrat/_montserrat light 60px")..{	--percentage scoring P1
-			InitCommand=cmd(zoom,0.3;y,SCREEN_BOTTOM-30;skewx,-0.25);
+		Def.BitmapText{	--percentage scoring
+			--If steps are not routine or this is the master player (if playing routine)
+			--The first conditional has to be false for it to check the second one.
+			Condition=(steps ~= "StepsType_Pump_Routine" or GAMESTATE:GetMasterPlayerNumber() == pn);
+			Font="monsterrat/_montserrat light 60px";
+			InitCommand=cmd(zoom,0.3;y,SCREEN_BOTTOM-30;skewx,-0.25;);
+			--[[OnCommand=function(self)
+				self:Load("RollingNumbersPercent");
+			end;]]
 			ComboChangedMessageCommand=function(self,param)
 			--LifeChangedMessageCommand=function(self,param)
 				-- percentage scoring stuff:
@@ -223,21 +235,38 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				local score =		css:GetScore()				--score :v
 				local rawaccuracy =	(score/curmaxscore)*100		--Player accuracy RAW number
 				--"%.3f" thanks CH32, se cambia el numero para mas decimales
-				local accuracy =		tonumber(string.format("%.02f",rawaccuracy)) or 0;		--Player accuracy formatted number
+				local accuracy =		string.format("%.02f",rawaccuracy) or "0.00";		--Player accuracy formatted number
 				
 				--accuracy = getenv("P1_accuracy") or 0;
 				
-				if steps == "StepsType_Pump_Routine" and GAMESTATE:GetMasterPlayerNumber() ~= pn then
-					self:settext("");
+				if rawaccuracy <= 0 then
+					self:settext("0.00%");
 				else
-					if accuracy == 0 then
-						self:settext("0.00%");
-					else
-						self:settext(accuracy.."%");
-					end;
+					self:settext(accuracy.."%");
 				end;
 				-- sets the accuracy (ugly workaround) -ROAD24
-				setenv(pname(pn).."_accuracy",accuracy);
+				setenv(pname(pn).."_accuracy",rawaccuracy);
+			end;
+				
+		};
+		LoadFont("monsterrat/_montserrat light 60px")..{	--percentage scoring (debug display)
+			Condition=DoDebug;
+			InitCommand=cmd(zoom,0.3;y,SCREEN_BOTTOM-60;skewx,-0.25);
+			ComboChangedMessageCommand=function(self,param)
+			--LifeChangedMessageCommand=function(self,param)
+				-- percentage scoring stuff:
+				local State = GAMESTATE:GetPlayerState(pn);
+				--local PlayerType = State:GetPlayerController();				
+				local css = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn);
+				local curmaxscore =	stagemaxscore
+				local score =		css:GetScore()				--score :v
+				--local rawaccuracy =	(score/curmaxscore)*100		--Player accuracy RAW number
+				--"%.3f" thanks CH32, se cambia el numero para mas decimales
+				--local accuracy =		tonumber(string.format("%.02f",rawaccuracy)) or 0;		--Player accuracy formatted number
+				
+				--accuracy = getenv("P1_accuracy") or 0;
+				
+				self:settext(score.."/"..stagemaxscore);
 			end;
 				
 		};
@@ -264,7 +293,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		};
 		-- Player 1
 		LoadFont("facu/_zona pro bold 20px")..{
-			InitCommand=cmd(player,pn;y,SCREEN_BOTTOM-46;horizalign,'HorizAlign_Center');
+			InitCommand=cmd(y,SCREEN_BOTTOM-46;horizalign,'HorizAlign_Center');
 			OnCommand=function(self, param)
 				self:settext("Score: ".."0000");
 				self:zoom(0.7);
@@ -282,10 +311,16 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				end;
 
 			end;
-			OffCommand=function(self, param)
-				--STATSMAN:GetCurStageStats():GetPlayerStageStats( PLAYER_1 ):SetScore( getScores()[PLAYER_1] );
-			end;
 		};
+		--[[Def.RollingNumbers{
+			Font="facu/_zona pro bold 20px";
+			InitCommand=cmd(y,SCREEN_BOTTOM-46;horizalign,'HorizAlign_Left';Load,"RollingNumbersScore");
+			RIOScoreChangedMessageCommand=function(self,params)
+				if params.Player == pn then
+					self:targetnumber(params.Score);
+				end;
+			end;
+		};]]
 	};
 	
 	--The judgement stats above the note receptors

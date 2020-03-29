@@ -236,7 +236,7 @@ for i = 1,4 do
 		CurrentCourseChangedMessageCommand=function(self)
 			self:stoptweening():diffusealpha(0);
 			--if not GAMESTATE:GetCurrentCourse() then return end;
-			local trailEntries = TrailCache:GetTrailEntries();
+			local trailEntries = getenv("TrailCache"):GetTrailEntries();
 			if i <= #trailEntries then
 				self:GetChild("SongName"):settext(trailEntries[i]:GetSong():GetDisplayFullTitle());
 				if true then

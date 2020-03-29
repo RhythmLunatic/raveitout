@@ -50,3 +50,11 @@ end;
 function getGradeAsInt(stats)
 	return GRADE_TABLE[getGradeFromStats(stats)]
 end;
+
+function setScores(PlayerScores)
+	setenv("PlayerScores",PlayerScores);
+end;
+
+function getScores()
+	return getenv("PlayerScores");
+end;

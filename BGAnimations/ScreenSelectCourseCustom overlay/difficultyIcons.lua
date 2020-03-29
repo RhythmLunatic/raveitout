@@ -36,7 +36,7 @@ for i=1,numOrbs,1 do
 		CurrentCourseChangedMessageCommand=function(self)
 			local c = GAMESTATE:GetCurrentCourse();
 			if c then
-				local trailEntries = TrailCache:GetTrailEntries();
+				local trailEntries = getenv("TrailCache"):GetTrailEntries();
 				self:GetChild("LabelBG"):visible(i <= #trailEntries)
 				self:GetChild("Label"):visible(i <= #trailEntries)
 				--self:GetChild("Cursor"):visible(i <= #trailEntries)
