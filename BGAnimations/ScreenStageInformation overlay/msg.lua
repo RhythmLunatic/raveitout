@@ -61,12 +61,11 @@ return Def.ActorFrame{
 	Def.Sprite{				--Song Jacket
 		InitCommand=cmd(x,_screen.cx;y,_screen.cy;zoom,10;diffusealpha,0;);
 		OnCommand=function(self)
-			--[[if song:HasJacket() then
-				self:Load(song:GetJacketPath());
+			if GAMESTATE:IsCourseMode() and getenv("PlayMode") == "Mixtapes" and GAMESTATE:GetCurrentCourse():HasBanner() then
+				self:Load(GAMESTATE:GetCurrentCourse():GetBannerPath());
 			else
-				self:Load(song:GetBannerPath());
-			end]]
-			self:Load(getLargeJacket());
+				self:Load(getLargeJacket());
+			end;
 			(cmd(accelerate,inanit;zoomto,300,300;diffusealpha,1;linear,inefft;zoomto,255,255;sleep,stayat))(self)
 		end;
 		OffCommand=cmd(decelerate,outtwt;rotationz,90*0.5;zoom,0.8;diffusealpha,0);

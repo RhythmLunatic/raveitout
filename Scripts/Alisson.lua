@@ -16,6 +16,7 @@ function getcurstage()
 	return gfxNames[GAMESTATE:GetCurrentStage()]
 end
 
+--Please stop using this, it's depreciated and GetSongExtraData should be used instead..
 function GetBGAPreviewPath(_)
 	--just ignore the tag parameter
 	local song = GAMESTATE:GetCurrentSong()
@@ -87,6 +88,8 @@ function IsRoutineMasterPlayer(p)
 	return true
 end
 
+
+--Is this function even used?
 function GetCourseDescription(file,tag)
 if FILEMAN:DoesFileExist(file) then
 	local readfile = File.Read( file )

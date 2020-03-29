@@ -1,3 +1,36 @@
+-- Used for custom wheel
+-- This is from Simply Love, it is modded a little though
+function play_sample_music(song, sample_len)
+
+	if song then
+	
+		local songpath = song:GetMusicPath()
+		local sample_start = song:GetSampleStart()
+		--local sample_len = song:GetSampleLength()
+		if not sample_len then sample_len = song:GetSampleLength() end
+
+		if songpath == song:GetPreviewMusicPath() then
+			if songpath and sample_start and sample_len then
+				SOUND:DimMusic(PREFSMAN:GetPreference("SoundVolume"), math.huge)
+				SOUND:PlayMusicPart(songpath, sample_start,sample_len, 0.5, 1.5, false, true)
+			else
+				stop_music()
+			end
+		else
+			--SOUND:DimMusic(PREFSMAN:GetPreference("SoundVolume"), math.huge)
+			SOUND:PlayMusicPart(song:GetPreviewMusicPath(), 0.0, sample_len, 0.5, 1.5, true, true)
+		end;
+	else
+		stop_music()
+	end
+end
+
+-- From Simply Love
+function stop_music()
+	SOUND:PlayMusicPart("", 0, 0)
+end
+
+
 function RioWheel(self,offsetFromCenter,itemIndex,numItems)
     local spacing = 210;
 	local edgeSpacing = 135;

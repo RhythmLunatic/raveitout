@@ -262,6 +262,8 @@ local function inputs(event)
 	elseif curState == STATE_PICKING_COURSE then
 		if button == "UpRight" or button == "UpLeft" or button == "Up" or button == "MenuUp" then
 			curState = STATE_PICKING_FOLDER;
+			--Has no effect?
+			--SOUND:DimMusic(0, math.huge)
 			MESSAGEMAN:Broadcast("StartSelectingGroup");
 		elseif button == "DownLeft" or button == "Left" or button == "MenuLeft" then
 			SOUND:PlayOnce(THEME:GetPathS("MusicWheel", "change"), true);
@@ -363,6 +365,8 @@ local t = Def.ActorFrame{
 }
 
 --CourseScroller frame
+
+local curSongPlaying = 1;
 local s = Def.ActorFrame{
 
 	--READY COMMAND
@@ -374,7 +378,7 @@ local s = Def.ActorFrame{
 		end;]]
 	};
 	
-		LoadActor(THEME:GetPathS("","SongChosen"))..{
+	LoadActor(THEME:GetPathS("","SongChosen"))..{
 		SongChosenMessageCommand=cmd(play);
 		StartSelectingSongMessageCommand=cmd(play);
 	};
@@ -404,6 +408,21 @@ local s = Def.ActorFrame{
 	LoadActor(THEME:GetPathS("","ready/offcommand"))..{
 		OffCommand=cmd(play);
 	};
+	
+	CurrentCourseChangedMessageCommand=function(self)
+		curSongPlaying = 1;
+		self:stoptweening():queuecommand("PlayCourseMusics");
+	end;
+	PlayCourseMusicsCommand=function(self)
+		stop_music();
+		local song = getenv("TrailCache"):GetTrailEntries()[curSongPlaying]:GetSong();
+		play_sample_music(song,5);
+		if curSongPlaying < #getenv("TrailCache"):GetTrailEntries() then
+			curSongPlaying = curSongPlaying + 1;
+			self:sleep(5):queuecommand("PlayCourseMusics");
+		end;
+	end;
+	
 }
 --THE BACKGROUND VIDEO
 s[#s+1] = LoadActor(THEME:GetPathG("","background/common_bg"))..{};

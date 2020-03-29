@@ -1,5 +1,6 @@
 local t =			Def.ActorFrame {};
 
+--Todo: WHAT IS THIS GARBAGE
 if not GAMESTATE:IsCourseMode() then
 	local IsP1On =		GAMESTATE:IsPlayerEnabled(PLAYER_1)	--Is player 1 present? BRETTY OBIOS :DDDD
 	local IsP2On =		GAMESTATE:IsPlayerEnabled(PLAYER_2)	--Is player 2 present? BRETTY OBIOS :DDDD

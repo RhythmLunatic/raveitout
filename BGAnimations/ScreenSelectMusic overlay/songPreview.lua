@@ -97,7 +97,7 @@ return Def.ActorFrame{
 					self:Load(nil);
 					return;
 				else
-					local song = GAMESTATE:GetCurrentSong()
+					--local song = GAMESTATE:GetCurrentSong()
 					path = GetBGAPreviewPath("PREVIEWVID");
 					--path = song:GetBannerPath();
 					self:Load(path);

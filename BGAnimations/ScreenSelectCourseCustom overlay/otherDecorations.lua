@@ -197,7 +197,7 @@ t[#t+1] = Def.ActorFrame{
 			SongUnchosenMessageCommand=cmd(linear,0.1;diffusealpha,0);
 	};
 	LoadFont("facu/_zona pro bold 40px")..{
-		Text="COURSE INFO";
+		Text="MIXTAPE INFO";
 		InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-125;diffusealpha,0);
 		SongChosenMessageCommand=cmd(linear,0.1;diffusealpha,1);
 		SongUnchosenMessageCommand=cmd(linear,0.1;diffusealpha,0);

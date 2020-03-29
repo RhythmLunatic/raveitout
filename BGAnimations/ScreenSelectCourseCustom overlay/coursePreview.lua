@@ -1,5 +1,8 @@
 local isWheelCustom = true
 
+
+--state of the preview vid in the music train
+local curPreviewVid = 1
 return Def.ActorFrame{
 	
 		Def.Sprite{
@@ -40,32 +43,38 @@ return Def.ActorFrame{
 				self:zoomto(384,232):linear(.2):diffusealpha(1);
 			end;
 		};
-		--[[Def.Sprite{
+		Def.Sprite{
 			--Name = "BGAPreview";
 			InitCommand=cmd(x,_screen.cx;y,_screen.cy-30);
-			CurrentCourseChangedMessageCommand=cmd(stoptweening;Load,nil;sleep,.4;queuecommand,"PlayVid2");
+			CurrentCourseChangedMessageCommand=function(self)
+				self:stoptweening():Load(nil);
+				curPreviewVid = 1;
+				self:sleep(.4):queuecommand("PlayVid2");
+			end;
 			PlayVid2Command=function(self)
-				--self:Load(nil);
-				if streamSafeMode and has_value(STREAM_UNSAFE_AUDIO, GAMESTATE:GetCurrentSong():GetDisplayFullTitle() .. "||" .. GAMESTATE:GetCurrentSong():GetDisplayArtist()) then
-					self:diffusealpha(0);
-					self:Load(nil);
-					return;
-				else
-					local song = GAMESTATE:GetCurrentSong()
-					path = GetBGAPreviewPath("PREVIEWVID");
-					--path = song:GetBannerPath();
-					self:Load(path);
-				end;
+				local song = getenv("TrailCache"):GetTrailEntries()[curPreviewVid]:GetSong();
+				path = GetSongExtraData(song, "PreviewVid")
+				--path = song:GetBannerPath();
+				self:Load(path);
 				self:diffusealpha(0);
 				self:zoomto(384,232);
 				self:linear(0.2);
-				if path == "/Backgrounds/Title.mp4" then
+				self:diffusealpha(1);
+				self:sleep(5);
+				if curPreviewVid+1 > #getenv("TrailCache"):GetTrailEntries() then
+					curPreviewVid = 1
+				else
+					curPreviewVid = curPreviewVid + 1;
+				end;
+				self:queuecommand("PlayVid2");
+				--[[if path == "/Backgrounds/Title.mp4" then
 					self:diffusealpha(0.5);
 				else
 					self:diffusealpha(1);
-				end
+				end]]
+				
 			end;
-		};]]
+		};
 	
 		LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/preview_songinfo"))..{
 			InitCommand=cmd(horizalign,center;zoomto,385,75;x,_screen.cx;y,_screen.cy+50;diffusealpha,1);
