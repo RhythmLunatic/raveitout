@@ -6,13 +6,14 @@ DISPLAY TYPE: HD
 ]]
 SysInfo = {
 	InternalName = "RIO4W",
-	Version = "2020-03-25",
+	Version = "2020-03-29",
 }
 
 RIO_FOLDER_NAMES = {
-	EasyFolder = "99-Easy", --To be removed at a later date, but I'm working on it...
-	SpecialFolder = "99-Special",
-	SnapTracksFolder = "00-Snap Tracks", --To be removed at a later date, but I'm working on it...
+	EasyFolder = "99-Easy",
+	--SpecialFolder = "99-Special",
+	SnapTracksFolder = "00-Snap Tracks",
+	FullTracksFolder = "80-Full Tracks",
 	--[[
 	If this is set the game will use it for arcade mode. If not, it will pick a random folder,
 	but ONLY if you aren't playing with a profile. Profiles will resume from their last played song
@@ -22,7 +23,20 @@ RIO_FOLDER_NAMES = {
 	DefaultArcadeFolder,
 	--The groups that are shown in the group select in the order you want them displayed.
 	--If this is empty all groups will be shown.
-	PREDEFINED_GROUP_LIST = {}
+	PREDEFINED_GROUP_LIST = false;
+	--[[PREDEFINED_GROUP_LIST = {
+		"00-Snap Tracks",
+		"01-Country",
+		"02-EDM",
+		"03-Hip Hop",
+		"04-Latin",
+		"05-K-Pop",
+		"06-Pop",
+		"07-Rock",
+		"09-Season 2 FINAL",
+		"80-Full Tracks",
+		"81-Rave"
+	}]]
 }
 
 --[[

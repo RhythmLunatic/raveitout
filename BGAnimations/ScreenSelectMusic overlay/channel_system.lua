@@ -144,38 +144,6 @@ selection = 1;
 local spacing = 210;
 local numplayers = GAMESTATE:GetHumanPlayers();
 
---This shit is completely broken in multiplayer.
--- Snap Songs
---[[if hearts >= 1*GAMESTATE:GetNumSidesJoined() then
-	groups[#groups+1] = "00 Rave It Out (Snap Tracks)";
-	if GAMESTATE:GetCurrentSong():GetGroupName() == "00 Rave It Out (Snap Tracks)" then selection = 1; end;
-end;
-
-local total_arcade_folders = #names-3;
---Arcade Songs
-if hearts >=(2*GAMESTATE:GetNumSidesJoined()) then
-	for i=2,total_arcade_folders do
-		groups[#groups+1] = names[i];
-	
-		if GAMESTATE:GetCurrentSong():GetGroupName() == names[i] or GAMESTATE:GetPreferredSongGroup() == names[i] then 
-			selection = i; 
-		end
-	end;
-end
-
---Full Songs
-if hearts >= 3*GAMESTATE:GetNumSidesJoined() then 	
-	groups[#groups+1] = "80 Rave It Out (Full Tracks)";
-	if GAMESTATE:GetCurrentSong():GetGroupName() == "80 Rave It Out (Full Tracks)" then selection = total_arcade_folders+1; end;
-end;
-
--- Rave Songs
-if hearts >= 4*GAMESTATE:GetNumSidesJoined() then 	
-	groups[#groups+1] = "81 Rave It Out (Rave)";
-	if GAMESTATE:GetCurrentSong():GetGroupName() == "81 Rave It Out (Rave)" then selection = total_arcade_folders+2; end;
-end;
-
-]]
 
 --If the sort order is not default this will be overridden when the screen is on
 local groups = {};
@@ -208,8 +176,15 @@ end;
 
 function genDefaultGroups()
 	groups = {};
+	local numHeartsLeft = GetSmallestNumHeartsLeftForAnyHumanPlayer()
 	for i,group in ipairs(getAvailableGroups()) do
-		groups[i] = {WHEELTYPE_NORMAL,group}
+		if numHeartsLeft >= 4 then
+			groups[i] = {WHEELTYPE_NORMAL,group}
+		else
+			if group ~= RIO_FOLDER_NAMES['FullTracksFolder'] then
+				groups[i] = {WHEELTYPE_NORMAL,group}
+			end;
+		end;
 	end;
 	
 	--Only show in multiplayer since there's no need to show it in singleplayer.

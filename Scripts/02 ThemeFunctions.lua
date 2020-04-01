@@ -181,15 +181,17 @@ end
 
 --Called from ScreenSelectPlayMode to pick a random group and the GroupWheel to show available groups
 function getAvailableGroups()
+	if RIO_FOLDER_NAMES['PREDEFINED_GROUP_LIST'] ~= false then return RIO_FOLDER_NAMES['PREDEFINED_GROUP_LIST'] end;
+	
 	local groups = SONGMAN:GetSongGroupNames();
-
+	
 	if not DoDebug then
 		--Remove easy and special folder from the group select
 		for k,v in pairs(groups) do
 			if v == RIO_FOLDER_NAMES["EasyFolder"] then
 				table.remove(groups, k)
-			elseif v == RIO_FOLDER_NAMES["SpecialFolder"] then
-				table.remove(groups, k)
+			--elseif v == RIO_FOLDER_NAMES["SpecialFolder"] then
+			--	table.remove(groups, k)
 			--Never display the internal group folder
 			elseif v == "Internal" or v == "Missions" then
 				table.remove(groups, k)
@@ -197,6 +199,8 @@ function getAvailableGroups()
 			--Remove groups that only have 1 song, usually means 'info' folder and nothing else
 			elseif (#SONGMAN:GetSongsInGroup(v))-1 < 1 then
 				table.remove(groups, k)
+			else
+				Trace(v);
 			end;
 		end
 	end;

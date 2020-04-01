@@ -62,7 +62,8 @@ local sections = {
 	}},
 	{ "Open Source Libraries", {
 		"Profile management & PlayerOptions by dbk2",
-		"Target Score Graph, panel info, eval screen info by dbk2",
+		--Not implemented yet, but I'll credit him when it's here
+		--"Target Score Graph, panel info, eval screen info by dbk2",
 		"MusicWheel Favorites by leadbman",
 		"json.lua is Copyright (c) 2019 rxi",
 		"item_scroller.lua by Kyzentun",
