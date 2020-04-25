@@ -10,7 +10,7 @@ if not GAMESTATE:IsCourseMode() then
 	local songdir = song:GetSongDir();--Get current song directory lel
 
 	--secret chart for certain song.
-	if song:GetMainTitle() == "Show Time Under Leaden Skies" then
+	--[[if song:GetMainTitle() == "Show Time Under Leaden Skies" then
 		--SCREENMAN:SystemMessage("True!");
 		if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_OnePlayerOneSide" or GAMESTATE:GetCurrentStyle():GetStyleType() == 'StyleType_TwoPlayersTwoSides' then
 			local stepsArray = song:GetStepsByStepsType('StepsType_Pump_Single');
@@ -18,7 +18,7 @@ if not GAMESTATE:IsCourseMode() then
 			--SCREENMAN:SystemMessage("Selected "..ToEnumShortString(res:GetDifficulty()));
 			GAMESTATE:SetCurrentSteps(PLAYER_1,res);
 		end;
-	end;
+	end;]]
 
 	-- again sanity checks !!!
 	local p1CurrentSteps = GAMESTATE:GetCurrentSteps(PLAYER_1);

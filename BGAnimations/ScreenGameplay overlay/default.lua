@@ -45,7 +45,12 @@ local t = Def.ActorFrame{
 		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
 			Condition=DoDebug;
 			InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y;);
-			BeatCrossedMessageCommand=cmd(settext,GAMESTATE:GetSongBeat().."\nBPS: "..GAMESTATE:GetSongBPS().."\nSeconds: "..GAMESTATE:GetCurMusicSeconds().."\nCalculated: "..GAMESTATE:GetSongBeat()/GAMESTATE:GetSongBPS());
+			BeatCrossedMessageCommand=cmd(
+				settext,GAMESTATE:GetSongBeat()..
+				"\nBPS: "..GAMESTATE:GetSongBPS()..
+				"\nSeconds: "..GAMESTATE:GetCurMusicSeconds()..
+				"\nCalculated: "..GAMESTATE:GetSongBeat()/GAMESTATE:GetSongBPS()
+			);
 		};
 		
 		--[[LoadFont("venacti/_venacti_outline 26px bold diffuse")..{

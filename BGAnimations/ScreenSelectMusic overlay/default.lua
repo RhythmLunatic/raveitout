@@ -146,7 +146,9 @@ t[#t+1] = Def.ActorFrame {
 	LoadFont("monsterrat/_montserrat semi bold 60px")..{
 		InitCommand=cmd(horizalign,left;x,SCREEN_LEFT+16;y,SCREEN_TOP+30;zoom,0.6;skewx,-0.25;uppercase,true);
 		OnCommand=function(self)
-			assert(getenv("cur_group"),"current group not set!");
+			--Maybe this is a bad idea. cur_group isn't set if the channel_system isn't loaded, so just set it manually.
+			--assert(getenv("cur_group"),"current group not set!");
+			if not getenv("cur_group") then setenv("cur_group",SCREENMAN:GetTopScreen():GetMusicWheel():GetSelectedSection()) end
 			self:settext(string.gsub(getenv("cur_group"),"^%d%d? ?%- ?", ""));
 		end;
 		StartSelectingSongMessageCommand=function(self)
@@ -625,7 +627,7 @@ if getenv("PlayMode") == "Easy" then
 			InitCommand=cmd(x,SCREEN_WIDTH/4;y,SCREEN_CENTER_Y+150);
 			--PLAYER 1
 			LoadActor("DifficultyList/background_orb")..{
-				InitCommand=cmd(horizalign,center;zoom,0.7;);
+				InitCommand=cmd(horizalign,center;zoom,0.5;);
 				OffCommand=function(self,param)
 					self:linear(0.3);
 					self:Load(THEME:GetPathG("","_white"));
@@ -650,7 +652,7 @@ if getenv("PlayMode") == "Easy" then
 			InitCommand=cmd(x,SCREEN_WIDTH*.75;y,SCREEN_CENTER_Y+150);
 			--PLAYER 2
 			LoadActor("DifficultyList/background_orb")..{
-				InitCommand=cmd(horizalign,center;zoom,0.7;);
+				InitCommand=cmd(horizalign,center;zoom,0.5;);
 				OffCommand=function(self,param)
 					self:linear(0.3);
 					self:Load(THEME:GetPathG("","_white"));

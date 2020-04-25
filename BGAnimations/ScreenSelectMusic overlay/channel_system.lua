@@ -181,6 +181,7 @@ function genDefaultGroups()
 		if numHeartsLeft >= 4 then
 			groups[i] = {WHEELTYPE_NORMAL,group}
 		else
+			--Because this is clearly a good idea
 			if group ~= RIO_FOLDER_NAMES['FullTracksFolder'] then
 				groups[i] = {WHEELTYPE_NORMAL,group}
 			end;

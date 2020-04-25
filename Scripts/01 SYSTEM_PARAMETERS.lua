@@ -6,7 +6,7 @@ DISPLAY TYPE: HD
 ]]
 SysInfo = {
 	InternalName = "RIO4W",
-	Version = "2020-03-29",
+	Version = "2020-04-25",
 }
 
 RIO_FOLDER_NAMES = {
@@ -44,8 +44,8 @@ What course folders will show in mixtapes mode.
 It's necessary because we have mission mode folders
 and we don't want them to pollute the mixtapes folders...
 
-Trail is not needed unless you specifically want to pull the trails of that stepstype. If it's
-not specified it will default to whatever StepMania generates first, which can be good or bad depending on how you look at it.
+Style is not needed unless you specifically want to pull the trails of that stepstype. If it isn't specified
+it will default to whatever StepMania generates first, which can be good or bad depending on how you look at it.
 
 SM generates trails for every stepstype regardless of what you put in the course (#STYLE:DOUBLE does not affect trail generation).
 In fact, the only thing #STYLE does is determine what style to set when you select that course...
@@ -61,14 +61,14 @@ RIO_COURSE_FOLDERS = {
 		Lifebar="Pro",
 		Style='StepsType_Pump_Double'
 	},
-	--"PIU Class (Singles)",
-	--"PIU Class (Doubles)",
 	["Nonstop"] = {
-	},
+	}
+	--[["PIU Class (Singles)",
+	"PIU Class (Doubles)",
 	["Leggendaria"] = {
 	},
 	["Default"] = {
-	}
+	}]]
 }
 
 --Take a wild guess. #SONGTYPE:shortcut will override this.
@@ -79,10 +79,11 @@ HEARTS_PER_MISSION = 3
 
 --Extra stage song.
 --If true, uses the song below, if false, uses extra1.crs.
+--TODO: Remove this since lua is truthy
 USE_ES_SONG = true
 ES_SONG = "09-Season 2 FINAL/Faded"
 --The song that gets picked for the One More Extra Stage.
-OMES_SONG = "Ace For Aces (OMES Test)"
+OMES_SONG = "09-Season 2 FINAL/Stay Awake"
 
 -- These names will not show up over the difficulty icons.
 STEPMAKER_NAMES_BLACKLIST = {

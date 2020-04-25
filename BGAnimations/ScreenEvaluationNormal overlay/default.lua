@@ -181,7 +181,14 @@ if not GAMESTATE:IsCourseMode() then
 else --If in course mode...
 	if not GAMESTATE:IsEventMode() then
 		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
-			RemoveHearts(pn, HEARTS_PER_MISSION);
+			
+			if getenv("PlayMode") == "Special" then
+				RemoveHearts(pn, HEARTS_PER_MISSION);
+			else
+				--Remove all hearts in courses. Currently the custom course select doesn't have filtering for smaller courses.
+				RemoveHearts(pn,HeartsPerPlay);
+			end;
+			
 			while (GAMESTATE:GetNumStagesLeft(pn) <= 3 and NumHeartsLeft[pn] > 0) do
 				--Hack to make sure SM5 doesn't think there are no stages left... I don't think it actually matters since we have a custom course select screen
 				GAMESTATE:AddStageToPlayer(pn)

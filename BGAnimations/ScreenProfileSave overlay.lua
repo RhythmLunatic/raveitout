@@ -83,7 +83,7 @@ t[#t+1] = Def.Actor {
 			if profileDir ~= "" then
 				SaveProfileCustom(PROFILEMAN:GetProfile(player),profileDir);
 				
-				if GAMESTATE:IsCourseMode() and (NumHeartsLeft[player] < 1 or GAMESTATE:IsEventMode()) then
+				if getenv("PlayMode") == "Special" and (NumHeartsLeft[player] < 1 or GAMESTATE:IsEventMode()) then
 					QUESTMODE:SaveCurrentProgress(player);
 				end;
 			end;
