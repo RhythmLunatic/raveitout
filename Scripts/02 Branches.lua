@@ -34,6 +34,27 @@ function SelectMusicOrCourse()
 	end
 end
 
+function JumpToCredits()
+	local song = SONGMAN:FindSong(OMES_SONG)
+	if song then
+		GAMESTATE:SetCurrentSong(song);
+		GAMESTATE:SetCurrentPlayMode("PlayMode_Regular");
+		GAMESTATE:SetCurrentStyle("Single");
+		local steps = song:GetOneSteps('StepsType_Pump_Single', 0);
+		GAMESTATE:SetCurrentSteps('PlayerNumber_P1',steps);
+		GAMESTATE:ApplyGameCommand('mod,failoff',PLAYER_1);
+		local can, reason = GAMESTATE:CanSafelyEnterGameplay()
+		if can then
+			return "ScreenGameplayBlank";
+		else
+			SCREENMAN:SystemMessage("Can't play credits! "..reason);
+		end;
+	else
+		SCREENMAN:SystemMessage("Can't play credits! OMES_SONG is missing.");
+	end;
+	return "ScreenTitleMenu";
+end;
+
 -- functions used for Routine mode
 function IsRoutine()
 	return GAMESTATE:GetCurrentStyle() and GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides"

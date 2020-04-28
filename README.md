@@ -42,3 +42,16 @@ Check Song Structure Documentation.txt.
 ## Who worked on this?
 
 Check BGAnimations/ScreenCredits Overlay/default.lua for credits and open source libraries used.
+
+## License
+Rave It Out (The theme, the name, the game, the charts) is public domain. However, some files and libraries used have their own terms. These files will have their own license at the top.
+
+Read LICENSE for more information.
+
+```
+I dedicate any and all copyright interest in this software to the
+public domain. I make this dedication for the benefit of the public at
+large and to the detriment of my heirs and successors. I intend this
+dedication to be an overt act of relinquishment in perpetuity of all
+present and future rights to this software under copyright law.
+```

@@ -8,6 +8,8 @@
 
 -- See Docs/Themerdocs/item_scroller.md for documentation.
 
+-- This file is MIT licensed, it was pulled from the StepMania source.
+
 function table.rotate_right(t, r)
 	local new_t= {}
 	for n= 1, #t do

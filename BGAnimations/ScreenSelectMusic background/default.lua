@@ -3,9 +3,7 @@ local npsxz = _screen.cx*0.5	--next/previous song X zoom
 local t = Def.ActorFrame {
 
 	LoadActor("sounds");	--lel sounds
-};
-
-backgroundProxy = nil;
+	};
 if IsExtraStagePIU() then
 	t[#t+1] = Def.Sprite{
 		Texture=THEME:GetPathG("","_BGMovies/BGAOFF");
@@ -13,10 +11,6 @@ if IsExtraStagePIU() then
 			self:Cover();
 			self:diffusealpha(0):linear(0.5):diffusealpha(1);
 		end;
-		--This proxy will be used and displayed on top of the channel select
-		--[[OnCommand=function(self)
-			backgroundProxy = self;
-		end;]]
 	};
 	--[[t[#t+1] = Def.Quad{
 		InitCommand=cmd(setsize,SCREEN_WIDTH,SCREEN_HEIGHT;blend,"BlendMode_WeightedMultiply";Center);
@@ -27,10 +21,6 @@ else
 		InitCommand=function(self)
 			self:diffusealpha(0):linear(0.5):diffusealpha(1);
 		end;
-		--This proxy will be used and displayed on top of the channel select
-		--[[OnCommand=function(self)
-			backgroundProxy = self;
-		end;]]
 	};
 end;
 

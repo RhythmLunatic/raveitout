@@ -1,4 +1,5 @@
---SongExtraData
+--SongExtraData (Written by tertu, big thanks to him)
+
 local fand = RageFileUtil.CreateRageFile()
 local DataCache
 function ClearExtraDataCache()

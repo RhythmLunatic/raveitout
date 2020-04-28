@@ -6,7 +6,7 @@ DISPLAY TYPE: HD
 ]]
 SysInfo = {
 	InternalName = "RIO4W",
-	Version = "2020-04-25",
+	Version = "2020-04-27",
 }
 
 RIO_FOLDER_NAMES = {
@@ -83,7 +83,7 @@ HEARTS_PER_MISSION = 3
 USE_ES_SONG = true
 ES_SONG = "09-Season 2 FINAL/Faded"
 --The song that gets picked for the One More Extra Stage.
-OMES_SONG = "09-Season 2 FINAL/Stay Awake"
+OMES_SONG = "09-Season 2 FINAL/Stay Awake (OVERTIME STAGE)"
 
 -- These names will not show up over the difficulty icons.
 STEPMAKER_NAMES_BLACKLIST = {
