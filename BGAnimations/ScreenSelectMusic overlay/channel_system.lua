@@ -514,10 +514,11 @@ t[#t+1] = LoadFont("monsterrat/_montserrat light 60px")..{
 		InitCommand=cmd(uppercase,true;horizalign,left;x,SCREEN_LEFT+18;y,SCREEN_TOP+10;zoom,0.185;skewx,-0.1);
 		StartSelectingGroupMessageCommand=cmd(stoptweening;linear,0.35;diffusealpha,1;playcommand,"GroupChangeMessage");
 		StartSelectingSongMessageCommand=cmd(stoptweening;linear,0.3;diffusealpha,0);
-		GroupChangeMessageCommand=function(self)
+		--[[GroupChangeMessageCommand=function(self)
 			self:uppercase(true);
 			self:settext("Set songlist");
-		end;
+		end;]]
+		Text=THEME:GetString("ScreenSelectGroup","SET SONGLIST")
 	};
 	
 t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{

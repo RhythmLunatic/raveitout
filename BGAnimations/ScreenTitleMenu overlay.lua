@@ -53,9 +53,9 @@ return Def.ActorFrame{
 		InitCommand=cmd(xy,5,25;horizalign,left;vertalign,top;zoom,.5;Stroke,Color("Black"));
 		OnCommand=function(self)
 			if PREFSMAN:GetPreference("AllowExtraStage") then
-				self:settext("HEARTS PER PLAY: "..HeartsPerPlay.."+");
+				self:settext(THEME:GetString("OptionTitles","HeartsPerPlay")..": "..HeartsPerPlay.."+");
 			else
-				self:settext("HEARTS PER PLAY: "..HeartsPerPlay);
+				self:settext(THEME:GetString("OptionTitles","HeartsPerPlay")..": "..HeartsPerPlay);
 			end;
 		end;
 	};

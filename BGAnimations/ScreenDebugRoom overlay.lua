@@ -5,7 +5,7 @@ local t = Def.ActorFrame{
 	};]]
 	Def.Sprite{
 		--Texture=THEME:GetPathG("","_BGMovies/Arcade.mpg");
-		Texture=THEME:GetPathG("Banner","SOrtOrder_Title");
+		Texture=THEME:GetPathG("Banner","SortOrder_Title");
 		InitCommand=cmd(Center;zoom,.5;SetEffectMode,"EffectMode_Saturation");
 		Name="Proxy";
 	};

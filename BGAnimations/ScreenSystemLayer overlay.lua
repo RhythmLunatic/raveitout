@@ -31,15 +31,15 @@ t[#t+1] = LoadFont(SysLayerFont) .. {
 		local eMode = GAMESTATE:IsEventMode();
 		if gMode == 'CoinMode_Home' then
 			if eMode then
-				self:settext("HOME EVENT");
+				self:settext(THEME:GetString("Common","HOME EVENT"));
 			else
-				self:settext('HOME MODE');
+				self:settext(THEME:GetString("Common","HOME MODE"));
 			end;
 		elseif gMode == 'CoinMode_Free' then
 			if eMode then
-				self:settext("EVENT MODE");
+				self:settext(THEME:GetString("Common","EVENT MODE"));
 			else
-				self:settext('FREE PLAY');
+				self:settext(THEME:GetString("Common","FREE PLAY"));
 			end;
 		elseif gMode == 'CoinMode_Pay' then
 			local CoinstoJoin = GAMESTATE:GetCoinsNeededToJoin();
@@ -47,7 +47,8 @@ t[#t+1] = LoadFont(SysLayerFont) .. {
 			local Remainder = math.mod(Coins,CoinstoJoin);
 			local Credits = math.floor(Coins/CoinstoJoin);
 			local CoinsLeft = math.floor(Coins - Credits*CoinstoJoin);
-			self:settext('CREDIT(S) '..Credits..' ['..CoinsLeft..'/'..CoinstoJoin..']');
+			--self:settext('CREDIT(S) '..Credits..' ['..CoinsLeft..'/'..CoinstoJoin..']');
+			self:settextf(THEME:GetString("Common","CREDIT(S) %i [%i/%i]"),Credits,CoinsLeft,CoinstoJoin)
 		end;
 	end;
 	OnCommand = cmd(playcommand,'Refresh');

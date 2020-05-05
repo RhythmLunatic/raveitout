@@ -118,7 +118,7 @@ t[#t+1] = Def.ActorFrame{
 	LoadFont("monsterrat/_montserrat semi bold 60px")..{
 		InitCommand=cmd(zoom,0.3;skewx,-0.2;horizalign,center;vertalign,middle;);
 		--Text=string.format(THEME:GetString("ScreenMemoryCardTest","InsertCard"),pname(side));
-		Text="PRESS           OR          \nTO CONTINUE.";
+		Text=THEME:GetString("ScreenEvaluation","PRESS %s OR %s TO CONTINUE");
 	};
 
 	LoadActor("Center Tap Note 3x2")..{
@@ -146,7 +146,7 @@ if not GAMESTATE:IsCourseMode() then
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			InitCommand=cmd(zoom,0.3;skewx,-0.2;horizalign,center;vertalign,middle;);
 			--Text=string.format(THEME:GetString("ScreenMemoryCardTest","InsertCard"),pname(side));
-			Text="PRESS         AND         \nTO FAVORITE THIS SONG.";
+			Text=THEME:GetString("ScreenEvaluation","PRESS %s AND %s TO FAVORITE THIS SONG");
 		};
 
 		LoadActor("DownLeft Tap Note 3x2")..{

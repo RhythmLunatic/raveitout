@@ -52,9 +52,11 @@ function GetLocalProfiles()
 				InitCommand=cmd(shadowlength,1;y,8;zoom,0.5;vertspacing,-8;ztest,true);
 				BeginCommand=function(self)
 					local numSongsPlayed = profile:GetNumTotalSongsPlayed();
-					local s = numSongsPlayed == 1 and "Song" or "Songs";
-					-- todo: localize
-					self:settext( numSongsPlayed.." "..s.." Played" );
+					if numSongsPlayed == 1 then
+						self:settext(THEME:GetString("ScreenSelectProfile","1 Song Played"))
+					else
+						self:settextf(THEME:GetString("ScreenSelectProfile","%i Songs Played"),numSongsPlayed)
+					end;
 				end;
 			};
 		};
@@ -132,8 +134,8 @@ function LoadPlayerStuff(Player)
 			--OnCommand=cmd(diffuseshift;effectperiod,2;effectcolor1,color("1,1,1,1");effectcolor2,color("1,1,1,0"));
 			InitCommand=cmd(zoom,.75;addx,5);
 			LoadFont("monsterrat/_montserrat semi bold 60px") .. {
-				Text="PRESS         OR       \nTO JOIN THE RAVE.";
-				InitCommand=cmd(uppercase,true;skewx,-0.2;zoom,.9);
+				Text=THEME:GetString("ScreenSelectProfile","PRESS %s OR %s TO JOIN THE RAVE");
+				InitCommand=cmd(uppercase,true;skewx,-0.2;zoom,.9;maxwidth,575);
 				OnCommand=cmd(diffuse,Color('White');strokecolor,Color("Black"));
 			};
 				LoadActor("Center Tap Note 3x2")..{
@@ -230,7 +232,7 @@ function LoadPlayerStuff(Player)
 			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+100;diffusealpha,.5);
 		};
 		LoadFont("Common Normal")..{
-			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+25;vertalign,top);
+			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+25;vertalign,top;maxwidth,375);
 			OnCommand=function(self)
 				if USING_RFID == true then
 					self:settext(THEME:GetString("ScreenSelectProfile","Place your Rave It Out Pass near the reader to login"));
@@ -419,7 +421,7 @@ function LoadPlayerStuff(Player)
 								self:x(-40);
 							end;
 						end;
-						Text="WELCOME TO RAVE IT OUT";
+						Text=THEME:GetString("ScreenSelectProfile","WELCOME TO RAVE IT OUT");
 					};
 					
 				};

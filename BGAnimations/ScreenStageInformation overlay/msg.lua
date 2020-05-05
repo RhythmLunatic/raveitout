@@ -1,21 +1,22 @@
+--Since we have spanish translation, the strings are in Languages/en.ini
 local phrases = {
 --"Pump should have more anime songs. Yeah I said it. Bad Apple is actually a good song.",
-"Perfectionist Mode is best used for obtaining SS scores without wasting time.",
-"Some modifiers will be overridden by certain charts.",
-"Report any bugs to Rhythm Lunatic. Or don't.\nhttps://github.com/RhythmLunatic/raveitout",
-"Make sure to hit hold heads accurately, or you will be punished with worse judgements on following holds. Because StepMania is a great engine.",
-"Check the options list for the Screen Filter feature. It will allow a BGA to be viewed without affecting any gameplay. Loser.",
-"If you already played for awhile, give “Pro mode” a whirl and test your timing skills. Also helps determine what is on and off sync.",
-"While in Pro Mode, navigate to the advanced options menu to show Fast/Slow next to your judgments.",
-"Want to REALLY test your skills? Try Special Mode! 60 different missions to choose from.",
-"The cuter the anime girl, the harder the charts will be. I guarantee it.",
-"300MB of this theme are the anime loading wallpapers alone. Enjoy!",
---"EEHHHHHHHHH? EASY MODO? How cool! Everyone has to start from somewhere!!",
-"Playing Rave It Out during certain times of the year can cause weather changes in game.",
-"Some songs have unique trivia. This song is not one of them. (Add your own by reading the Song Structure Documentation.txt)",
-"Some songs have unique loading screen backgrounds... If you've put in the specialBG.png.",
-"Getting >90% accuracy in a song that requires 2 hearts will get you an extra heart which can be used to play another song.",
-"If you're on the bonus stage and the song title is glowing red, try getting >95% accuracy for a surprise..."
+	THEME:GetString("ScreenStageInformation","PerfectionistMessage"),
+	THEME:GetString("ScreenStageInformation","ModifiersMessage"),
+	THEME:GetString("ScreenStageInformation","BugsMessage"),
+	THEME:GetString("ScreenStageInformation","HoldsMessage"),
+	THEME:GetString("ScreenStageInformation","ScreenFilterMessage"),
+	THEME:GetString("ScreenStageInformation","ProModeMessage"),
+	THEME:GetString("ScreenStageInformation","AdvancedOptionsMessage"),
+	THEME:GetString("ScreenStageInformation","SpecialModeMessage"),
+	THEME:GetString("ScreenStageInformation","GirlMessage"),
+	"300MB of this theme are the anime loading wallpapers alone. Enjoy!",
+	--"EEHHHHHHHHH? EASY MODO? How cool! Everyone has to start from somewhere!!",
+	THEME:GetString("ScreenStageInformation","WeatherMessage"),
+	THEME:GetString("ScreenStageInformation","TriviaMessage"),
+	THEME:GetString("ScreenStageInformation","LoadingBackgroundsMessage"),
+	THEME:GetString("ScreenStageInformation","BonusHeartsMessage"),
+	THEME:GetString("ScreenStageInformation","OvertimeStageMessage")
 };
 
 local message;

@@ -131,7 +131,7 @@ t[#t+1] = Def.ActorFrame {
 	};
 	
 	LoadFont("monsterrat/_montserrat light 60px")..{
-		Text="CURRENT SONGLIST";
+		Text=THEME:GetString("ScreenSelectMusic","CURRENT SONGLIST");
 		InitCommand=cmd(horizalign,left;x,SCREEN_LEFT+18;y,SCREEN_TOP+10;zoom,0.185;skewx,-0.1);
 		--Wat? Why would this ever change?
 		--[[CurrentSongChangedMessageCommand=function(self)
@@ -184,7 +184,7 @@ t[#t+1] = Def.ActorFrame{
 			--InitCommand=cmd(diffuse,color("0,0,0,"..bqalph);xy,0,SCREEN_CENTER_Y;horizalign,right;setsize,bqwid*2,bqalt+50;);
 		};
 		LoadFont("bebas/_bebas neue bold 90px")..{
-			Text="NOT PRESENT";
+			Text=THEME:GetString("ScreenSelectMusic","NOT PRESENT");
 			Condition=not GAMESTATE:IsHumanPlayer(PLAYER_1);
 			InitCommand=cmd(x,-_screen.cx*0.7;y,-infy;zoom,0.3;skewx,-0.2);
 			--PlayerJoinedMessageCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_1));
@@ -205,7 +205,7 @@ t[#t+1] = Def.ActorFrame{
 		};
 		LoadFont("bebas/_bebas neue bold 90px")..{
 			Condition=not GAMESTATE:IsHumanPlayer(PLAYER_2);
-			Text="NOT PRESENT";
+			Text=THEME:GetString("ScreenSelectMusic","NOT PRESENT");
 			InitCommand=cmd(x,_screen.cx*0.7;y,-infy;zoom,0.3;skewx,-0.2);
 			--PlayerJoinedMessageCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_2));
 		};
