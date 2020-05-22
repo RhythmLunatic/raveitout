@@ -347,6 +347,18 @@ function GetOptionsListMapping(name)
 	return map[sGame] or map["default"]
 end
 
+--Override the default for our theme since we use left & right instead of up & down
+function SelectProfileHorizontalKeys()
+	local sGame = string.lower(GAMESTATE:GetCurrentGame():GetName())
+	if sGame == "pump" then
+		return "MenuLeft,MenuRight,Start,Back,Center,DownLeft,DownRight"
+	elseif sGame == "dance" then
+		return "Start,Back,Left,Right,MenuLeft,MenuRight"
+	else
+		return "Left,Right,Start,Back"
+	end
+end
+
 function GetSongBackground(return_nil_on_fail)
 	local song = GAMESTATE:GetCurrentSong();
 	if not song then

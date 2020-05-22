@@ -46,7 +46,7 @@ local t = Def.ActorFrame{
 			Condition=DoDebug;
 			InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y;);
 			BeatCrossedMessageCommand=cmd(
-				settext,GAMESTATE:GetSongBeat()..
+				settext,"Beat: "..math.round(GAMESTATE:GetSongBeat())..
 				"\nBPS: "..GAMESTATE:GetSongBPS()..
 				"\nSeconds: "..GAMESTATE:GetCurMusicSeconds()..
 				"\nCalculated: "..GAMESTATE:GetSongBeat()/GAMESTATE:GetSongBPS()

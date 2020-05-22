@@ -228,14 +228,15 @@ local t = Def.ActorFrame{
 	end;
 	--Input handler
 	CodeMessageCommand=function(self, params)
+		--SCREENMAN:SystemMessage(params.Name);
 		if params.PlayerNumber ~= player then return end;
 		if isDone then return end;
 	
-		if params.Name == "Left" or params.Name == "MenuLeft" then
+		if params.Name == "Left" or params.Name == "MenuLeft" or params.Name == "DownLeft" then
 			--SCREENMAN:SystemMessage("aasdas");
 			scroller:scroll_by_amount(-1);
 			SOUND:PlayOnce(THEME:GetPathS("Codebox", "Move"))
-		elseif params.Name == "Right" or params.Name == "MenuRight" then
+		elseif params.Name == "Right" or params.Name == "MenuRight" or params.Name == "DownRight" then
 			scroller:scroll_by_amount(1);
 			SOUND:PlayOnce(THEME:GetPathS("Codebox", "Move"))
 		elseif params.Name == "Center" or params.Name == "Start" then

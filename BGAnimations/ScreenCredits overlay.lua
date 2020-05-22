@@ -68,7 +68,7 @@ local sections = {
 		"json.lua is Copyright (c) 2019 rxi",
 		"item_scroller.lua by Kyzentun",
 		--Client credits
-		"COM port and http support by pk",
+		"COM port, WinXP, http support by pk",
 		"Card Reader libraries by Alex123123"
 	}},
 	{ "Season 2 Beta Testers", {

@@ -1,4 +1,15 @@
-local musicwheel; --Need a handle on the MusicWheel to work around a StepMania bug. Also needed to get the folders.
+--[[
+The Rave It Out Season 2 group select
+Written by Rhythm Lunatic
+
+How to put this in your theme:
+1. Do not attempt. This is not for beginners. It is very compilicated.
+2. It requires SM-RIO, so no, you can't use it in StepMania 5.1-new. If you want it in your own StepMania, add musicwheel:GetCurrentSections() to your fork. (check SM-RIO source)
+3. Copy this file, add item_scroller.lua (The one from Rave It Out, not the regular one. The RIO one has run_anonymous_function)
+4. Activate it by broadcasting "StartSelectingGroup" or defining GroupSelectButton1, GroupSelectButton2, GroupSelectPad1, GroupSelectPad2 in CodeNames.
+5. Make sure you have all the dependencies, of course.
+]]
+local musicwheel; --To get folders, to open folders... I'm sure you know why this handle is needed.
 
 --==========================
 --Special folders... lua doesn't have enums so this is as close as it gets.
@@ -177,6 +188,8 @@ end;
 function genDefaultGroups()
 	groups = {};
 	local numHeartsLeft = GetSmallestNumHeartsLeftForAnyHumanPlayer()
+	
+	--TODO: So doing ipairs is actually a really bad idea because if the full tracks folder is skipped, everything explodes becuase now you have a null indexed object in the table
 	for i,group in ipairs(getAvailableGroups()) do
 		if numHeartsLeft >= 4 then
 			groups[i] = {WHEELTYPE_NORMAL,group}
@@ -220,7 +233,7 @@ function genDefaultGroups()
 	else
 		--This can occur when changing sorts since sometimes it will kick you out of the folder (because that song isn't in any of the sort generated folders)
 		--Not sure what to do other than ignore it, since it's not a real bug
-		lua.ReportScriptError("The current song should have been set in ScreenSelectPlayMode!");
+		--lua.ReportScriptError("The current song should have been set in ScreenSelectPlayMode!");
 	end;
 end;
 function genSortOrderGroups()
