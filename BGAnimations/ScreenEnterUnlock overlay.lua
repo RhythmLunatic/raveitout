@@ -2,7 +2,7 @@ local t = Def.ActorFrame{
 	OnCommand=function(self)
 		SCREENMAN:AddNewScreenToTop("ScreenTextEntry");
 		local serverSettings = {
-			Question = "Enter a cheat code.",
+			Question = THEME:GetString("ScreenEnterUnlock","Enter an unlock code."),
 			MaxInputLength = 255,
 			OnOK = function(answer)
 				--[[if answer == "DebugOn" then
@@ -47,7 +47,8 @@ local t = Def.ActorFrame{
 				AssembleCoopGroup();
 				AssembleShortcutGroup();
 				self:settext("Groups generated.");
-			elseif unlockmsg == "ResetQuestMode" then
+			--All this does is write a blank quest mode file.
+			elseif unlockmsg == "QuestModeDebug" then
 				local strToWrite = json.encode(QUESTMODE:GenerateNewFile())
 				local file= RageFileUtil.CreateRageFile()
 				local path = THEME:GetCurrentThemeDirectory().."Other/QuestMode_Debug.json";

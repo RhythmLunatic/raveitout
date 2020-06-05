@@ -48,6 +48,18 @@ Rave It Out (The theme, the name, the game, the charts) is public domain. Howeve
 
 Read LICENSE for more information.
 
+The files that are not covered under public domain are:
+- Scripts/00 json.lua (MIT, Copyright (c) 2019 rxi)
+- Parts of Scripts/wheel.lua (MIT, Daniel Joshua Guzek & Inorizushi)
+- Scripts/04 item_scroller.lua (MIT, Kyzentun)
+- Everything in the Sounds folder. Sorry, we didn't make most of it.
+- Graphics/_RandomWalls/HDWalls. You're supposed to provide your own!
+- In BGAnimations/ScreenSelectProfile overlay:
+- card_unit.png
+- checking_card_unit.png
+- frame_p1.png & frame_p2.png
+- m_transmission.png
+
 ```
 I dedicate any and all copyright interest in this software to the
 public domain. I make this dedication for the benefit of the public at

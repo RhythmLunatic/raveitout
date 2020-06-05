@@ -4,10 +4,10 @@ Written by Rhythm Lunatic
 
 How to put this in your theme:
 1. Do not attempt. This is not for beginners. It is very compilicated.
-2. It requires SM-RIO, so no, you can't use it in StepMania 5.1-new. If you want it in your own StepMania, add musicwheel:GetCurrentSections() to your fork. (check SM-RIO source)
-3. Copy this file, add item_scroller.lua (The one from Rave It Out, not the regular one. The RIO one has run_anonymous_function)
+2. It requires either SM-RIO or the latest SM nightly. No, 5.1-new beta 3 won't work. Compile from source.
+3. Copy this file, add item_scroller.lua to Scripts. (The one from Rave It Out, not the regular one. The RIO one has run_anonymous_function)
+4. The favorites folder feature is optional, but if you want it to function make sure you add Scripts/FavoriteManager.lua to your theme and read the instructions.
 4. Activate it by broadcasting "StartSelectingGroup" or defining GroupSelectButton1, GroupSelectButton2, GroupSelectPad1, GroupSelectPad2 in CodeNames.
-5. Make sure you have all the dependencies, of course.
 ]]
 local musicwheel; --To get folders, to open folders... I'm sure you know why this handle is needed.
 
@@ -189,14 +189,17 @@ function genDefaultGroups()
 	groups = {};
 	local numHeartsLeft = GetSmallestNumHeartsLeftForAnyHumanPlayer()
 	
-	--TODO: So doing ipairs is actually a really bad idea because if the full tracks folder is skipped, everything explodes becuase now you have a null indexed object in the table
-	for i,group in ipairs(getAvailableGroups()) do
+	--[[
+	So using the index in ipairs is actually a really bad idea because if the full tracks folder is skipped, everything explodes becuase now you have a null indexed object in the table
+	Therefore this just uses groups[#groups] even though the index starts at 1 and there's nothing in the table yet
+	]]
+	for _,group in ipairs(getAvailableGroups()) do
 		if numHeartsLeft >= 4 then
-			groups[i] = {WHEELTYPE_NORMAL,group}
+			groups[#groups+1] = {WHEELTYPE_NORMAL,group}
 		else
 			--Because this is clearly a good idea
 			if group ~= RIO_FOLDER_NAMES['FullTracksFolder'] then
-				groups[i] = {WHEELTYPE_NORMAL,group}
+				groups[#groups+1] = {WHEELTYPE_NORMAL,group}
 			end;
 		end;
 	end;
@@ -362,11 +365,14 @@ local t = Def.ActorFrame{
 					selection = key;
 				end
 			end;
-			assert(groups,"REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+			--assert(groups,"REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
 			setenv("cur_group",groups[selection][2]);
 			scroller:set_info_set(groups, 1);
 		end;
 		scroller:scroll_by_amount(selection-1)
+		--I got sick of input locking when I reloaded the screen
+		SCREENMAN:set_input_redirected(PLAYER_1, false);
+		SCREENMAN:set_input_redirected(PLAYER_2, false);
 	end;
 
 	SongChosenMessageCommand=function(self)
@@ -390,7 +396,7 @@ local t = Def.ActorFrame{
 			--No need to check if both players are present... Probably.
 			SCREENMAN:set_input_redirected(PLAYER_1, true);
 			SCREENMAN:set_input_redirected(PLAYER_2, true);
-			musicwheel:Move(0);
+			musicwheel:Move(0); --Having the musicwheel move while we're picking a group would be bad, so stop movement.
 		else
 			--Debugging only
 			--SCREENMAN:SystemMessage(codeName);
@@ -410,14 +416,6 @@ local t = Def.ActorFrame{
 		self:linear(.3):diffusealpha(0);
 		scroller:get_actor_item_at_focus_pos().container:GetChild("banner"):linear(.3):zoom(0);
 	end;
-	
-	--Why is this even here? It could be in the above function...
-	--[[SortChangedMessageCommand=function(self,params)
-		--Reset button history when the sort selection screen closes.
-		--button_history = {"none", "none", "none", "none"};
-	
-
-	end;]]
 }
 
 
@@ -480,27 +478,12 @@ t[#t+1] = LoadActor(THEME:GetPathS("","nosound.ogg"))..{
 };
 
 --THE BACKGROUND VIDEO
+--ActorProxies don't work for the BG video unfortunately since they can't be diffused.
 t[#t+1] = LoadActor(THEME:GetPathG("","background/common_bg"))..{
 	InitCommand=cmd(diffusealpha,0);
 	StartSelectingGroupMessageCommand=cmd(stoptweening;linear,0.35;diffusealpha,1);
 	StartSelectingSongMessageCommand=cmd(stoptweening;linear,0.3;diffusealpha,0);
 };
---[[t[#t+1] = Def.ActorFrame{
-
-	--InitCommand=cmd(diffusealpha,0);
-	--StartSelectingGroupMessageCommand=cmd(stoptweening;linear,0.35;diffusealpha,1);
-	StartSelectingGroupMessageCommand=function(self)
-		--self:SetTarget(backgroundProxy):diffusealpha(0);
-		--self:stoptweening():linear(0.35):diffusealpha(1);
-	end;
-	--StartSelectingSongMessageCommand=cmd(stoptweening;linear,0.3;diffusealpha,0);
-	Def.ActorProxy{
-		OnCommand=function(self)
-			self:SetTarget(backgroundProxy);
-		end;
-
-	}
-}]]
 
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(Center;zoomto,SCREEN_WIDTH,SCREEN_HEIGHT;diffuse,0,0,0,0;fadetop,1;blend,Blend.Add);
@@ -540,11 +523,6 @@ t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{
 		StartSelectingGroupMessageCommand=cmd(stoptweening;linear,0.35;diffusealpha,1;playcommand,"GroupChangeMessage");
 		StartSelectingSongMessageCommand=cmd(stoptweening;linear,0.3;diffusealpha,0);
 		GroupChangeMessageCommand=function(self)
-			--[[if string.find(getenv("cur_group"),"Rave It Out") then
-				self:settext(string.sub(getenv("cur_group"), 17, string.len(getenv("cur_group"))-1));
-			else
-				self:settext(string.sub(getenv("cur_group"), 4, string.len(getenv("cur_group"))));
-			end;]]
 			if not getenv("cur_group") then
 				self:settext("cur_group env var missing!");
 			else
@@ -576,21 +554,6 @@ t[#t+1] = LoadFont("monsterrat/_montserrat light 60px")..{
 };
 
 t[#t+1] = 	LoadActor("arrow_shine")..{};
---[[t[#t+1] = Def.Quad{
-	InitCommand=cmd(diffuse,color("0,0,0,.8");setsize,SCREEN_WIDTH,SCREEN_HEIGHT;Center);
 
-};
-t[#t+1] = LoadFont("monsterrat/_montserrat light 60px")..{
-	InitCommand=cmd(x,SCREEN_CENTER_X;vertalign,top;diffuse,Color("White");zoom,.25;addy,100;);
-	OnCommand=function(self)
-		local sect = musicwheel:GetCurrentSections()
-		local aa = ""
-		for i = 1, #sect do
-			aa = aa..sect[i].."\n,"
-		end;
-		self:settext(aa);
-	end;
-	SortChangedMessageCommand=cmd(playcommand,"On");
-};]]
 
 return t;
