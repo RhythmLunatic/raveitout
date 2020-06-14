@@ -21,10 +21,11 @@ This is a StepMania theme that's mainly for the 'pump' game mode.
 ## Usage
 Works on [SM-RIO](https://github.com/RhythmLunatic/stepmania/tree/starworlds) only, because:
 
-- Card Reader support
+- ~~Card Reader support~~ Currently nonfunctional
 - level folders
 - co-op x4
 - Additional lua function for courses, which is needed because Mixtapes Mode is entirely lua
+- ScreenWithOptionsList, also needed for mixtapes mode.
 - Various other changes
 
 Configure the groups for Easy and Special mode along with courses in 01 SYSTEM_PARAMETERS.lua.

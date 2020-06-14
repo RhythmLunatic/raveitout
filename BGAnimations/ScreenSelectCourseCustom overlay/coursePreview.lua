@@ -196,8 +196,8 @@ return Def.ActorFrame{
 		
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			InitCommand=cmd(horizalign,left;x,_screen.cx-95;y,_screen.cy+74;zoom,0.3;);
+			Text="X"..HeartsPerPlay; --Courses will always take up all stages.
 			CurrentCourseChangedMessageCommand=function(self)
-				self:settext("X6"); --Courses are always 6 hearts
 				(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.2;skewx,-0.2)) (self)
 			end;
 		};

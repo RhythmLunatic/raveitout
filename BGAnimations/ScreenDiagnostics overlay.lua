@@ -19,6 +19,8 @@ local t = Def.ActorFrame{
 			if timer > 0 then
 				SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToPrevScreen");
 			end;
+		elseif params.Name == "Secret" then
+			SCREENMAN:SetNewScreen("ScreenGreetz");
 		else
 			SCREENMAN:SystemMessage("Unknown button: "..params.Name);
 		end;
@@ -45,14 +47,14 @@ local t = Def.ActorFrame{
 	LoadFont("Common Normal")..{
 		Text="StepMania build: "..ProductFamily().." "..ProductVersion();
 		InitCommand=cmd(xy,SCREEN_CENTER_X,60);
-		OnCommand=function(self)
+		--[[OnCommand=function(self)
 			if ProductVersion() ~= "5.0.12" then
 				self:settext(self:GetText().." (Incompatible version?)");
 				self:diffuse(Color("Red"));
 			else
 				self:diffuse(Color("Green"));
 			end;
-		end;
+		end;]]
 	};
 	LoadFont("Common Normal")..{
 		Text="Game Mode: "..ToEnumShortString(GAMESTATE:GetCoinMode());
@@ -128,21 +130,17 @@ local t = Def.ActorFrame{
 		end;
 	};
 	LoadFont("Common Normal")..{
-		Text="Special Group: ";
+		Text="Full Songs Group: ";
 		InitCommand=cmd(xy,20,350;horizalign,left);
 		OnCommand=function(self)
-			if ReadPrefFromFile("SpecialModeEnabled") == "true" then
-				if SONGMAN:DoesSongGroupExist(RIO_FOLDER_NAMES["SpecialFolder"]) == false then
-					self:settext(self:GetText().." Missing!");
-					self:diffuse(Color("Red"));
-				else
-					self:settext(self:GetText().." Ok! | "..#SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["SpecialFolder"]).." songs");
-					self:diffuse(Color("Green"));
-				end;
-				self:settext(self:GetText().." | "..RIO_FOLDER_NAMES["SpecialFolder"])
+			if SONGMAN:DoesSongGroupExist(RIO_FOLDER_NAMES["FullTracksFolder"]) == false then
+				self:settext(self:GetText().." Missing!");
+				self:diffuse(Color("Red"));
 			else
-				self:settext(self:GetText().." Special mode is disabled.");
+				self:settext(self:GetText().." Ok! | "..#SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["FullTracksFolder"]).." songs");
+				self:diffuse(Color("Green"));
 			end;
+			self:settext(self:GetText().." | "..RIO_FOLDER_NAMES["FullTracksFolder"])
 		end;
 	};
 	LoadFont("Common Normal")..{

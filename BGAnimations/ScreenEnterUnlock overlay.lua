@@ -40,6 +40,8 @@ local t = Def.ActorFrame{
 			elseif unlockmsg == "DebugOff" then
 				DoDebug = false
 				self:settext("Debug Disabled.")
+			elseif unlockmsg == "HiddenMenu" then
+				GAMESTATE:ApplyGameCommand("screen,ScreenDebugOptions")
 			elseif unlockmsg == "ExportData" then
 				parseData();
 			elseif unlockmsg == "Assemble" then

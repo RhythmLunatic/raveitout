@@ -23,7 +23,7 @@ return Def.ActorFrame {
 	Def.StepsDisplayList {
 		Name="StepsDisplayListRow";
 		InitCommand=cmd(draworder,250;);
-
+		
 		CursorP2 = Def.ActorFrame {
 			InitCommand=cmd(visible,GAMESTATE:IsSideJoined(PLAYER_2);draworder,200;);
 			OnCommand=cmd(rotationz,90;);
@@ -85,7 +85,8 @@ return Def.ActorFrame {
 				end;
 			};
 		};
-
+		
+		--It's below the P2 cursor because the P2 cursor handles showing both players overlapping.
 		CursorP1 = Def.ActorFrame {
 			InitCommand=cmd(draworder,201;visible,GAMESTATE:IsSideJoined(PLAYER_1););
 			OnCommand=cmd(rotationz,90;);
@@ -103,7 +104,9 @@ return Def.ActorFrame {
 				end;
 			end;
 			LoadActor("player1cur")..{
-			InitCommand=cmd(x,-9;y,-3;zoom,0.425;thump,1;sleep,1;effectmagnitude,1,1.05,4;effectclock,'beat';);
+			--Strange, I can't figure out why it's not changing immediately when you switch songs. Oh well.
+			--CurrentSongChangedMessageCommand=cmd(stoptweening;thump,1);
+			InitCommand=cmd(x,-9;y,-3;zoom,0.425;pulse;sleep,1;effectmagnitude,1,1.05,4;effectclock,'beat';);
 			};
 		};
 

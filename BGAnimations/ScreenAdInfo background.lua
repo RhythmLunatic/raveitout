@@ -7,7 +7,7 @@ local function inputs(event)
 	--Check if player clicked screen, then skip to next screen if they did.
 	local button = ToEnumShortString(event.DeviceInput.button)
 	if button == "left mouse button" then
-		--SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToNextScreen");
+		SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToNextScreen");
 	end
 end;
 
@@ -19,7 +19,6 @@ local phrases = {
 	"Brought to you by Music Game Hell",
 	"Brought to you by MAX300 Hell",
 	"Guys what's sows",
-	--"Actually, my name's Rick Djarc.",
 	"An osu original",
 	"& Knuckles",
 	"I like rhythm games",
@@ -34,6 +33,8 @@ local phrases = {
 	"Also check out DanceDanceRevolution: SuperNOVA 3!",
 	"Also check out DanceDanceRevolution: Starlight!",
 	"Also check out Sushi Violation!",
+	"Also check out StepF2!",
+	"Also check out StepPrime!",
 	"stole the precious thing",
 	"stole this theme (Sorry Cortes)",
 	"Not actually a DJ",
@@ -57,7 +58,7 @@ return Def.ActorFrame{
 		self:sleep(6);
 		self:linear(.5);
 		self:diffusealpha(0);
-		SCREENMAN:GetTopScreen():AddInputCallback(inputs);
+		--SCREENMAN:GetTopScreen():AddInputCallback(inputs);
 	end;
 	
 	LoadActor(THEME:GetPathG("","stepmania"))..{

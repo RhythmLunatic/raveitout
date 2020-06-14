@@ -342,7 +342,7 @@ local function inputs(event)
 			--local curItem = scroller:get_actor_item_at_focus_pos();
 			--SCREENMAN:SystemMessage(ListActorChildren(curItem.container));
 		else
-			--SCREENMAN:SystemMessage("unknown button: "..button)
+			SCREENMAN:SystemMessage("unknown button: "..button)
 			--SCREENMAN:SystemMessage(strArrayToString(button_history));
 			--musicwheel:SetOpenSection("");
 			--SCREENMAN:SystemMessage(musicwheel:GetNumItems());
@@ -550,5 +550,8 @@ t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{
 		end;
 	};
 t[#t+1] = 	LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/arrow_shine"))..{};
+
+--OptionsList.
+t[#t+1] = LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/OptionsList"));
 
 return t;

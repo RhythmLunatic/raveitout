@@ -10,7 +10,7 @@ end;
 --SCREENMAN:SystemMessage(tostring(#getPlayModeChoices():split(",")).." "..getPlayModeChoices())
 -- Game Mode Choices
 --Ex. "Easy,Arcade,Pro" -> {"Easy","Arcade","Pro"}
-local Choices = getPlayModeChoices():split(",");
+local Choices = split(",",getPlayModeChoices())
 local numChoices = #Choices --Precalculate it instead of iterating every time
 
 local function pickRandomSong()

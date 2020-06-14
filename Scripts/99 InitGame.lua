@@ -11,7 +11,6 @@ function Setup()
 	--THEME:ReloadMetrics();
 	--redundante dejarlo aquí, dejar en theme default ScreenTitleMenu overlay o probar en ScreenOptions overlay
 	--PREFSMAN:SetPreference("Theme","RioTI"); --appearance op --ok [sólo al iniciar]
-	PREFSMAN:SetPreference("HideIncompleteCourses",true);
 	
 	PREFSMAN:SetPreference("SuperMeterPercentChangeCheckpointHit",0);
 	PREFSMAN:SetPreference("SuperMeterPercentChangeCheckpointMiss",0);
@@ -72,21 +71,28 @@ function Setup()
 			--Graphic/Sound options
 	PREFSMAN:SetPreference("SmoothLines",true);
 	PREFSMAN:SetPreference("CelShadeModels",false);
-			--UI Options
+	PREFSMAN:SetPreference("FastNoteRendering",true);
+	
+	--UI Options
 	PREFSMAN:SetPreference("ShowBanners",false);
 	PREFSMAN:SetPreference("ShowInstructions",false);
-	PREFSMAN:SetPreference("ShowNativeLanguage",true);
+	PREFSMAN:SetPreference("ShowNativeLanguage",false); --Other language characters don't display properly
 	PREFSMAN:SetPreference("ShowSongOptions","Yes"); --Only visible when in Debug mode
-			--Advanced Options
-	--AllowW1 gets overridden during mode select anyway.
-	--PREFSMAN:SetPreference("AllowW1","AllowW1_Everywhere");
-	PREFSMAN:SetPreference("HiddenSongs",false);
-	PREFSMAN:SetPreference("EasterEggs",true);
+
+	--Steps related
+	PREFSMAN:SetPreference("HiddenSongs",true); --To hide Easy Mode and OMES songs.
 	PREFSMAN:SetPreference("AutogenSteps",false);
 	PREFSMAN:SetPreference("AutogenGroupCourses",false);
+	PREFSMAN:SetPreference("HideIncompleteCourses",true);
+	
+	--Lights related
+	PREFSMAN:SetPreference("BlinkGameplayButtonLightsOnNote",true);
+	PREFSMAN:SetPreference("LightsStepsDifficulty","medium,hard");
+	PREFSMAN:SetPreference("OITGStyleLights",true);
+	
 	PREFSMAN:SetPreference("FastLoad",false);
 	PREFSMAN:SetPreference("FastLoadAdditionalSongs",false);
-	PREFSMAN:SetPreference("FastNoteRendering",true);
+	
 	--FORCED OPERATOR CONFIG END
 
 	--Preferences.ini Exclusive START
