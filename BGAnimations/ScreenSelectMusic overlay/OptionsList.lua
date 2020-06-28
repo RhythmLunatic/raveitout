@@ -11,7 +11,26 @@ local OPLIST_splitAt = THEME:GetMetric("OptionsList","MaxItemsBeforeSplit")
 --Start to shift the optionsList up at this row
 local OPLIST_ScrollAt = 16
 
-local t = Def.ActorFrame{};
+local t = Def.ActorFrame{
+	-- CODEBOX/OPTIONLIST
+	LoadActor(THEME:GetPathS("","Codebox Move"))..{
+		OptionsListOpenedMessageCommand=cmd(play);
+		OptionsListRightMessageCommand=cmd(play);
+		OptionsListLeftMessageCommand=cmd(play);
+		OptionsListQuickChangeMessageCommand=cmd(play);
+	};
+	LoadActor(THEME:GetPathS("","Codebox Select"))..{
+		OptionsListStartMessageCommand=cmd(play);
+		OptionsListResetMessageCommand=cmd(play);	
+	};
+	LoadActor(THEME:GetPathS("","Codebox Enter"))..{
+		OptionsListPopMessageCommand=cmd(play);
+		OptionsListPushMessageCommand=cmd(play);
+	};
+	LoadActor(THEME:GetPathS("","Codebox Close"))..{
+		OptionsListClosedMessageCommand=cmd(play);	
+	};
+};
 
 local function CurrentNoteSkin(p)
 	local state = GAMESTATE:GetPlayerState(p)

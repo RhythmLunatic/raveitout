@@ -216,6 +216,13 @@ local function updateCurrentCourse()
 	MESSAGEMAN:Broadcast("CurrentCourseChanged",{Selection=courseSelection,Total=#currentCourseGroup});
 end;
 
+local screen; --To go to next screen and to check if OptionsList is currently open.
+
+--To open OptionsList using LRLR
+--[[local buttonHistory = {
+	[PLAYER_1] = {"none","none","none","none"},
+	[PLAYER_2] = {"none","none","none","none"}
+}]]
 local function inputs(event)
 	
 	local pn= event.PlayerNumber
@@ -228,7 +235,12 @@ local function inputs(event)
 	end]]
 
 	-- If it's a release, ignore it.
-	if event.type == "InputEventType_Release" then return end
+	if event.type == "InputEventType_Release" or 
+		not pn or 
+		not screen:CanOpenOptionsList(pn) or --Don't move wheel when OptionsList is open
+		button == "Select" --Select options OptionsList
+		then return end
+	
 	if curState == STATE_READY then
 		if button == "UpRight" or button == "UpLeft" or button == "Up" or button == "MenuUp" then
 			curState = STATE_PICKING_COURSE;
@@ -287,6 +299,8 @@ local function inputs(event)
 		elseif button == "Center" or button == "Start" then
 			curState = STATE_READY;
 			MESSAGEMAN:Broadcast("SongChosen");
+		elseif button == "Back" then
+			SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToPrevScreen");
 		end;
 	else
 		if button == "Center" or button == "Start" then
@@ -354,11 +368,21 @@ local function inputs(event)
 			--SCREENMAN:SystemMessage(musicwheel:GetWheelItem(0):GetText());
 		end;
 	end;
+	--Not needed, CodeNames will handle it
+	--[[buttonHistory[pn][1] = buttonHistory[pn][2];
+	buttonHistory[pn][2] = buttonHistory[pn][3];
+	buttonHistory[pn][3] = buttonHistory[pn][4];
+	buttonHistory[pn][4] = button;
+	if buttonHistory[pn][1] == "DownLeft" and buttonHistory[pn][2] == "DownRight" and buttonHistory[pn][3] == "DownLeft" and buttonHistory[pn][4] == "DownRight"
+	
+	end;]]
+	
 end;
 
 local t = Def.ActorFrame{
 	OnCommand=function(self)
-		SCREENMAN:GetTopScreen():AddInputCallback(inputs);
+		screen = SCREENMAN:GetTopScreen();
+		screen:AddInputCallback(inputs);
 		--[[SCREENMAN:set_input_redirected(PLAYER_1, true);
 		SCREENMAN:set_input_redirected(PLAYER_2, true);]]
 	end;
@@ -423,6 +447,16 @@ local s = Def.ActorFrame{
 		end;
 	end;
 	
+	--handle opening the OptionsList here
+	CodeMessageCommand=function(self,param)
+		local codeName = param.Name		-- code name, matches the one in metrics
+		--local pn = param.PlayerNumber	-- which player entered the code
+		if codeName == "CodeOpenOpList" or codeName == "CodeOpenOpList2" then
+			screen:OpenOptionsList(param.PlayerNumber);
+		
+		end;
+	end;
+	
 }
 --THE BACKGROUND VIDEO
 s[#s+1] = LoadActor(THEME:GetPathG("","background/common_bg"))..{};
@@ -438,24 +472,6 @@ local g = Def.ActorFrame{
 	OnCommand=function(self)
 		groupScroller:set_info_set(folderNames, 1);
 	end;
-
-	
-	--[[CodeMessageCommand=function(self,param)
-		local codeName = param.Name		-- code name, matches the one in metrics
-		--player is not needed
-		--local pn = param.PlayerNumber	-- which player entered the code
-		if codeName == "GroupSelectPad1" or codeName == "GroupSelectPad2" or codeName == "GroupSelectButton1" or codeName == "GroupSelectButton2" then
-			if isPickingDifficulty then return end; --Don't want to open the group select if they're picking the difficulty.
-			MESSAGEMAN:Broadcast("StartSelectingGroup");
-			--SCREENMAN:SystemMessage("Group select opened.");
-			--No need to check if both players are present... Probably.
-			SCREENMAN:set_input_redirected(PLAYER_1, true);
-			SCREENMAN:set_input_redirected(PLAYER_2, true);
-		else
-			--Debugging only
-			--SCREENMAN:SystemMessage(codeName);
-		end;
-	end;]]
 	
 	StartSelectingGroupMessageCommand=function(self,params)
 		local curItem = groupScroller:get_actor_item_at_focus_pos();
