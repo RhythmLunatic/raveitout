@@ -7,7 +7,6 @@ else
 	default_width = SCREEN_WIDTH
 end;
 
---SCREENMAN:SystemMessage(tostring(#getPlayModeChoices():split(",")).." "..getPlayModeChoices())
 -- Game Mode Choices
 --Ex. "Easy,Arcade,Pro" -> {"Easy","Arcade","Pro"}
 local Choices = split(",",getPlayModeChoices())
@@ -317,7 +316,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		if choice == "Easy" then
 			PREFSMAN:SetPreference("AllowW1",'AllowW1_Never');
 			-- Easy Mode
-			--setenv("PlayMode","Easy");
+			GAMESTATE:SetBasicMode();
 			setenv("HeaderTitle","SELECT MUSIC");
 			assert(SONGMAN:DoesSongGroupExist(RIO_FOLDER_NAMES["EasyFolder"]),"Easy folder is missing!")
 			local folder = SONGMAN:GetSongsInGroup(RIO_FOLDER_NAMES["EasyFolder"]);

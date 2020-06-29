@@ -238,7 +238,7 @@ local function inputs(event)
 	if event.type == "InputEventType_Release" or 
 		not pn or 
 		not screen:CanOpenOptionsList(pn) or --Don't move wheel when OptionsList is open
-		button == "Select" --Select options OptionsList
+		button == "Select" --Select opens OptionsList
 		then return end
 	
 	if curState == STATE_READY then
@@ -451,7 +451,7 @@ local s = Def.ActorFrame{
 	CodeMessageCommand=function(self,param)
 		local codeName = param.Name		-- code name, matches the one in metrics
 		--local pn = param.PlayerNumber	-- which player entered the code
-		if codeName == "CodeOpenOpList" or codeName == "CodeOpenOpList2" then
+		if codeName == "OpenOpList" or codeName == "OpenOpList2" or codeName == "Select" then
 			screen:OpenOptionsList(param.PlayerNumber);
 		
 		end;
@@ -565,9 +565,13 @@ t[#t+1] = LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			self:settext(folderNames[groupSelection]);
 		end;
 	};
+	
+	
+--OpList
+t[#t+1] = LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/OptionsList"));
+
 t[#t+1] = 	LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/arrow_shine"))..{};
 
---OptionsList.
-t[#t+1] = LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/OptionsList"));
+
 
 return t;

@@ -103,7 +103,7 @@ return Def.ActorFrame{
 					if author ~= "" then
 						self:visible(true);
 						local s = "";
-						local sArr = author:split(" ");
+						local sArr = split(" ",author);
 						for i,v in ipairs(sArr) do
 							s=s..strleft(sArr[i],1)
 						end;

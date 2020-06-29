@@ -42,10 +42,9 @@ PerfectionistMode = {
 	PlayerNumber_P4 = false
 };
 
---Requires string:split
 function OptionRowAvailableNoteskins()
 	local ns = NOTESKIN:GetNoteSkinNames();
-	local disallowedNS = THEME:GetMetric("Common","NoteSkinsToHide"):split(",");
+	local disallowedNS = split(",",THEME:GetMetric("Common","NoteSkinsToHide"));
 	for i = 1, #disallowedNS do
 		for k,v in pairs(ns) do
 			if v == disallowedNS[i] then

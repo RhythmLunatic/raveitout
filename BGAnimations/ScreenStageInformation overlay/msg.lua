@@ -35,7 +35,7 @@ if GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse():GetDescription() ~=
 	message = GAMESTATE:GetCurrentCourse():GetDescription();
 elseif songhasmsg then
 	local file = File.Read(songmsgpath)
-	messages = file:split("\r\n");
+	messages = split("\r\n",file);
 	--SCREENMAN:SystemMessage(tostring(#messages).." "..strArrayToString(messages));
 	message = messages[math.random(#messages)];
 else

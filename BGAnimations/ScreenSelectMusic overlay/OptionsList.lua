@@ -98,7 +98,18 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				if params.Player == pn then
 					currentOpList = "SongMenu"
 					--This batshit code finds the value of [ScreenOptionsMaster] SongMenu,1
-					self:settext(THEME:GetString("OptionExplanations",string.gsub(THEME:GetMetric("ScreenOptionsMaster",THEME:GetMetric("OptionsList","TopMenu")..",1"):split(";")[1],"name,","")))
+					--local name = split(";",)
+					--SCREENMAN:SystemMessage(split(";",string.gsub(THEME:GetMetric("ScreenOptionsMaster",THEME:GetMetric("OptionsList","TopMenu")..",1"),"name,",""))[1]);
+					--[[
+					1. THEME:GetMetric("OptionsList","TopMenu")..",1" -> "SongMenu,1"
+					2. THEME:GetMetric("ScreenOptionsMaster",THEME:GetMetric("OptionsList","TopMenu")..",1") -> "name,Speed;screen,Speed"
+					3. string.gsub(THEME:GetMetric("ScreenOptionsMaster",THEME:GetMetric("OptionsList","TopMenu")..",1"),"name,","") -> "Speed;screen,Speed"
+					4. split(";",string.gsub(THEME:GetMetric("ScreenOptionsMaster",THEME:GetMetric("OptionsList","TopMenu")..",1"),"name,",""))[1] -> {"Speed", "screen,Speed"} -> "Speed"
+					5. THEME:GetString("OptionExplanations","Speed")
+					
+					Steps 3 and 4 can be in reverse order.
+					]]
+					self:settext(THEME:GetString("OptionExplanations",split(";",string.gsub(THEME:GetMetric("ScreenOptionsMaster",THEME:GetMetric("OptionsList","TopMenu")..",1"),"name,",""))[1]))
 				end;
 			end;
 			AdjustCommand=function(self,params)
@@ -107,7 +118,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 					if currentOpList == "SongMenu" or currentOpList == "System" then
 						
 						if params.Selection+1 <= numRows then
-							local itemName = string.gsub(THEME:GetMetric("ScreenOptionsMaster",currentOpList..","..params.Selection+1):split(";")[1],"name,","")
+							local itemName = split(";",string.gsub(THEME:GetMetric("ScreenOptionsMaster",currentOpList..","..params.Selection+1),"name,",""))[1]
 							self:settext(THEME:GetString("OptionExplanations",itemName))
 						else
 							self:settext("Exit.");

@@ -108,5 +108,15 @@ end;
 
 t[#t+1] = as;
 
+local function bTos(b) return b and "true" or "false" end;
+
+t[#t+1] = Def.ActorFrame{
+	Def.BitmapText{
+		Font="Common Normal";
+		InitCommand=cmd(Center);
+		Text=bTos(UNLOCKMAN:IsSongLocked(SONGMAN:FindSong("99-Easy/Gangnam Style")));
+	}
+}
+
 
 return t;

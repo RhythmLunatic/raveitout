@@ -127,6 +127,12 @@ local t = Def.ActorFrame{
 				self:diffuse(Color("Green"));
 			end;
 			self:settext(self:GetText().." | "..RIO_FOLDER_NAMES["EasyFolder"])
+			
+			if PREFSMAN:GetPreference("HiddenSongs") then
+				self:settext(self:GetText().." | Unlock system Ok!");
+			else
+				self:settext(self:GetText().." | Unlock system Off!");
+			end;
 		end;
 	};
 	LoadFont("Common Normal")..{
