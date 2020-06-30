@@ -35,7 +35,7 @@ return Def.ActorFrame{
 						local bga = randomBGAs[math.random(1,#randomBGAs)]
 						--SCREENMAN:SystemMessage(bga);
 						self:Load("/RandomMovies/SD/"..bga);
-					else
+					elseif randomBGAs[1] ~= nil then
 						--SCREENMAN:SystemMessage("/RandomMovies/SD/"..randomBGAs[1]);
 						self:Load("/RandomMovies/SD/"..randomBGAs[1])
 					end;

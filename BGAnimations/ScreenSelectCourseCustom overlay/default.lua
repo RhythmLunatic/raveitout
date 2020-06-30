@@ -206,13 +206,14 @@ local lastSelectedGroupIndex = 0;
 
 local function updateCurrentCourse()
 	assert(currentCourseGroup[courseSelection],"This course selection is nil! Selection:"..courseSelection);
-	GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection])
-	if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
+		if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
 		setenv("TrailCache",currentCourseGroup[courseSelection]:GetTrails(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'])[1]);
 	else
 		setenv("TrailCache",currentCourseGroup[courseSelection]:GetAllTrails()[1]);
 	end;
-	--assert(TrailCache);
+	assert(getenv("TrailCache"));
+	GAMESTATE:SetCurrentCourse(currentCourseGroup[courseSelection]) --So this actually fires CurrentCourseChanged but I didn't know that... And I reimplemented it so it would have selection and total values.. So it's firing twice?
+
 	MESSAGEMAN:Broadcast("CurrentCourseChanged",{Selection=courseSelection,Total=#currentCourseGroup});
 end;
 
