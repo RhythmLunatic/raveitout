@@ -42,7 +42,7 @@ local t = Def.ActorFrame{
 				elseif params.Name == "Right" then
 					xVelocity=xVelocity-.5;
 				else
-					SCREENMAN:SystemMessage("Unknown button: "..params.Name);
+					--SCREENMAN:SystemMessage("Unknown button: "..params.Name);
 				end;
 				self:texcoordvelocity(xVelocity,1.5);
 			end;
@@ -51,6 +51,7 @@ local t = Def.ActorFrame{
 };
 t[#t+1] = getWavyText("Rave It Out: Season 2",SCREEN_CENTER_X,SCREEN_CENTER_Y-120);
 t[#t+1] = getWavyText("(Re)programmed by Rhythm Lunatic",SCREEN_CENTER_X,SCREEN_CENTER_Y-20);
+t[#t+1] = getWavyText("Original code by NeobeatIKK (Sergio Madrid), Jose Jesus, Alisson de Oliveira",SCREEN_CENTER_X,SCREEN_CENTER_Y+80);
 t[#t+1] = getWavyText("Greetz to StepPrime and StepF2 Team",SCREEN_CENTER_X,SCREEN_CENTER_Y+80);
 t[#t+1] = getWavyTextPlusRainbow("Thank you for playing our game! And congratulations for finding this screen.",SCREEN_CENTER_X,SCREEN_BOTTOM-80)..{
 	OnCommand=cmd(x,1000;linear,10;x,-1500;queuecommand,"On";);

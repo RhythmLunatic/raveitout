@@ -162,15 +162,26 @@ local groups = {};
 
 
 
---"Why does this screen take so fucking long to init?!" -Someone out there.
---Format is WHEELTYPE, name for audio and graphic (and folder name if preferred), sortorder or preferred sort file name.
+--[[
+"Why does this screen take so fucking long to init?!" -Someone out there.
+first index is WHEELTYPE
+
+if WHEELTYPE_SORTORDER:
+- second index is name of sort and third index is actual sort.
+- second index can be anything, it's just a string and isn't used for anything else.
+- Third index is also used for the graphic.
+If WHEELTYPE_FROMSORT or WHEELTYPE_NORMAL or WHEELTYPE_USBSONGS:
+- second index is group.
+- if WHEELTYPE_FROMSORT or WHEELTYPE_USBSONGS, second index is also used for the graphic (pulled from Graphics folder)
+- third index is number of songs inside the group.
+]]
 
 function insertSpecialFolders()
 	
 	--Insert these... Somewhere.
 	--table.insert(groups, 1, );
 
-	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Title"), 						"SortOrder_Title"};
+	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Title"), 	"SortOrder_Title"};
 	--SM grading is stupid
 	--table.insert(groups, 1, {WHEELTYPE_SORTORDER, "Sort By Top Grades", "SortOrder_TopGrades"});
 	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Artist"),	"SortOrder_Artist"};
@@ -195,11 +206,11 @@ function genDefaultGroups()
 	]]
 	for _,group in ipairs(getAvailableGroups()) do
 		if numHeartsLeft >= 4 then
-			groups[#groups+1] = {WHEELTYPE_NORMAL,group}
+			groups[#groups+1] = {WHEELTYPE_NORMAL,group,#SONGMAN:GetSongsInGroup(group)}
 		else
 			--Because this is clearly a good idea
 			if group ~= RIO_FOLDER_NAMES['FullTracksFolder'] then
-				groups[#groups+1] = {WHEELTYPE_NORMAL,group}
+				groups[#groups+1] = {WHEELTYPE_NORMAL,group,#SONGMAN:GetSongsInGroup(group)}
 			end;
 		end;
 	end;
@@ -240,9 +251,12 @@ function genDefaultGroups()
 	end;
 end;
 function genSortOrderGroups()
+	--Trace(Serialize(musicwheel:GetCurrentSections()))
+	--Flush();
+	--do return end;
 	groups = {};
 	for i,group in ipairs(musicwheel:GetCurrentSections()) do
-		groups[i] = {WHEELTYPE_FROMSORT,group}
+		groups[i] = {WHEELTYPE_FROMSORT,group[1],group[2]}
 	end;
 	groups[#groups+1] = {WHEELTYPE_SORTORDER, THEME:GetString("ScreenSelectGroup","SortOrder_Group"), "SortOrder_Group"};
 	insertSpecialFolders();
@@ -547,8 +561,16 @@ t[#t+1] = LoadFont("monsterrat/_montserrat light 60px")..{
 		self:finishtweening();
 		self:linear(0.3);
 		self:diffusealpha(1);
-		songcounter = string.format(THEME:GetString("ScreenSelectGroup","SongCount"),#SONGMAN:GetSongsInGroup(getenv("cur_group"))-1)
-		foldercounter = string.format("%02i",selection).." / "..string.format("%02i",#groups)
+		local songcounter;
+		if groups[selection][1] == WHEELTYPE_SORTORDER then
+			songcounter = THEME:GetString("ScreenSelectGroup",groups[selection][3])
+		elseif groups[selection][1] == WHEELTYPE_NORMAL or groups[selection][1] == WHEELTYPE_FROMSORT then
+			--"There are %i songs inside this setlist"
+			songcounter = string.format(THEME:GetString("ScreenSelectGroup","SongCount"),groups[selection][3])
+		else
+			songcounter = THEME:GetString("ScreenSelectGroup","SongCountUnknown")
+		end;
+		local foldercounter = string.format("%02i",selection).." / "..string.format("%02i",#groups)
 		self:settext(songcounter.."\n"..foldercounter);
 	end;
 };
