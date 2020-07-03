@@ -279,7 +279,15 @@ if css1:IsDisqualified()==false then
 			end;
 			OnCommand=cmd(zoom,2;sleep,3;linear,.2;diffusealpha,1;zoom,1;linear,.3;zoom,.8);
 		};
-	elseif css1:GetMachineHighScoreIndex() == 0 then
+	elseif css1:GetPersonalHighScoreIndex() == 0 then
+	
+		t[#t+1] = Def.Sound{
+			SupportPan=true;
+			File=THEME:GetPathS("","DanceGrade/male/RANK_NEWRECORD");
+			OnCommand=cmd(sleep,2+2.75;queuecommand,'Play');
+			PlayCommand=cmd(stop;playforplayer,player);
+			OffCommand=cmd(stop)
+		};
 		--[[t[#t+1] = Def.BitmapText{
 			Font="venacti/_venacti_outline 26px bold diffuse";
 			Text="New Record!!";
@@ -310,9 +318,11 @@ if css1:IsDisqualified()==false then
 		};
 	end;
 
-	t[#t+1] = LoadActor(THEME:GetPathS("","DanceGrade/male/RANK_"..gradep1))..{
+	t[#t+1] = Def.Sound{
+		SupportPan=true;
+		File=THEME:GetPathS("","DanceGrade/male/RANK_"..gradep1);
 		OnCommand=cmd(sleep,2.75;queuecommand,'Play');
-		PlayCommand=cmd(stop;play);
+		PlayCommand=cmd(stop;playforplayer,player);
 		OffCommand=cmd(stop;)
 	};
 end;
