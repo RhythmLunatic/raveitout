@@ -87,7 +87,7 @@ end;
 		local edgeSpacing = 135;
 		self.container:stoptweening();
 		if math.abs(offsetFromCenter) < 5 then
-			self.container:decelerate(.45);
+			self.container:decelerate(.42);
 			self.container:visible(true);
 		else
 			self.container:visible(false);
@@ -247,21 +247,6 @@ local function inputs(event)
 			curState = STATE_PICKING_COURSE;
 			MESSAGEMAN:Broadcast("SongUnchosen");
 		elseif button == "Center" or button == "Start" then
-			local course = GAMESTATE:GetCurrentCourse();
-			local trail = getenv("TrailCache");
-			if trail ~= nil then
-				--Is this actually necessary? AutoSetStyle should take care of it.
-				--if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
-				--	GAMESTATE:SetCurrentStyle(string.match(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'],"_([^_]+)$"))
-				--end;
-				for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
-					GAMESTATE:SetCurrentTrail(pn, trail)
-					--GAMESTATE:SetCurrentSteps(pn, trail:GetTrailEntry(0):GetSteps());
-				end;
-			else
-				SCREENMAN:SystemMessage("Trail was nil! Number of trails: "..#course:GetAllTrails().. " | Course: "..course:GetDisplayFullTitle());
-			end;
-	
 			local can, reason = CanSafelyEnterGameplayCourse();
 			if can then
 				if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Lifebar'] == "Pro" then
@@ -298,6 +283,21 @@ local function inputs(event)
 			courseScroller:scroll_by_amount(1);
 			updateCurrentCourse()
 		elseif button == "Center" or button == "Start" then
+			--The trail should be set immediately on selection so the score can be obtained.
+			local course = GAMESTATE:GetCurrentCourse();
+			local trail = getenv("TrailCache");
+			if trail ~= nil then
+				--Is this actually necessary? AutoSetStyle should take care of it.
+				--if RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'] then
+				--	GAMESTATE:SetCurrentStyle(string.match(RIO_COURSE_FOLDERS[folderNames[groupSelection]]['Style'],"_([^_]+)$"))
+				--end;
+				for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
+					GAMESTATE:SetCurrentTrail(pn, trail)
+					--GAMESTATE:SetCurrentSteps(pn, trail:GetTrailEntry(0):GetSteps());
+				end;
+			else
+				SCREENMAN:SystemMessage("Trail was nil! Number of trails: "..#course:GetAllTrails().. " | Course: "..course:GetDisplayFullTitle());
+			end;
 			curState = STATE_READY;
 			MESSAGEMAN:Broadcast("SongChosen");
 		elseif button == "Back" then

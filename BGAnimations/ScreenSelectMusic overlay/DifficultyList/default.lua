@@ -106,7 +106,7 @@ return Def.ActorFrame {
 			LoadActor("player1cur")..{
 			--Strange, I can't figure out why it's not changing immediately when you switch songs. Oh well.
 			--CurrentSongChangedMessageCommand=cmd(stoptweening;thump,1);
-			InitCommand=cmd(x,-9;y,-3;zoom,0.425;pulse;sleep,1;effectmagnitude,1,1.05,4;effectclock,'beat';);
+			InitCommand=cmd(x,-9;y,-3;zoom,0.425;thump,1;sleep,1;effectmagnitude,1,1.05,4;effectclock,'beat';);
 			};
 		};
 

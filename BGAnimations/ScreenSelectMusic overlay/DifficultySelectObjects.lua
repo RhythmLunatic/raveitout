@@ -10,13 +10,6 @@ local alignment = (pn == PLAYER_1) and right or left;
 local negativeOffset = (pn == PLAYER_1) and 1 or -1;
 local start = (pn == PLAYER_1) and SCREEN_LEFT or SCREEN_RIGHT;
 
-local function OppositePlayer(pn)
-	if pn == PLAYER_1 then
-		return PLAYER_2
-	end;
-	return PLAYER_1
-end;
-
 --[[
 This really shouldn't be here in the first place but somehow p3 and p4 don't get unjoined
 when you press esc and this is an easier fix than actually fixing the damn thing
@@ -285,7 +278,7 @@ return Def.ActorFrame{
 			Text="YOUR BEST:";
 			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+125;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
 		};
-		LoadFont("monsterrat/_montserrat semi bold 60px")..{--Machine Top Score (numbers)
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{--Player Top Score (numbers)
 			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+10+3+20+75+12+18;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
 			CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 

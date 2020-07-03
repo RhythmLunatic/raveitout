@@ -135,6 +135,11 @@ t[#t+1] = Def.ActorFrame{
 			InitCommand=cmd(x,-_screen.cx*0.7;y,-infy;zoom,0.3;skewx,-0.2);
 			--PlayerJoinedMessageCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_1));
 		};
+		Def.Sprite{
+			Condition=GAMESTATE:IsHumanPlayer(PLAYER_1);
+			Texture=THEME:GetPathB("ScreenSelectMusic","overlay/p1_info");		--PLAYER INFO
+			InitCommand=cmd(zoomto,250,45;horizalign,left;xy,-SCREEN_CENTER_X,-_screen.cy);
+		};
 	};
 	--Right side background
 	Def.ActorFrame{
@@ -154,6 +159,11 @@ t[#t+1] = Def.ActorFrame{
 			Text="NOT PRESENT";
 			InitCommand=cmd(x,_screen.cx*0.7;y,-infy;zoom,0.3;skewx,-0.2);
 			--PlayerJoinedMessageCommand=cmd(visible,not GAMESTATE:IsHumanPlayer(PLAYER_2));
+		};
+		Def.Sprite{
+			Condition=GAMESTATE:IsHumanPlayer(PLAYER_2);
+			Texture=THEME:GetPathB("ScreenSelectMusic","overlay/p2_info");		--PLAYER INFO
+			InitCommand=cmd(zoomto,250,45;horizalign,right;xy,SCREEN_CENTER_X,-_screen.cy);
 		};
 	};
 	Def.Quad{		--White for Chart info P1 EFFECT JOINED
@@ -306,7 +316,80 @@ for i = 1,4 do
 end;
 t[#t+1] = j;
 
- 
+for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
+	local alignment = (pn == PLAYER_1) and right or left;
+	local negativeOffset = (pn == PLAYER_1) and 1 or -1;
+	local start = (pn == PLAYER_1) and SCREEN_LEFT or SCREEN_RIGHT;
+	
+	t[#t+1] = Def.ActorFrame{
+		Condition=PROFILEMAN:IsPersistentProfile(pn); --Don't show scores for players without profiles. Or maybe MACHINE BEST could be shown instead?
+		InitCommand=cmd(x,start;y,SCREEN_CENTER_Y+50;vertalign,middle,horizalign,alignment);
+		SongChosenMessageCommand=cmd(stoptweening;decelerate,0.125;x,SCREEN_CENTER_X);
+		SongUnchosenMessageCommand=cmd(stoptweening;accelerate,0.125*1.5;x,start;);
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			Text="YOUR BEST:";
+			InitCommand=cmd(x,-60*negativeOffset;y,-8;zoom,0.25;skewx,-0.25;horizalign,alignment;);
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{--Player Top Score (numbers)
+			InitCommand=cmd(x,-60*negativeOffset;y,8;zoom,0.25;skewx,-0.25;horizalign,alignment;);
+			SongChosenMessageCommand=cmd(queuecommand,"Set");
+			SetCommand=function(self)
+				-- ROAD24: and more checks
+				-- TODO: decide what to do when no song is selected
+				local cursong =	GAMESTATE:GetCurrentCourse()
+				if cursong then
+					profile = PROFILEMAN:GetProfile(pn);
+					scorelist = profile:GetHighScoreList(cursong,GAMESTATE:GetCurrentTrail(pn));
+					local scores = scorelist:GetHighScores();
+					local topscore = scores[1];
+					if topscore then
+					--	if topscore >= stagemaxscore then		--temporary workaround
+					--		pscore = stagemaxscore
+					--	else
+							pscore = topscore:GetScore();
+					--	end
+					else
+						pscore = "0";
+					end
+					--local percen = tonumber(string.format("%.03f",((pscore/stagemaxscore)*100)));
+					if topscore then
+						--self:settext(pscore.." - "..percen.."%");
+						self:settext(pscore);
+					else
+						self:settext("0");
+					end;
+				end;
+			end;
+		};
+		
+		Def.Sprite {
+			InitCommand=cmd(x,-15*negativeOffset;zoom,0.15;horizalign,alignment;);
+			SongChosenMessageCommand=cmd(queuecommand,"Set");
+			SetCommand=function(self)
+				local song = GAMESTATE:GetCurrentCourse();
+				if song then
+					self:diffusealpha(1);
+					profile = PROFILEMAN:GetProfile(pn);
+					scorelist = profile:GetHighScoreList(song,GAMESTATE:GetCurrentTrail(pn));
+					assert(scorelist);
+					local scores = scorelist:GetHighScores();
+					local topscore = scores[1];
+					
+					if topscore then 
+						local grade = getGradeFromScore(topscore)
+						self:Load(THEME:GetPathG("","GradeDisplayEval/"..grade));
+					else
+						--if no score
+						self:diffusealpha(0);
+					end
+				else
+					--if no song
+					self:diffusealpha(0);
+				end;
+			end;
+		};
+	};
+end;
 
 t[#t+1] = LoadActor(THEME:GetPathG("","USB_stuff"))..{};
 
