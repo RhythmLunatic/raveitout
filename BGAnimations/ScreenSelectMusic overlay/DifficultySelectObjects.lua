@@ -10,6 +10,12 @@ local alignment = (pn == PLAYER_1) and right or left;
 local negativeOffset = (pn == PLAYER_1) and 1 or -1;
 local start = (pn == PLAYER_1) and SCREEN_LEFT or SCREEN_RIGHT;
 
+local function OppositePlayer(pn)
+	if pn == PLAYER_1 then
+		return PLAYER_2
+	end;
+	return PLAYER_1
+end;
 
 --[[
 This really shouldn't be here in the first place but somehow p3 and p4 don't get unjoined
@@ -26,7 +32,7 @@ return Def.ActorFrame{
 	SongUnchosenMessageCommand=cmd(stoptweening;accelerate,0.125*1.5;x,start;);
 	
 	LoadActor(pname(pn).."_info")..{		--PLAYER INFO
-		InitCommand=cmd(horizalign,alignment;zoomto,250,45;x,-SCREEN_CENTER_X*negativeOffset;y,-235;);
+		InitCommand=cmd(zoomto,250,45;x,-SCREEN_CENTER_X*negativeOffset;y,-235;);
 		OnCommand=function(self)
 			if pn == PLAYER_1 then
 				self:faderight(1):horizalign(left);
@@ -189,7 +195,7 @@ return Def.ActorFrame{
 			end;
 		};]]
 		LoadActor(THEME:GetPathG("","_Figures/circle"))..{
-			InitCommand=cmd(x,(-infx-txxtune)*negativeOffset;setsize,30,30;x,-40*negativeOffset;y,-(infy+txytune+10+3+20+26.25+15)/2);
+			InitCommand=cmd(setsize,30,30;x,-40*negativeOffset;y,-(infy+txytune+10+3+20+26.25+15)/2);
 		};
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{								--SPEEDMOD Display
 			InitCommand=cmd(x,-40*negativeOffset;y,-(infy+txytune+10+3+20+26.25+13)/2;zoom,0.215;maxwidth,130;skewx,-0.25;diffuse,color(".2,.2,.2,1"));
@@ -221,7 +227,7 @@ return Def.ActorFrame{
 			end;
 		};
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{								--SPEEDMOD Display
-			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+10+3+20+26.25+22;zoom,0.215;horizalign,alignment;vertalign,top;maxwidth,900;skewx,-0.25;);
+			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+10+3+20+26.25+24;zoom,0.215;horizalign,alignment;vertalign,top;maxwidth,900;skewx,-0.25;);
 			OnCommand=function(self)
 				local steps = GAMESTATE:GetCurrentSong()
 				if steps and not steps:IsDisplayBpmRandom() then
@@ -274,8 +280,88 @@ return Def.ActorFrame{
 			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(playcommand,"On");
 		};
 		
-		LoadFont("monsterrat/_montserrat semi bold 60px")..{							--Machine Top Score (numbers)
-			InitCommand=cmd(x,(-infx-txxtune)*negativeOffset;y,-infy+txytune+123;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
+
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			Text="YOUR BEST:";
+			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+125;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{--Machine Top Score (numbers)
+			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+10+3+20+75+12+18;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
+			CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+
+			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(queuecommand,"Set");
+			--PlayerJoinedMessageCommand=cmd(visible,GAMESTATE:IsHumanPlayer(pn);queuecommand,"Set");
+			SetCommand=function(self)
+				-- ROAD24: and more checks
+				-- TODO: decide what to do when no song is selected
+				local cursong =	GAMESTATE:GetCurrentSong()
+				if cursong and GAMESTATE:IsPlayerEnabled(pn) then
+					if cursong:IsLong() then
+						stagemaxscore = 200000000
+					elseif cursong:IsMarathon() then
+						stagemaxscore = 300000000
+					else
+						stagemaxscore = 100000000
+					end;
+					profile = PROFILEMAN:GetProfile(pn);
+					scorelist = profile:GetHighScoreList(GAMESTATE:GetCurrentSong(),GAMESTATE:GetCurrentSteps(pn));
+					local scores = scorelist:GetHighScores();
+					local topscore = scores[1];
+					if topscore then
+					--	if topscore >= stagemaxscore then		--temporary workaround
+					--		pscore = stagemaxscore
+					--	else
+							pscore = topscore:GetScore();
+					--	end
+					else
+						pscore = "0";
+					end
+					--local percen = tonumber(string.format("%.03f",((pscore/stagemaxscore)*100)));
+					if topscore then
+						--self:settext(pscore.." - "..percen.."%");
+						self:settext(pscore);
+					else
+						self:settext("0");
+					end;
+				end;
+			end;
+		};
+		
+		Def.Sprite {
+			InitCommand=cmd(x,-15*negativeOffset;y,-infy+txytune+10+3+20+75+12+12;addy,10;zoom,0.15;horizalign,alignment;queuecommand,"Set";);
+			CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
+			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(queuecommand,"Set");
+			--PlayerJoinedMessageCommand=cmd(visible,GAMESTATE:IsHumanPlayer(pn);queuecommand,"Set");
+			SetCommand=function(self)
+				local song = GAMESTATE:GetCurrentSong();
+				if song then
+					self:diffusealpha(1);
+					profile = PROFILEMAN:GetProfile(pn);
+					scorelist = profile:GetHighScoreList(GAMESTATE:GetCurrentSong(),GAMESTATE:GetCurrentSteps(pn));
+					assert(scorelist);
+					local scores = scorelist:GetHighScores();
+					local topscore = scores[1];
+					
+					if topscore then 
+						local grade = getGradeFromScore(topscore)
+						self:Load(THEME:GetPathG("","GradeDisplayEval/"..grade));
+					else
+						--if no score
+						self:diffusealpha(0);
+					end
+				else
+					--if no song
+					self:diffusealpha(0);
+				end;
+			end;
+		};
+	
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{	--Machine Top Score HOLDER (name)
+			Text="MACHINE BEST:";
+			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+123+35;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;);
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{--Machine Top Score (numbers)
+			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+10+3+20+75+12+15+36;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
 			CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 
 			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(queuecommand,"Set");
@@ -315,40 +401,9 @@ return Def.ActorFrame{
 				end;
 			end;
 		};
-		LoadFont("monsterrat/_montserrat semi bold 60px")..{	--Machine Top Score HOLDER (name)
-			InitCommand=cmd(x,(-infx-txxtune)*negativeOffset;y,-infy+txytune+10+3+20+75+12+15;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
-			CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
-			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(queuecommand,"Set");
-			--PlayerJoinedMessageCommand=cmd(visible,GAMESTATE:IsHumanPlayer(pn);queuecommand,"Set");
-			SetCommand=function(self)
-				if GAMESTATE:GetCurrentSong() and GAMESTATE:IsPlayerEnabled(pn) then
-					profile = PROFILEMAN:GetMachineProfile();
-					scorelist = profile:GetHighScoreList(GAMESTATE:GetCurrentSong(),GAMESTATE:GetCurrentSteps(pn));
-					local scores = scorelist:GetHighScores();
-					local topscore = scores[1];
-					
-					if topscore then
-						text = topscore:GetName();
-					else
-						text = "No Score";
-					end
-		
-					self:diffusealpha(1);
-					if text=="EVNT" then
-						self:settext("Score holder: MACHINE BEST");
-					elseif text == "#P1#" or text == "" then
-						self:settext("Score holder: "..PROFILEMAN:GetProfile(pn):GetDisplayName());
-					else
-						self:settext(text);
-					end
-					--TEMP:
-					self:settext("BEST GRADE:");
-				end;
-			end;
-		};
 		
 		Def.Sprite {
-			InitCommand=cmd(x,(-infx-txxtune)*negativeOffset;y,-infy+txytune+10+3+20+75+12+15+15;addy,10;zoom,0.15;horizalign,alignment;vertalign,top;queuecommand,"Set";);
+			InitCommand=cmd(x,-15*negativeOffset;y,-infy+txytune+10+3+20+75+12+12+33;addy,10;zoom,0.15;horizalign,alignment;queuecommand,"Set";);
 			CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(queuecommand,"Set");
 			--PlayerJoinedMessageCommand=cmd(visible,GAMESTATE:IsHumanPlayer(pn);queuecommand,"Set");
@@ -362,36 +417,8 @@ return Def.ActorFrame{
 					local scores = scorelist:GetHighScores();
 					local topscore = scores[1];
 					
-						if topscore then 
-									
-									local dancepoints = topscore:GetPercentDP()*100
-									local misses = topscore:GetTapNoteScore("TapNoteScore_Miss")+topscore:GetTapNoteScore("TapNoteScore_CheckpointMiss")
-									local grade;
-
-							if dancepoints >= 50 then
-								grade = "D";
-								if dancepoints >= 60 then
-									grade = "C";
-									if dancepoints >= 70 then
-										grade = "B";
-										if dancepoints >= 80 then
-											grade = "A";
-											if misses==0 then
-												grade = "S_normal";
-												if dancepoints >= 99 then
-													grade = "S_plus";
-													if dancepoints == 100 then
-														grade = "S_S";
-													end
-												end
-											end
-										end	
-									end
-								end
-							else 
-								grade = "F";
-							end
-
+					if topscore then 
+						local grade = getGradeFromScore(topscore)
 						self:Load(THEME:GetPathG("","GradeDisplayEval/"..grade));
 					else
 						--if no score
@@ -404,4 +431,5 @@ return Def.ActorFrame{
 			end;
 		};
 	};
+	
 };

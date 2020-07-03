@@ -47,6 +47,30 @@ function getGradeFromStats(player)
 	end;
 end;
 
+--WTF uses the above one? 
+function getGradeFromScore(topscore)
+	local dancepoints = topscore:GetPercentDP()*100
+	local misses = topscore:GetTapNoteScore("TapNoteScore_Miss")+topscore:GetTapNoteScore("TapNoteScore_CheckpointMiss")
+
+	if dancepoints == 100 and misses == 0 then
+		return "S_S";
+	elseif dancepoints >= 99 and misses == 0 then
+		return "S_plus";
+	elseif dancepoints >= 80 and misses == 0 then
+		return "S_normal";
+	elseif dancepoints >= 80 then
+		return "A";
+	elseif dancepoints >= 70 then
+		return "B"
+	elseif dancepoints >= 60 then
+		return "C"
+	elseif dancepoints >= 50 then
+		return "D"
+	else
+		return "F"
+	end;
+end;
+
 function getGradeAsInt(stats)
 	return GRADE_TABLE[getGradeFromStats(stats)]
 end;
