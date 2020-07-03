@@ -21,7 +21,13 @@ GAMESTATE:SetCurrentSong(nil);
 --We want the names of the items in the RIO_COURSE_FOLDERS so we need a separate table
 local folderNames = {};
 for k,v in pairs(RIO_COURSE_FOLDERS) do
-	folderNames[#folderNames+1] = k
+	if v['Style'] == "StepsType_Pump_Double" then
+		if GAMESTATE:GetNumSidesJoined() == 1 then --Don't add doubles groups in multiplayer
+			folderNames[#folderNames+1] = k
+		end;
+	else
+		folderNames[#folderNames+1] = k
+	end;
 end;
 assert(#folderNames > 0,"Wat?");
 --TrailCache;
@@ -530,7 +536,7 @@ g[#g+1] = LoadFont("monsterrat/_montserrat light 60px")..{
 		self:linear(0.3);
 		self:diffusealpha(1);
 		--songcounter = string.format(THEME:GetString("ScreenSelectGroup","SongCount"),#SONGMAN:GetSongsInGroup(getenv("cur_group"))-1)
-		local songcounter = string.format(THEME:GetString("ScreenSelectCourse","CourseCount"),-1)
+		local songcounter = string.format(THEME:GetString("ScreenSelectCourse","CourseCount"),#SONGMAN:GetCoursesInGroup(folderNames[groupSelection],true))
 		local foldercounter = string.format("%02i",groupSelection).." / "..string.format("%02i",#RIO_COURSE_FOLDERS)
 		self:settext(songcounter.."\n"..foldercounter);
 	end;

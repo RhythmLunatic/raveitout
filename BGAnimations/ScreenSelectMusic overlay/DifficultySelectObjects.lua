@@ -275,10 +275,12 @@ return Def.ActorFrame{
 		
 
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			Condition=PROFILEMAN:IsPersistentProfile(pn); --Don't show YOUR BEST when not using a profile
 			Text="YOUR BEST:";
 			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+125;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
 		};
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{--Player Top Score (numbers)
+			Condition=PROFILEMAN:IsPersistentProfile(pn);
 			InitCommand=cmd(x,-60*negativeOffset;y,-infy+txytune+10+3+20+75+12+18;addy,5;zoom,0.25;skewx,-0.25;horizalign,alignment;vertalign,top;queuecommand,"Set";);
 			CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 
@@ -321,10 +323,10 @@ return Def.ActorFrame{
 		};
 		
 		Def.Sprite {
+			Condition=PROFILEMAN:IsPersistentProfile(pn);
 			InitCommand=cmd(x,-15*negativeOffset;y,-infy+txytune+10+3+20+75+12+12;addy,10;zoom,0.15;horizalign,alignment;queuecommand,"Set";);
 			CurrentSongChangedMessageCommand=cmd(queuecommand,"Set");
 			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(queuecommand,"Set");
-			--PlayerJoinedMessageCommand=cmd(visible,GAMESTATE:IsHumanPlayer(pn);queuecommand,"Set");
 			SetCommand=function(self)
 				local song = GAMESTATE:GetCurrentSong();
 				if song then

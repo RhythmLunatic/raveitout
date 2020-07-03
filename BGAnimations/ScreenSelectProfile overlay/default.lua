@@ -744,6 +744,7 @@ local t = Def.ActorFrame {
 	end;
 
 	CodeMessageCommand = function(self, params)
+		--SCREENMAN:SystemMessage(params.Name);
 		if params.Name == 'Start' or params.Name == 'Center' then
 			MESSAGEMAN:Broadcast("StartButton");
 			if not GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
@@ -764,7 +765,7 @@ local t = Def.ActorFrame {
 			end;
 		end;
 		if not USING_RFID then
-			if params.Name == 'Up' or params.Name == 'Up2' or params.Name == 'DownLeft' then
+			if params.Name == 'Up' or params.Name == 'Up2' or params.Name == 'Left' or params.Name == "Downleft" then
 				if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
 					local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber);
 					if ind > 1 then
@@ -775,7 +776,7 @@ local t = Def.ActorFrame {
 					end;
 				end;
 			end;
-			if params.Name == 'Down' or params.Name == 'Down2' or params.Name == 'DownRight' then
+			if params.Name == 'Down' or params.Name == 'Down2' or params.Name == 'Right' or params.Name=="Downright" then
 				if GAMESTATE:IsHumanPlayer(params.PlayerNumber) then
 					local ind = SCREENMAN:GetTopScreen():GetProfileIndex(params.PlayerNumber);
 					if ind > 0 then
