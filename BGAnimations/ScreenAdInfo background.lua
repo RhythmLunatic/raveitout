@@ -33,7 +33,7 @@ local phrases = {
 	"Also check out DanceDanceRevolution: SuperNOVA 3!",
 	"Also check out DanceDanceRevolution: Starlight!",
 	"Also check out Sushi Violation!",
-	"Also check out StepF2!",
+	"Also check out StepF2 and StepP1!",
 	"Also check out StepPrime!",
 	"stole the precious thing",
 	"stole this theme (Sorry Cortes)",

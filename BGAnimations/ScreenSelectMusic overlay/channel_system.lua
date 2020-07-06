@@ -407,7 +407,7 @@ local t = Def.ActorFrame{
 			if isPickingDifficulty then return end; --Don't want to open the group select if they're picking the difficulty.
 			MESSAGEMAN:Broadcast("StartSelectingGroup");
 			--SCREENMAN:SystemMessage("Group select opened.");
-			--No need to check if both players are present... Probably.
+			--No need to check if both players are present.
 			SCREENMAN:set_input_redirected(PLAYER_1, true);
 			SCREENMAN:set_input_redirected(PLAYER_2, true);
 			musicwheel:Move(0); --Having the musicwheel move while we're picking a group would be bad, so stop movement.

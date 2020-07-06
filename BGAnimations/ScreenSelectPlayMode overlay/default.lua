@@ -274,6 +274,7 @@ t[#t+1] = Def.ActorFrame{
 }
 
 --loading splash, process mode selections
+--I know loading an actor in advance is a waste of memory, but it's needed in order to set it up correctly.
 t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 	OnCommand=function(self)
 		self:diffusealpha(0):FullScreen();

@@ -117,7 +117,13 @@ local GroupCache = {};
 function setCurrentCourse()
 	local course = GroupCache.courses[currentMissionNum]
 	GAMESTATE:SetCurrentCourse(course);
-	local trail = course:GetAllTrails()[1]
+	--SCREENMAN:SystemMessage(#course:GetAllTrails())
+	local trail;
+	if GroupCache.courseRequirements[currentMissionNum].style then
+		trail = course:GetTrails(GroupCache.courseRequirements[currentMissionNum].style)[1];
+	else
+		trail = course:GetAllTrails()[1]
+	end;
 	if trail then
 		for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
 			GAMESTATE:SetCurrentTrail(pn, trail)
@@ -152,11 +158,18 @@ function updateGroupCache()
 			lua.ReportScriptError("Course "..course:GetDisplayFullTitle().. " doesn't have a #MISSIONID tag.")
 		end;
 		
+		
+		local style = nil
+		if GetTagValue(readfile,"STYLE") == "DOUBLE" then --God I fucking hate the course parser in stepmania
+			style = "StepsType_Pump_Double"
+		end;
 		GroupCache.courseRequirements[missionNum] = {
 			minGrade = GetTagValue(readfile,"MINGRADE"),
 			minCombo = GetTagValue(readfile,"MINCOMBO"),
 			minAccuracy = GetTagValue(readfile,"MINACCURACY"),
-			maxBreak = GetTagValue(readfile,"MAXBREAK")
+			maxBreak = GetTagValue(readfile,"MAXBREAK"),
+			
+			style = style --This shouldn't be here but fuck it I'm not restructuring the tables
 			--limitBreak = GetTagValue(readfile,"LIMITBREAK") --limit break is fucking dumb anyway just use #LIFE for missions
 		}
 		
@@ -452,6 +465,10 @@ t[#t+1] = Def.ActorFrame{
 				else
 					lua.ReportScriptError("Cannot enter gameplay: "..reason);
 				end
+			elseif params.name == "OpenOpList" or params.Name == "OpenOpList2" then
+				SCREENMAN:GetTopScreen():OpenOptionsList(params.PlayerNumber);
+			elseif params.Name == "Back" then
+				SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToPrevScreen")
 			end;
 		end;
 		CurrentMissionGroupChangedMessageCommand=cmd(stoptweening;decelerate,.2;xy,LEFT_X_POS,135;);
@@ -513,10 +530,9 @@ local j = Def.ActorFrame{
 for i = 1,4 do
 	j[i] = Def.ActorFrame{
 		InitCommand=cmd(addy,30*i;);
-		OnCommand=function(self)
-			local course = GAMESTATE:GetCurrentCourse();
+		SetCommand=function(self)
 			self:stoptweening():diffusealpha(0);
-			local trailEntries = GroupCache.courses[currentMissionNum]:GetAllTrails()[1]:GetTrailEntries();
+			local trailEntries = GAMESTATE:GetCurrentTrail(GAMESTATE:GetMasterPlayerNumber()):GetTrailEntries();
 			if i <= #trailEntries then
 				self:GetChild("SongName"):settext(trailEntries[i]:GetSong():GetDisplayFullTitle());
 				if true then
@@ -555,8 +571,9 @@ for i = 1,4 do
 				--Do nothing.
 			end;
 		end;
-		CurrentCourseChangedMessageCommand=cmd(playcommand,"On");
-		CurrentMissionGroupChangedMessageCommand=cmd(playcommand,"On");
+		OnCommand=cmd(playcommand,"Set");
+		CurrentCourseChangedMessageCommand=cmd(playcommand,"Set");
+		CurrentMissionGroupChangedMessageCommand=cmd(playcommand,"Set");
 		
 		LoadActor(THEME:GetPathG("StepsDisplayListRow","frame/_icon"))..{
 			Name="LabelBG";
@@ -597,5 +614,8 @@ end;
 t[#t+1] = j;
 
 t[#t+1] = LoadActor(THEME:GetPathG("","USB_stuff"));
+
+--OpList
+t[#t+1] = LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/OptionsList"));
 
 return t;

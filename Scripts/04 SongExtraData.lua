@@ -39,6 +39,8 @@ local function PreviewTransform(song, VideoName)
 			VideoName = song:GetSongDir().."/"..VideoName
 		elseif FILEMAN:DoesFileExist("/SongPreviews/"..VideoName) then
 			VideoName = "/SongPreviews/"..VideoName
+		elseif FILEMAN:DoesFileExist(VideoName) then
+			--It was a direct path, so don't change it
 		else
 			--this video doesn't appear to exist. Just return "" instead.
 			VideoName = ""
