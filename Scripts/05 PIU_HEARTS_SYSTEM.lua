@@ -50,7 +50,7 @@ end;
 function UnlockedOMES_RIO()
 	--do return true end; --For debugging
 	--If they just played the extra stage, and there is an extra stage song defined, and they played said extra stage song...
-	if IsExtraStagePIU() and extraStageSong and GAMESTATE:GetCurrentSong():GetMainTitle() == extraStageSong then
+	if IsExtraStagePIU() and extraStageSong == GAMESTATE:GetCurrentSong() then
 		--Loop through both players, if one of them got >95% then both of them can play the OMES.
 		for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
 			local acc = getenv(pname(pn).."_accuracy") or 0
