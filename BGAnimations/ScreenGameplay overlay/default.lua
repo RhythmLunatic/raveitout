@@ -275,24 +275,29 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			end;
 				
 		};
+		--Weedcombo
 		Def.ActorFrame {
+			Condition=EasterEggs;
 			InitCommand=cmd(y,SCREEN_CENTER_Y;);
-				ComboChangedMessageCommand=function (self, params)
-					local stats = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn);
-		
-					if stats:GetCurrentCombo() == 420 and EasterEggs then
-						MESSAGEMAN:Broadcast("Weed"..pname(pn));
-					end
-				end;
+			ComboChangedMessageCommand=function (self, params)
+				local stats = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn);
+	
+				if stats:GetCurrentCombo() == 420 then
+					--MESSAGEMAN:Broadcast("Weed"..pname(pn));
+					self:playcommand("Weed");
+				end
+			end;
 
-				LoadActor(THEME:GetPathG("","WeedCombo/explosion")) .. {
-					InitCommand=cmd(diffusealpha,0;blend,'BlendMode_Add';hide_if,not EasterEggs);
-					WeedP1MessageCommand=cmd(rotationz,0;zoom,2;diffusealpha,0.5;linear,0.5;rotationz,90;zoom,1.75;diffusealpha,0);
-				};
-				LoadActor(THEME:GetPathG("","WeedCombo/explosion")) .. {
-					InitCommand=cmd(diffusealpha,0;blend,'BlendMode_Add';hide_if,not EasterEggs);
-					WeedP1MessageCommand=cmd(rotationz,0;zoom,2;diffusealpha,0.5;linear,0.5;rotationz,-90;zoom,2.5;diffusealpha,0);
-				};
+			LoadActor(THEME:GetPathG("","WeedCombo/explosion")) .. {
+				--Name="Weed1";
+				InitCommand=cmd(diffusealpha,0;blend,'BlendMode_Add';);
+				WeedCommand=cmd(rotationz,0;zoom,2;diffusealpha,0.5;linear,0.5;rotationz,90;zoom,1.75;diffusealpha,0);
+			};
+			LoadActor(THEME:GetPathG("","WeedCombo/explosion")) .. {
+				--Name="Weed2";
+				InitCommand=cmd(diffusealpha,0;blend,'BlendMode_Add';);
+				WeedCommand=cmd(rotationz,0;zoom,2;diffusealpha,0.5;linear,0.5;rotationz,-90;zoom,2.5;diffusealpha,0);
+			};
 
 
 		};

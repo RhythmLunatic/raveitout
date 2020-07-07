@@ -533,39 +533,44 @@ for i = 1,4 do
 		SetCommand=function(self)
 			self:stoptweening():diffusealpha(0);
 			local trailEntries = GAMESTATE:GetCurrentTrail(GAMESTATE:GetMasterPlayerNumber()):GetTrailEntries();
+			local hasRandomEntries = not GAMESTATE:GetCurrentCourse():AllSongsAreFixed();
 			if i <= #trailEntries then
-				self:GetChild("SongName"):settext(trailEntries[i]:GetSong():GetDisplayFullTitle());
-				if true then
-					local steps = trailEntries[i]:GetSteps()
-					local meter = steps:GetMeter();
-					if meter >= 99 then
-						self:GetChild("Label"):settext("??");
-					else
-						self:GetChild("Label"):settextf("%02d",meter);
-					end;
-					
-					local StepsType = steps:GetStepsType();
-					local labelBG = self:GetChild("LabelBG");
-					if StepsType then
-						sString = THEME:GetString("StepsDisplay StepsType",ToEnumShortString(StepsType));
-						if sString == "Single" then
-							--There is no way to designate a single trail as DANGER, unfortunately.
-							if meter >= 99 then
-								labelBG:setstate(4);
-							else
-								labelBG:setstate(0);
-							end
-						elseif sString == "Double" then
-							labelBG:setstate(1);
-						elseif sString == "SinglePerformance" or sString == "Half-Double" then
-							labelBG:setstate(2);
-						elseif sString == "DoublePerformance" or sString == "Routine" then
-							labelBG:setstate(3);	
+				if hasRandomEntries then
+					self:GetChild("SongName"):settext("???");
+				else
+					self:GetChild("SongName"):settext(trailEntries[i]:GetSong():GetDisplayFullTitle());
+				end;
+				
+				local steps = trailEntries[i]:GetSteps()
+				local meter = steps:GetMeter();
+				if meter >= 99 then
+					self:GetChild("Label"):settext("??");
+				else
+					self:GetChild("Label"):settextf("%02d",meter);
+				end;
+				
+				local StepsType = steps:GetStepsType();
+				local labelBG = self:GetChild("LabelBG");
+				if StepsType then
+					sString = THEME:GetString("StepsDisplay StepsType",ToEnumShortString(StepsType));
+					if sString == "Single" then
+						--There is no way to designate a single trail as DANGER, unfortunately.
+						if meter >= 99 then
+							labelBG:setstate(4);
 						else
-							labelBG:setstate(5);
-						end;
+							labelBG:setstate(0);
+						end
+					elseif sString == "Double" then
+						labelBG:setstate(1);
+					elseif sString == "SinglePerformance" or sString == "Half-Double" then
+						labelBG:setstate(2);
+					elseif sString == "DoublePerformance" or sString == "Routine" then
+						labelBG:setstate(3);	
+					else
+						labelBG:setstate(5);
 					end;
 				end;
+				
 				self:sleep(.05*i):decelerate(.2):diffusealpha(1);
 			else
 				--Do nothing.
