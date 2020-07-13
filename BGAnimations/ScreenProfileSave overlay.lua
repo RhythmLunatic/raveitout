@@ -42,11 +42,10 @@ if curstage == 'Stage_Event' then
 	sound = THEME:GetPathS("","nextstage_"..random_name)
 	NextStageSleepTime = delay_time[random_name];
 end;
+
 local UseNextStage = true;
 
-if GetSmallestNumHeartsLeftForAnyHumanPlayer() > 0 then
-	--pass, already true
-else
+if STATSMAN:GetCurStageStats():AllFailed() or GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer() <= 0 or GetSmallestNumHeartsLeftForAnyHumanPlayer() < 0 then
 	NextStageSleepTime = 0;
 	UseNextStage = false;
 end;

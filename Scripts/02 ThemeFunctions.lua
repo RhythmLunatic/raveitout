@@ -1,4 +1,3 @@
---DoDebug = THEME:GetMetric("CustomRIO","DevMode")
 DoDebug = false;
 --[[FIXED FONTS]]
 DebugFont =		"Common normal"
@@ -69,14 +68,6 @@ Comboanicombo = cmd(finishtweening;--[[skewx,skc;]]x,ixc;y,iyc;diffusealpha,iac;
 				  zoom,izmc;decelerate,cbin;x,rxc;y,ryc;zoom,rzmc;sleep,cbwt;
 				  decelerate,cbot1;x,xof1c;diffusealpha,aot1c;
 				  accelerate,cbot2;x,xof2c;diffusealpha,aot2c;);
-
---Cortes has a weird bug regarding how his setup returns Widescreen values, this is part
---of a workaround for him (and anyone having the same problem) to use. -NeobeatIKK
-if FILEMAN:DoesFileExist(THEME:GetCurrentThemeDirectory().."corteswidefix.patch") then
-	CortesWideFix = true
-else
-	CortesWideFix = false
-end
 
 --[[FUNCTIONS]]
 

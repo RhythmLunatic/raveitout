@@ -68,7 +68,7 @@ function Setup()
 	PREFSMAN:SetPreference("ShowBeginnerHelper",false);
 	PREFSMAN:SetPreference("NumBackgrounds",5);
 	--PREFSMAN:SetPreference("UseUnlockSystem",THEME:GetMetric("CustomRIO","LockSongs"));	--Linked with metrics so we can execute debug from commandline.
-			--Graphic/Sound options
+	--Graphic/Sound options
 	PREFSMAN:SetPreference("SmoothLines",true);
 	PREFSMAN:SetPreference("CelShadeModels",false);
 	PREFSMAN:SetPreference("FastNoteRendering",true);
@@ -79,7 +79,7 @@ function Setup()
 	PREFSMAN:SetPreference("ShowNativeLanguage",false); --Other language characters don't display properly
 	PREFSMAN:SetPreference("ShowSongOptions","Yes"); --Only visible when in Debug mode
 
-	--Steps related
+	--Steps and music select related
 	PREFSMAN:SetPreference("HiddenSongs",true); --To hide Easy Mode and OMES songs.
 	PREFSMAN:SetPreference("AutogenSteps",false);
 	PREFSMAN:SetPreference("AutogenGroupCourses",false);
