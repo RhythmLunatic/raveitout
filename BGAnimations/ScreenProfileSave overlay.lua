@@ -45,7 +45,7 @@ end;
 
 local UseNextStage = true;
 
-if STATSMAN:GetCurStageStats():AllFailed() or GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer() <= 0 or GetSmallestNumHeartsLeftForAnyHumanPlayer() < 0 then
+if STATSMAN:GetCurStageStats():AllFailed() or GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer() <= 0 or GetSmallestNumHeartsLeftForAnyHumanPlayer() <= 0 then
 	NextStageSleepTime = 0;
 	UseNextStage = false;
 end;
