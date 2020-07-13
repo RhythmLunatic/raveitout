@@ -45,7 +45,9 @@ end;
 
 local UseNextStage = true;
 
-if STATSMAN:GetCurStageStats():AllFailed() or GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer() <= 0 or GetSmallestNumHeartsLeftForAnyHumanPlayer() <= 0 then
+--STATSMAN:GetCurStageStats():AllFailed() or GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer() <= 0 or GetSmallestNumHeartsLeftForAnyHumanPlayer() <= 0
+--If this screen is ScreenProfileSaveSummary instead of ScreenProfileSave, the next screen is game over
+if Var("LoadingScreen") == "ScreenProfileSaveSummary" then
 	NextStageSleepTime = 0;
 	UseNextStage = false;
 end;
@@ -94,10 +96,11 @@ t[#t+1] = Def.Actor {
 				end;
 			end;
 			
-			if NumHeartsLeft[player] < 1 then
+			--Unjoining a player wipes their stats... So we can't unjoin them... Because we can't check high scores...
+			--[[if NumHeartsLeft[player] < 1 then
 				--Remove player manually because SM doesn't know when to do it because we're using hearts.
 				GAMESTATE:UnjoinPlayer(player)
-			end;
+			end;]]
 		end;
 		
 

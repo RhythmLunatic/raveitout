@@ -221,31 +221,33 @@ t[#t+1] = Def.ActorFrame{
 	};
 };
 
+
 t[#t+1] = Def.ActorFrame{			
 	LoadActor("judge_back")..{		--This is my big surprise secret remodel lmfao -Gio
-			InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-124;diffusealpha,0);
+			InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY");diffusealpha,0);
 			SongChosenMessageCommand=cmd(linear,0.1;diffusealpha,1);
 			SongUnchosenMessageCommand=cmd(linear,0.1;diffusealpha,0);
 	};
 	LoadFont("facu/_zona pro bold 40px")..{
 		Text="STEPS INFO";
-		InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-125;diffusealpha,0);
+		InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY")-1;diffusealpha,0);
 		SongChosenMessageCommand=cmd(linear,0.1;diffusealpha,1);
 		SongUnchosenMessageCommand=cmd(linear,0.1;diffusealpha,0);
 	};
 	
 	LoadActor("tab-speed")..{		--Fancy, eh?
-			InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-70;diffusealpha,0);
+			InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,THEME:GetMetric("ScreenSelectMusic","SpeedInfoY");diffusealpha,0);
 			SongChosenMessageCommand=cmd(linear,0.1;diffusealpha,1);
 			SongUnchosenMessageCommand=cmd(linear,0.1;diffusealpha,0);
 	};
 	LoadActor("tab-score")..{		--I hope people like it!
-			InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;diffusealpha,0);
+			InitCommand=cmd(zoom,0.35;x,SCREEN_CENTER_X;y,THEME:GetMetric("ScreenSelectMusic","ScoreInfoY");diffusealpha,0);
 			SongChosenMessageCommand=cmd(linear,0.1;diffusealpha,1);
 			SongUnchosenMessageCommand=cmd(linear,0.1;diffusealpha,0);
 	};
 }
 
+--This is what has the steps info, speed, score, etc
 for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
 	t[#t+1] = LoadActor("DifficultySelectObjects", pn, infx, infy);
 end;
@@ -287,11 +289,6 @@ else
 		};
 	}
 	--Don't load if not used.
-	--[[
-	if THEME:GetMetric("ScreenSelectMusic","UseCustomOptionsList") then
-		t[#t+1] = LoadActor("CustomOptionsList");
-	else
-	]]
 	if THEME:GetMetric("ScreenSelectMusic","UseOptionsList") then
 		t[#t+1] = LoadActor("OptionsList");
 	end;

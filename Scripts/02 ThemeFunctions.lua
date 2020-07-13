@@ -482,3 +482,15 @@ function CenterGameplayWidgets()
 	--safe bet
 	return true
 end
+
+function PlayerAchievedAnyHighScores(pn)
+	--Trace("Checking stages played, "..STATSMAN:GetStagesPlayed().." stages played.")
+	for i=1, STATSMAN:GetStagesPlayed() do --You'd think this should 0 indexed becuase it's C++, but GetPlayedStageStats() takes "stages ago" as the parameter and I guess 0 ago is not actually the current stage
+		if STATSMAN:GetPlayedStageStats(i):GetPlayerStageStats(pn):GetMachineHighScoreIndex() == 0 then
+			return true
+		end
+	end
+	--Trace("No high scores...");
+	--lua.Flush();
+	return false;
+end

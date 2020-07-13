@@ -155,19 +155,13 @@ Branch = {
 		end;
 		return "ScreenSelectPlayMode"
 	end,
+	
+	--I'm not sure this is even used?
 	AfterProfileSave = function()
 		-- Might be a little too broken? -- Midiman
 		if GAMESTATE:IsEventMode() then
 			return SelectMusicOrCourse()
 		elseif STATSMAN:GetCurStageStats():AllFailed() or GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer() <= 0 then
-		
-			--Check for high scores for people without USB or local profiles so they can enter a high score name.
-			--So I added this feature and everything but it didn't occur to me that RIO does not have a leaderboard and only says "MACHINE BEST"... There's no reason to have this feature enabled
-			--[[for pn in ivalues(PlayerNumber) do
-				if not PROFILEMAN:IsPersistentProfile(pn) and PlayerAchievedAnyHighScores(pn) then
-					return "ScreenEnterRankingName"
-				end;
-			end;]]
 			
 			return "ScreenGameOver"
 		else
@@ -319,8 +313,14 @@ Branch = {
 		return IsNetConnected() and "ScreenTitleMenu" or "ScreenTitleMenu"
 	end,
  	AfterSaveSummary = function()
-		return "ScreenGameOver"
---		[[ Enable when Finished ]]
--- 		return GAMESTATE:AnyPlayerHasRankingFeats() and "ScreenNameEntryTraditional" or "ScreenGameOver"
+
+		--Check for high scores for people without USB or local profiles so they can enter a high score name.
+		for pn in ivalues(GAMESTATE:GetEnabledPlayers()) do
+			--Trace("Running high score check.")
+			if not PROFILEMAN:IsPersistentProfile(pn) and PlayerAchievedAnyHighScores(pn) then
+				return "ScreenEnterRankingName"
+			end;
+		end;
+		return "ScreenDebugRoom"
 	end,
 }

@@ -42,11 +42,14 @@ if DoDebug then
 	t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(x,200;y,SCREEN_BOTTOM-110;zoom,.5);
 		--Must be OnCommand because hearts have to be subtracted first in default.lua
-		LoadFont("Common Normal")..{
+		--[[LoadFont("Common Normal")..{
 			OnCommand=cmd(settext,pname(player).." hearts left: "..NumHeartsLeft[player];);
+		};]]
+		LoadFont("Common Normal")..{
+			OnCommand=cmd(settext,"STATSMAN NumStagesPlayed: "..STATSMAN:GetStagesPlayed());
 		};
 		LoadFont("Common Normal")..{
-			OnCommand=cmd(settext,pname(player).." hearts removed: "..NumHeartsRemoved[player].. "(excluding bonus hearts)";addy,20);
+			OnCommand=cmd(settext,pname(player).." hearts removed: "..NumHeartsRemoved[player].. " (excluding bonus hearts)";addy,20);
 		};
 		LoadFont("Common Normal")..{
 			OnCommand=cmd(settext,pname(player).." bonus hearts: "..BonusHeartsAdded[player];addy,40);
