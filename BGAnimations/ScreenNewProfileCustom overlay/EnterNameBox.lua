@@ -248,13 +248,14 @@ local t = Def.ActorFrame{
 				boxFrameActor:GetChild(tostring(#curName)):GetChild("TextActor"):settext("");
 				SOUND:PlayOnce(THEME:GetPathS("Codebox", "Enter"))
 			elseif txt == "END" then
+			
 				--Don't allow blank names.
-				if curName ~= "" then
-					--Pass the new name to DoneSelectingMessageCommand because the handler might be using it for a machine high score or a new profile name. We don't need to know which one.
-					MESSAGEMAN:Broadcast("DoneSelecting",{Player=player,Name=curName});
-					isDone = true;
-					self:decelerate(.5):zoomy(0);
-				end
+				if curName == "" then curName = "RAVEITOUT" end;
+				
+				--Pass the new name to DoneSelectingMessageCommand because the handler might be using it for a machine high score or a new profile name. We don't need to know which one.
+				MESSAGEMAN:Broadcast("DoneSelecting",{Player=player,Name=curName});
+				isDone = true;
+				self:decelerate(.5):zoomy(0);
 			elseif #curName < SSC_COLUMNS then
 				curName = curName..txt;
 				boxFrameActor:GetChild(tostring(#curName-1)):GetChild("TextActor"):settext(txt):playcommand("NewText");

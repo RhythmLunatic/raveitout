@@ -95,7 +95,7 @@ return Def.ActorFrame{
 		
 		--Author display
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
-			InitCommand=cmd(x,-40*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY")+26+txytune;zoom,0.215;maxwidth,130;skewx,-0.25;diffuse,color(".2,.2,.2,1"));
+			InitCommand=cmd(x,-40*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY")+27+txytune;zoom,0.215;maxwidth,130;skewx,-0.25;diffuse,color(".2,.2,.2,1"));
 			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=function(self)
 				if GAMESTATE:GetCurrentSteps(pn) then
 					local author = GAMESTATE:GetCurrentSteps(pn):GetAuthorCredit();
@@ -114,10 +114,10 @@ return Def.ActorFrame{
 			end;
 		};
 		LoadActor("mask")..{
-			InitCommand=cmd(zoomto,38,38;x,-40.5*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY")+25+2.5+txytune;MaskSource);
+			InitCommand=cmd(zoomto,35,35;x,-40*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY")+25+2.5+txytune;MaskSource);
 		};
 		LoadActor(THEME:GetPathG("","USB_stuff/avatars/blank"))..{
-			InitCommand=cmd(x,-40*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY")+25+2.5;MaskDest);
+			InitCommand=cmd(x,-40*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY")+25+2.5+txytune;MaskDest);
 			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=function(self)
 				if GAMESTATE:GetCurrentSteps(pn) then
 					local author = GAMESTATE:GetCurrentSteps(pn):GetAuthorCredit();
