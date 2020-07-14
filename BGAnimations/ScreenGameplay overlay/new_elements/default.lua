@@ -36,7 +36,15 @@ t[#t+1] = Def.ActorFrame {
 };
 
 t[#t+1] = Def.ActorFrame {
-	OnCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+50;diffusealpha,0;sleep,1;linear,0.5;diffusealpha,1;);
+	InitCommand=function(self)
+		self:x(SCREEN_CENTER_X);
+		if CenterGameplayWidgets() then
+			self:y(SCREEN_BOTTOM-75);
+		else
+			self:y(SCREEN_TOP+50);
+		end;
+	end;
+	OnCommand=cmd(diffusealpha,0;sleep,1;linear,0.5;diffusealpha,1;);
 	
 		Def.Sprite{
 			--We don't have course mode graphics..
