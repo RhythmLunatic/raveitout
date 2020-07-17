@@ -321,6 +321,6 @@ Branch = {
 				return "ScreenEnterRankingName"
 			end;
 		end;
-		return "ScreenDebugRoom"
+		return "ScreenGameOver"
 	end,
 }
