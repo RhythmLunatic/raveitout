@@ -471,7 +471,8 @@ end
 --returns whether the current style is not 1 player/1 side unless Center1Player is on.
 --so called because it is used to determine if various gameplay UI elements should be centered
 function CenterGameplayWidgets()
-	if not PREFSMAN:GetPreference("Center1Player") then
+	return Center1Player();
+	--[[if not PREFSMAN:GetPreference("Center1Player") then
 		if GAMESTATE then
 			local style = GAMESTATE:GetCurrentStyle()
 			if style and style:GetStyleType() == 'StyleType_OnePlayerOneSide' then
@@ -480,7 +481,7 @@ function CenterGameplayWidgets()
 		end
 	end
 	--safe bet
-	return true
+	return true]]
 end
 
 function PlayerAchievedAnyHighScores(pn)

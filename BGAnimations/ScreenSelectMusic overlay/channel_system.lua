@@ -206,7 +206,7 @@ function genDefaultGroups()
 	]]
 	for _,group in ipairs(getAvailableGroups()) do
 		if numHeartsLeft >= 4 then
-			groups[#groups+1] = {WHEELTYPE_NORMAL,group,#SONGMAN:GetSongsInGroup(group)}
+			groups[#groups+1] = {WHEELTYPE_NORMAL,group,#SONGMAN:GetSongsInGroup(group)-1}
 		else
 			--Because this is clearly a good idea
 			if group ~= RIO_FOLDER_NAMES['FullTracksFolder'] then
