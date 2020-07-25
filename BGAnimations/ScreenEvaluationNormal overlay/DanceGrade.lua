@@ -257,7 +257,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(x,60;zoom,.8);
 	};
 	Def.ActorFrame{
-		Condition=ActiveModifiers[pname(player)]["BGAMode"] ~= "On";
+		--Condition=ActiveModifiers[pname(player)]["BGAMode"] ~= "On";
 		InitCommand=cmd(x,120);
 		--[[Def.Quad{
 			InitCommand=cmd(setsize,50,50;diffuse,Color("HoloBlue"););
