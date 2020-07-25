@@ -64,30 +64,6 @@ end;
 
 --fast/slow is broken with routine so just don't do it
 if ActiveModifiers[pname(player)]["DetailedPrecision"] == "EarlyLate" and PREFSMAN:GetPreference("AllowW1") == "AllowW1_Everywhere" and ToEnumShortString(GAMESTATE:GetCurrentSteps(player):GetStepsType()) ~= "Pump_Routine" then
-	--[[t[#t+1] = Def.ActorFrame{
-		InitCommand=cmd(xy,p1initx,SCREEN_BOTTOM-75;diffusealpha,0);
-		OnCommand=cmd(sleep,3;linear,.3;diffusealpha,1);
-		Def.Quad{
-			InitCommand=cmd(setsize,125,50;diffuse,0,0,0,0.55;);
-		};
-		--Have I mentioned that I don't like this font? Cuz I don't.
-		LoadFont("monsterrat/_montserrat semi bold 60px")..{
-			Text="FASTS";
-			InitCommand=cmd(zoom,datazoom-0.25;horizalign,left;xy,-62,-12);
-		};
-		LoadFont("monsterrat/_montserrat semi bold 60px")..{
-			Text="SLOWS";
-			InitCommand=cmd(zoom,datazoom-0.25;horizalign,left;xy,-62,12);
-		};
-		LoadFont("monsterrat/_montserrat light 60px")..{
-			Text=string.format("%03d",getenv("NumFasts"..pname(player)));
-			InitCommand=cmd(horizalign,right;xy,62,-12;zoom,datazoom-0.15;);
-		};
-		LoadFont("monsterrat/_montserrat light 60px")..{
-			Text=string.format("%03d",getenv("NumSlows"..pname(player)));
-			InitCommand=cmd(horizalign,right;xy,62,12;zoom,datazoom-0.15;);
-		};
-	}]]
 	datalabelslist[#datalabelslist+1] = "FAST/SLOW";
 	p1datalist[#p1datalist+1] = string.format("%03d",getenv("NumFasts"..pname(player))).."/"..string.format("%03d",getenv("NumSlows"..pname(player)));
 end;
@@ -202,15 +178,16 @@ for i = 1,#datalabelslist,1 do
 		visp1 = IsP1On;
 	end;]]
 	
-	t[#t+1] = LoadFont("monsterrat/_montserrat light 60px")..{		--stats p1
-		InitCommand=cmd(xy,xPosition,iniy+(i*sepy);zoom,initzoom;horizalign,alignment;settext,p1datalist[i];diffusealpha,0);
+	t[#t+1] = LoadFont("monsterrat/_montserrat medium 60px")..{		--stats p1
+		Text=p1datalist[i];
+		InitCommand=cmd(AddAttribute,-1,{Length=10};xy,xPosition,iniy+(i*sepy);zoom,initzoom;horizalign,alignment;diffusealpha,0);
 		OnCommand=cmd(sleep,initsleeps[i];accelerate,intw;diffusealpha,1;zoom,datazoom-0.15;);
 	};
 	
 end;
---]]
 
---[
+
+--TODO: Is this being used?
 t[#t+1] = Def.ActorFrame{
 	Def.Actor{		--set in the env table accuracy values, so they can be get from save profile screen (next screen)
 		InitCommand=function(self)
@@ -222,8 +199,79 @@ t[#t+1] = Def.ActorFrame{
 		end;
 	};
 };
---]]
 
+
+--MODS DISPLAY
+local function CurrentNoteSkin(p)
+	local mods = GAMESTATE:GetPlayerState(p):GetPlayerOptionsArray( 'ModsLevel_Preferred' )
+	local skins = NOTESKIN:GetNoteSkinNames()
+
+	for i = 1, #mods do
+		for j = 1, #skins do
+			if string.lower( mods[i] ) == string.lower( skins[j] ) then
+			   return skins[j];
+			end
+		end
+	end
+end
+--Yes it's a global var, but don't worry because it will hopefully always be overwritten
+highlightedNoteSkin = CurrentNoteSkin(player);
+
+t[#t+1] = Def.ActorFrame{
+	InitCommand=cmd(xy,xPosition*2,SCREEN_BOTTOM-80;diffusealpha,0);
+	OnCommand=cmd(sleep,3.3;linear,.3;diffusealpha,1);
+	Def.ActorFrame{
+		--[[Def.Quad{
+			InitCommand=cmd(setsize,50,50;diffuse,Color("HoloBlue"));
+		};]]
+		LoadFont("facu/_zona pro bold 20px")..{
+			Text=THEME:GetString("OptionNames","Speed");
+			InitCommand=cmd(y,-17;zoom,.6);
+			
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{								--SPEEDMOD Display
+			InitCommand=cmd(y,5;zoom,0.6;maxwidth,75;skewx,-0.25;diffuse,Color("White"));
+			OnCommand=function(self)
+				local xmod = GAMESTATE:GetPlayerState(player):GetCurrentPlayerOptions():XMod();
+				local cmod = GAMESTATE:GetPlayerState(player):GetCurrentPlayerOptions():CMod();
+				local mmod = GAMESTATE:GetPlayerState(player):GetCurrentPlayerOptions():MMod();
+				local curmod;
+				if cmod then
+					curmod = "C"..cmod
+					--speedvalue = cmod
+				elseif mmod then
+					curmod = "AV"..mmod
+					--speedvalue = mmod
+				else
+					curmod = xmod.."X"
+				end;
+				self:settext(curmod);
+			end;
+		};
+	};
+	
+	--[[Def.Quad{
+		InitCommand=cmd(setsize,50,50;diffuse,Color("HoloBlue");x,60);
+	};]]
+	LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/Noteskin"))..{
+		InitCommand=cmd(x,60;zoom,.8);
+	};
+	Def.ActorFrame{
+		Condition=ActiveModifiers[pname(player)]["BGAMode"] ~= "On";
+		InitCommand=cmd(x,120);
+		--[[Def.Quad{
+			InitCommand=cmd(setsize,50,50;diffuse,Color("HoloBlue"););
+		};]]
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			InitCommand=cmd(y,-25/2+2;zoom,0.4;skewx,-0.25;maxwidth,120;diffuse,Color("White"));
+			Text="BGA";
+		};
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
+			InitCommand=cmd(y,25/2-2;zoom,0.4;skewx,-0.25;diffuse,Color("White");uppercase,true);
+			Text=string.upper(ActiveModifiers[pname(player)]["BGAMode"]);
+		};
+	};
+};
 
 
 --P1 RANK CODE
