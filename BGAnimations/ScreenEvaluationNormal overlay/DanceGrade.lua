@@ -54,7 +54,7 @@ function gs(s)
 end
 
 local datalabelslist = {gs("W1"),gs("W2"),gs("W3"),gs("W4"),gs("Miss"),gs("MaxCombo"),"TOTAL SCORE","PRECISION","CALORIE (KCAL)"};
-local p1datalist =	{p1ravins,string.format("%03d",p1w2),string.format("%03d",p1w3),string.format("%03d",p1w4),string.format("%03d",p1misses),maxcp1,p1score,p1accuracy.."%",p1kcal};
+local p1datalist =	{p1ravins,string.format("%03d",p1w2),string.format("%03d",p1w3),string.format("%03d",p1w4),string.format("%03d",p1misses),string.format("%03d",maxcp1),p1score,p1accuracy.."%",p1kcal};
 
 local noFantastics = (PREFSMAN:GetPreference("AllowW1") == "AllowW1_Never") --Used in two places
 if noFantastics then
@@ -180,7 +180,7 @@ for i = 1,#datalabelslist,1 do
 	
 	t[#t+1] = LoadFont("monsterrat/_montserrat medium 60px")..{		--stats p1
 		Text=p1datalist[i];
-		InitCommand=cmd(AddAttribute,-1,{Length=10};xy,xPosition,iniy+(i*sepy);zoom,initzoom;horizalign,alignment;diffusealpha,0);
+		InitCommand=cmd(xy,xPosition,iniy+(i*sepy);zoom,initzoom;horizalign,alignment;diffusealpha,0);
 		OnCommand=cmd(sleep,initsleeps[i];accelerate,intw;diffusealpha,1;zoom,datazoom-0.15;);
 	};
 	
@@ -216,9 +216,9 @@ local function CurrentNoteSkin(p)
 end
 --Yes it's a global var, but don't worry because it will hopefully always be overwritten
 highlightedNoteSkin = CurrentNoteSkin(player);
-
+local xMultiplier = (player == PLAYER_1) and 1 or -1;
 t[#t+1] = Def.ActorFrame{
-	InitCommand=cmd(xy,xPosition*2,SCREEN_BOTTOM-80;diffusealpha,0);
+	InitCommand=cmd(xy,xPosition+20*xMultiplier,SCREEN_BOTTOM-80;diffusealpha,0);
 	OnCommand=cmd(sleep,3.3;linear,.3;diffusealpha,1);
 	Def.ActorFrame{
 		--[[Def.Quad{
@@ -254,11 +254,11 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(setsize,50,50;diffuse,Color("HoloBlue");x,60);
 	};]]
 	LoadActor(THEME:GetPathB("ScreenSelectMusic","overlay/Noteskin"))..{
-		InitCommand=cmd(x,60;zoom,.8);
+		InitCommand=cmd(x,60*xMultiplier;zoom,.8);
 	};
 	Def.ActorFrame{
 		--Condition=ActiveModifiers[pname(player)]["BGAMode"] ~= "On";
-		InitCommand=cmd(x,120);
+		InitCommand=cmd(x,120*xMultiplier);
 		--[[Def.Quad{
 			InitCommand=cmd(setsize,50,50;diffuse,Color("HoloBlue"););
 		};]]

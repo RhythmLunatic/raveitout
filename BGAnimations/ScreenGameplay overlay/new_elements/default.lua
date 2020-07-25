@@ -45,13 +45,17 @@ t[#t+1] = Def.ActorFrame {
 		end;
 	end;
 	OnCommand=cmd(diffusealpha,0;sleep,1;linear,0.5;diffusealpha,1;);
-	
-		Def.Sprite{
-			--We don't have course mode graphics..
-			Condition=(not GAMESTATE:IsCourseMode());
-			Texture=stage;
-			InitCommand=cmd(zoom,0.55);
-		};
+
+	Def.Sprite{
+		--We don't have course mode graphics..
+		Condition=(not GAMESTATE:IsCourseMode());
+		--Texture=stage;
+		InitCommand=cmd(zoom,0.55);
+		--If it's not an OnCommand it will return a regular stage index...
+		OnCommand=function(self)
+			self:Load(THEME:GetPathB("ScreenGameplay","overlay/new_elements/"..GAMESTATE:GetCurrentStage()));
+		end;
+	};
 };
 
 return t

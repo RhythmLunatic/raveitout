@@ -21,8 +21,6 @@ local wqwid =		_screen.cx			--
 local npsxz =	_screen.cx*0.5		--next/previous song X zoom
 local npsyz =	_screen.cy --*0.75	--next/previous song Y zoom
 --
---local css1 = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1);
---local css2 = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2);
 local newranktext = "NEW CHALLENGER"	--text replacing #P1# when someone does a new record
 local bpmalt = 	_screen.cy+55			--Y value for BPM Display below banner
 

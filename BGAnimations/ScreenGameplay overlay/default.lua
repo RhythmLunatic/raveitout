@@ -47,9 +47,9 @@ local t = Def.ActorFrame{
 			InitCommand=cmd(xy,SCREEN_CENTER_X,SCREEN_CENTER_Y;);
 			BeatCrossedMessageCommand=cmd(
 				settext,"Beat: "..math.round(GAMESTATE:GetSongBeat())..
-				"\nBPS: "..GAMESTATE:GetSongBPS()..
-				"\nSeconds: "..GAMESTATE:GetCurMusicSeconds()..
-				"\nCalculated: "..GAMESTATE:GetSongBeat()/GAMESTATE:GetSongBPS()
+				"\nBPS: "..string.format("%.03f",GAMESTATE:GetSongBPS())..
+				"\nSeconds: "..string.format("%.03f",GAMESTATE:GetCurMusicSeconds())..
+				"\nCalculated: "..string.format("%.03f",GAMESTATE:GetSongBeat()/GAMESTATE:GetSongBPS())
 			);
 		};
 		

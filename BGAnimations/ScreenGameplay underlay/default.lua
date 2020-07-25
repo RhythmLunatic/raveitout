@@ -333,10 +333,6 @@ if DoDebug then
 			InitCommand=cmd(xy,_screen.cx,SCREEN_TOP+40;zoom,0.5);
 			OnCommand=cmd(settext,"Song path: \""..GAMESTATE:GetCurrentSong():GetSongDir().."\"";);
 		};
-		LoadFont(DebugFont)..{		-- CORTES FIX MSG
-			InitCommand=cmd(xy,_screen.cx,SCREEN_TOP+10;zoom,0.5);
-			OnCommand=cmd(visible,CortesWideFix;settext,"\[Using Cortes Widescreen patch\]");
-		};
 		LoadFont(DebugFont)..{		-- PerfectionistMode status
 			InitCommand=cmd(x,_screen.cx;y,SCREEN_BOTTOM-80;zoom,0.5);
 		--	OnCommand=cmd(settext,"PerfectionistMode Status: "..GetUserPref("PerfectionistMode"));	--works
@@ -368,12 +364,41 @@ if DoDebug then
 				self:settext("Miss count: "..PSS1:GetCurrentMissCombo());
 			end;
 		};
+
 		LoadFont(DebugFont)..{		-- Miss combo P2
 			InitCommand=cmd(visible,IsP2On;xy,SCREEN_RIGHT-5,SCREEN_TOP+10;zoom,0.5;horizalign,right;);
 			ComboChangedMessageCommand=function(self)
 				self:settext("Miss count: "..PSS2:GetCurrentMissCombo());
 			end;
 		};
+		--stages
+		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			InitCommand=cmd(xy,SCREEN_RIGHT-5,SCREEN_TOP+15;zoom,0.5;horizalign,right;);
+			OnCommand=function(self) --Current stage value changes if you do InitCommand.
+				self:settext("Current Stage: "..GAMESTATE:GetCurrentStage());
+			end;
+		};
+		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			InitCommand=cmd(xy,SCREEN_RIGHT-5,SCREEN_TOP+30;zoom,0.5;horizalign,right;);
+			Text="Number of stages: "..PREFSMAN:GetPreference("SongsPerPlay");
+		};
+		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			InitCommand=cmd(xy,SCREEN_RIGHT-5,SCREEN_TOP+45;zoom,0.5;horizalign,right;);
+			Text="Smallest Num stages: "..GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer();
+		};
+		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			InitCommand=cmd(xy,SCREEN_RIGHT-5,SCREEN_TOP+60;zoom,0.5;horizalign,right;);
+			Text="Num stages left P1: "..GAMESTATE:GetNumStagesLeft(PLAYER_1);
+		};
+		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			InitCommand=cmd(xy,SCREEN_RIGHT-5,SCREEN_TOP+75;zoom,0.5;horizalign,right;);
+			Text="Num stages left P2: "..GAMESTATE:GetNumStagesLeft(PLAYER_2);
+		};
+		LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			InitCommand=cmd(xy,SCREEN_RIGHT-5,SCREEN_TOP+90;zoom,0.5;horizalign,right;);
+			Text="Final stage for any player? "..boolToString(GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer()==1);
+		};
+		
 		LoadFont(DebugFont)..{		-- MODs "rio" P1
 			InitCommand=cmd(visible,IsP1On;xy,SCREEN_LEFT+5,_screen.cy;zoom,0.5;horizalign,left);
 			--OnCommand=cmd(settext,GAMESTATE:GetPlayerState(PLAYER_1):GetPlayerOptionsString("Stage"));			--works

@@ -58,7 +58,7 @@ if DoDebug then
 			OnCommand=cmd(settext,"Extra Stage? "..boolToString(IsExtraStagePIU());addy,60);
 		};
 		LoadFont("Common Normal")..{
-			OnCommand=cmd(settext,"Cur Stage: "..(GAMESTATE:GetCurrentStageIndex()+1).."/"..PREFSMAN:GetPreference("SongsPerPlay");addy,80);
+			OnCommand=cmd(settext,"Cur Stage: "..(GAMESTATE:GetCurrentStageIndex()+1).."/"..PREFSMAN:GetPreference("SongsPerPlay").." "..GAMESTATE:GetCurrentStage();addy,80);
 		};
 	
 	};
