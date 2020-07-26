@@ -280,8 +280,6 @@ return Def.ActorFrame{
 					end
 					self:settext( string.format("%.3i", num).."/"..string.format("%.3i", total) );
 					(cmd(finishtweening;zoomy,0;zoomx,0.5;decelerate,0.33;zoom,0.275;)) (self)
-				else
-					self:stoptweening();self:linear(0.25);self:diffusealpha(0);
 				end;
 			end;
 		};
