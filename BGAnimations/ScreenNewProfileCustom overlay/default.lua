@@ -1,6 +1,15 @@
+local function isPlayerDone(pn)
+	if GAMESTATE:IsSideJoined(pn) then
+		--If using a profile and they've played more than one song OR they're not using a profile
+		return (PROFILEMAN:IsPersistentProfile(pn) and PROFILEMAN:GetProfile(pn):GetTotalNumSongsPlayed() ~= 0) or not PROFILEMAN:IsPersistentProfile(pn)
+	else
+		return true;
+	end;
+end;
+
 local isDone = {
-	PLAYER_1 = false,
-	PLAYER_2 = false
+	["PlayerNumber_P1"] = isPlayerDone("PlayerNumber_P1"),
+	["PlayerNumber_P2"] = isPlayerDone("PlayerNumber_P2")
 }
 
 return Def.ActorFrame{
@@ -12,6 +21,7 @@ return Def.ActorFrame{
 		Condition=(GAMESTATE:IsSideJoined(PLAYER_2) and PROFILEMAN:IsPersistentProfile(PLAYER_2) and PROFILEMAN:GetProfile(PLAYER_2):GetTotalNumSongsPlayed() == 0);
 		InitCommand=cmd(xy,SCREEN_WIDTH*.75,SCREEN_CENTER_Y+20);
 	};
+	
 	DoneSelectingMessageCommand=function(self,params)
 		isDone[params.Player] = true;
 		PROFILEMAN:GetProfile(params.Player):SetDisplayName(params.Name);
