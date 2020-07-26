@@ -46,8 +46,7 @@ end;
 local UseNextStage = true;
 
 --STATSMAN:GetCurStageStats():AllFailed() or GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer() <= 0 or GetSmallestNumHeartsLeftForAnyHumanPlayer() <= 0
---If this screen is ScreenProfileSaveSummary instead of ScreenProfileSave, the next screen is game over
-if Var("LoadingScreen") == "ScreenProfileSaveSummary" then
+if Branch.AfterProfileSave() ~= "ScreenSelectMusic" then
 	NextStageSleepTime = 0;
 	UseNextStage = false;
 end;

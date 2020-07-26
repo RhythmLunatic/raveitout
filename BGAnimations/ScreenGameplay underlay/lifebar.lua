@@ -16,7 +16,7 @@ local PSS1 =		STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
 
 local isProLifebar = (getenv("Lifebar") == "Pro")
 --This is the width and height of the lifebar graphic. Simple right? So don't fuck it up
-LIFEBAR_WIDTH, LIFEBAR_HEIGHT = 320,26;
+local LIFEBAR_WIDTH, LIFEBAR_HEIGHT = 320,26;
 
 local t = Def.ActorFrame{
 		--lifebar black border

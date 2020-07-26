@@ -185,16 +185,18 @@ end;
 t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 	--el modo "Perfectionist" hace que el jugador instantaneamente falle si obtiene algo igual o menor a un W3 (un Good) -NeobeatIKK
 	ComboChangedMessageCommand=function(self,params)
-		local css1 = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1);
-		local css2 = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2);
-		local p1w1 = css1:GetTapNoteScores("TapNoteScore_W1");local p1w2 = css1:GetTapNoteScores("TapNoteScore_W2");local p1w3 = css1:GetTapNoteScores("TapNoteScore_W3");local p1w4 = css1:GetTapNoteScores("TapNoteScore_W4");local p1w5 = css1:GetTapNoteScores("TapNoteScore_W5");local p1ms = css1:GetTapNoteScores("TapNoteScore_Miss");local p1cm = css1:GetTapNoteScores("TapNoteScore_CheckpointMiss");local p1hm = css1:GetTapNoteScores("TapNoteScore_HitMine");
-		local p2w1 = css2:GetTapNoteScores("TapNoteScore_W1");local p2w2 = css2:GetTapNoteScores("TapNoteScore_W2");local p2w3 = css2:GetTapNoteScores("TapNoteScore_W3");local p2w4 = css2:GetTapNoteScores("TapNoteScore_W4");local p2w5 = css2:GetTapNoteScores("TapNoteScore_W5");local p2ms = css2:GetTapNoteScores("TapNoteScore_Miss");local p2cm = css2:GetTapNoteScores("TapNoteScore_CheckpointMiss");local p2hm = css2:GetTapNoteScores("TapNoteScore_HitMine");
 		local GTS = SCREENMAN:GetTopScreen();
-		local PlayerStageStats = params.PlayerStageStats;
-		local bFailed = PlayerStageStats:GetCurrentMissCombo() >= GetBreakCombo();
+		local pss = params.PlayerStageStats;
+		
+		local bFailed = pss:GetFailed(); --True if forced failed or the lifebar is empty.
+		if pss:GetCurrentMissCombo() >= GetBreakCombo() then
+			pss:FailPlayer();
+			bFailed = true;
+		end;
+		
 		local OpositePlayer = GetOpositePlayer(params.Player);
 		local OpositeStats = STATSMAN:GetCurStageStats():GetPlayerStageStats(OpositePlayer);
-		local bOpositePlayerFailed = OpositeStats:GetCurrentMissCombo() >= GetBreakCombo();
+		local bOpositePlayerFailed = OpositeStats:GetFailed();
 		--Shit code
 		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			if PerfectionistMode[pn] then
@@ -208,41 +210,28 @@ t[#t+1] = Def.ActorFrame{		--Limit break by ROAD24 and NeobeatIKK
 				local ms = css:GetTapNoteScores("TapNoteScore_Miss");
 				local cm = css:GetTapNoteScores("TapNoteScore_CheckpointMiss");
 				local hm = css:GetTapNoteScores("TapNoteScore_HitMine");
-				if w3 >= 1 or w4 >= 1 or w5 >= 1 or ms >= 1 or cm >= 1 then								-- Only W1s (AKA RAVINs / Marvelouses)
-					--GTS:PostScreenMessage("SM_BeginFailed",0);
-					if stage == "Stage_1st" and Enjoy1stStagePMode == true then
-						return nil
-					else
-						--SCREENMAN:SystemMessage("Player "..pn.." failed");
-						css:FailPlayer();
-						if GAMESTATE:IsSideJoined(OppositePlayer) and STATSMAN:GetCurStageStats():GetPlayerStageStats(OppositePlayer):GetFailed() then
-							setenv("StageFailed",true);
-							GTS:PostScreenMessage("SM_BeginFailed",0);
-						elseif not GAMESTATE:IsSideJoined(OppositePlayer) then
-							setenv("StageFailed",true);
-							GTS:PostScreenMessage("SM_BeginFailed",0);
-						end;
+				if w3 >= 1 or w4 >= 1 or w5 >= 1 or ms >= 1 or cm >= 1 then -- Only W1s (AKA RAVINs / Marvelouses)
+					--SCREENMAN:SystemMessage("Player "..pn.." failed");
+					css:FailPlayer();
+					if GAMESTATE:IsSideJoined(OppositePlayer) and bOpositePlayerFailed then
+						setenv("StageFailed",true);
+						GTS:PostScreenMessage("SM_BeginFailed",0);
+					elseif not GAMESTATE:IsSideJoined(OppositePlayer) then
+
+						setenv("StageFailed",true);
+						GTS:PostScreenMessage("SM_BeginFailed",0);
 					end;
 				end;
 			end;
 		end;
 		
-		if getenv("StageBreak") then			-- Si no esta activado el break no tiene caso revisar todo lo demas
-			if THEME:GetMetric("CustomRIO","GamePlayMenu") == false then
-				if GAMESTATE:IsPlayerEnabled( OpositePlayer ) then
-					bFailed = bFailed and bOpositePlayerFailed;
-				end;
-				if bFailed then
-					GTS:PostScreenMessage("SM_BeginFailed",0);
-					if stage == "Stage_1st" and Enjoy1stStage == true then
-						return
-					else				-- No creo que haya problema en forzar el fail de ambos players, ya que el break requiere que ambos deben alcanzar el combo miss -NeobeatIKK
-						PSS1:FailPlayer();
-						PSS2:FailPlayer();
-						setenv("StageFailed",true);
-					end;
-				end;
-			end;
+		if GAMESTATE:IsPlayerEnabled( OpositePlayer ) then
+			bFailed = bFailed and bOpositePlayerFailed;
+		end;
+		--If both players failed.
+		if bFailed then
+			GTS:PostScreenMessage("SM_BeginFailed",0);
+			setenv("StageFailed",true);
 		end;
 	end;
 	LoadFont("Common Normal")..{	--Stage break + value, message

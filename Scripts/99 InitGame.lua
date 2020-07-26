@@ -96,8 +96,8 @@ function Setup()
 	--FORCED OPERATOR CONFIG END
 
 	--Preferences.ini Exclusive START
-	PREFSMAN:SetPreference("FailOffForFirstStageEasy",true);	--TODO: Need verify
-	PREFSMAN:SetPreference("FailOffInBeginner",1);	--TODO: needs confirm if works
+	PREFSMAN:SetPreference("FailOffForFirstStageEasy",false);	--TODO: Need verify
+	PREFSMAN:SetPreference("FailOffInBeginner",false);	--TODO: needs confirm if works
 	--Preferences.ini Exclusive END
 
 	--no sirve, aun con esto aun hay que relanzar el programa para que disablesong tenga efecto.

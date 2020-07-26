@@ -113,13 +113,13 @@ function EasyOrArcade()
 end;
 
 
-function ResetPreferences()
+--[[function ResetPreferences()
 	PREFSMAN:SetPreference("AllowW1",'AllowW1_Never');
 	WriteGamePrefToFile("DefaultFail","Off");
 	GAMESTATE:ApplyGameCommand( "mod,3x,rio,FailOff;", PLAYER_1 );
 	GAMESTATE:ApplyGameCommand( "mod,3x,rio,FailOff;", PLAYER_2 );
 	--SCREENMAN:SystemMessage("Preferences setted to default values.");
-end
+end]]
 
 -- Depreciated, use PIU_HEARTS_SYSTEM instead.
 --[[function GetNumlifeLeft()
