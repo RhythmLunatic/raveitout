@@ -66,7 +66,7 @@ return Def.ActorFrame{
 				end;
 			end;
 		};
-		LoadFont("monsterrat/_montserrat semi bold 60px")..{	
+		LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			InitCommand=cmd(x,-60*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","StepsInfoY")+35+txytune;zoom,0.215;uppercase,true;maxwidth,900;horizalign,alignment;skewx,-0.25;);
 			--PlayerJoinedMessageCommand=cmd(visible,GAMESTATE:IsHumanPlayer(pn);queuecommand,"CurrentSteps"..pname(pn).."ChangedMessage");
 			["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=function(self)

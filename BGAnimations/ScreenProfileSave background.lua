@@ -45,7 +45,7 @@ end;
 if ShowRIOLogo then				--load rio logo in bottom right corner
 	--t[#t+1] = LoadActor("_wallpaperriologo.lua");
 	t[#t+1] = LoadActor(THEME:GetPathG("","logo"))..{
-		InitCommand=cmd(horizalign,right;vertalign,bottom;xy,SCREEN_RIGHT,SCREEN_BOTTOM-25;zoom,.3);
+		InitCommand=cmd(horizalign,right;vertalign,bottom;xy,SCREEN_RIGHT,SCREEN_BOTTOM-25;zoom,.25);
 	};
 end;
 

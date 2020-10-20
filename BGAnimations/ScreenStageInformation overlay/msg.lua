@@ -35,7 +35,7 @@ if GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentCourse():GetDescription() ~=
 	message = GAMESTATE:GetCurrentCourse():GetDescription();
 elseif songhasmsg then
 	local file = File.Read(songmsgpath)
-	messages = split("\r\n",file);
+	local messages = split("\r\n",file);
 	--SCREENMAN:SystemMessage(tostring(#messages).." "..strArrayToString(messages));
 	message = messages[math.random(#messages)];
 else
@@ -72,7 +72,8 @@ return Def.ActorFrame{
 		OffCommand=cmd(decelerate,outtwt;rotationz,90*0.5;zoom,0.8;diffusealpha,0);
 	};
 	LoadFont(MessageFont)..{	--MESSAGE		
-		InitCommand=cmd(xy,_screen.cx,SCREEN_BOTTOM-60;zoom,0.75;maxwidth,SCREEN_WIDTH;wrapwidthpixels,780;maxheight,100;settext,message);
+		Text=message;
+		InitCommand=cmd(xy,_screen.cx,SCREEN_BOTTOM-60;zoom,0.75;maxwidth,SCREEN_WIDTH;wrapwidthpixels,780;maxheight,100);
 	};
 	Def.Quad{				--Fade in/out
 		InitCommand=function(self)

@@ -4,8 +4,30 @@
 local scrollerItemTable = {"Item 1", "Item 2", "Item 3", "Item 4"}
 
 
+local function inputs(event)
+	if event.type == "InputEventType_Release" then return end
+
+	local button = event.button
+	local realButton = ToEnumShortString(event.DeviceInput.button)
+
+	if realButton == "left mouse button" or realButton == "right mouse button" or realButton == "middle mouse button" then
+		local xpos = INPUTFILTER:GetMouseX();
+		local ypos = INPUTFILTER:GetMouseY();
+		SCREENMAN:SystemMessage(realButton.. " x: "..xpos..", y: "..ypos);
+	elseif button == "Start" then
+		SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToNextScreen");
+	elseif button == "Back" then
+		SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToPrevScreen");
+	else
+		SCREENMAN:SystemMessage(button.. " " .. realButton);
+	end;
+end;
+
 
 local t = Def.ActorFrame{
+	OnCommand=function(self)
+		--SCREENMAN:GetTopScreen():AddInputCallback(inputs);
+	end;
 	--[[Def.Quad{
 		InitCommand=cmd(setsize,SCREEN_WIDTH,SCREEN_HEIGHT;Center);
 	};]]
@@ -46,69 +68,16 @@ local t = Def.ActorFrame{
 		end;
 	};
 	
+	Def.SpriteAsync{
+		Texture=THEME:GetPathG("Common","Arrow");
+		InitCommand=cmd(Center);
+	};
+	
 
 };
 
---Declare your ActorScroller.
-local as = Def.ActorScroller{
-    --Like I said, the example and the wiki tells you everything you need to know about these constructors.
-    NumItemsToDraw=20,
-    SecondsPerItem=.3,
-    TransformFunction=function(self,offset,itemIndex,numItems)
-        self:y(80*offset);
-    end,
 
-    -- Scroller commands
-    InitCommand=cmd(rotationz,15;xy,325,SCREEN_CENTER_Y;),
-    --This is the input handler for the scroller.
-    CodeMessageCommand=function(self, param)
-        if param.Name == "Up" or param.Name == "Left" then
-            if self:GetDestinationItem() > 0 then
-                self:SetDestinationItem(self:GetDestinationItem()-1);
-                SOUND:PlayOnce(THEME:GetPathS("Common", "value"), true);
-            end;
-        elseif param.Name == "Down" or param.Name == "Right" then
-            if self:GetDestinationItem() < self:GetNumItems()-1 then
-                self:SetDestinationItem(self:GetDestinationItem()+1);
-                SOUND:PlayOnce(THEME:GetPathS("Common", "value"), true);
-            end;
-        elseif param.Name == "Start" then
-            SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToNextScreen");
-        elseif param.Name == "Back" then
-            SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToPrevScreen");
-        end;
-        --Like I said earlier, GainFocusCommand and LoseFocusCommand aren't part of an ActorScroller, they're part of ScreenSelectMaster. Therefore it has to be reimplemented.
-		SCREENMAN:SystemMessage((self:GetDestinationItem()+1).."/"..#scrollerItemTable)
-        for i=1,self:GetNumItems() do --self:GetNumItems() might work better?
-            if self:GetDestinationItem()+1 == i then
-                self:GetChild(i):playcommand("GainFocus")
-            else
-                self:GetChild(i):playcommand("LoseFocus")
-            end;
-        end;
-    end
-}
-
-for i,v in ipairs(scrollerItemTable) do
-    as[#as+1] = Def.ActorFrame{
-		Name=i; --Do not forget this! You need to give the items an index for GainFocus and LoseFocus to work!
-		LoadFont("Common Normal")..{
-			Text=v;
-			--InitCommand=cmd(diffuse,Color("Red");setsize,20,20;diffuse,Color("Red"));
-			--GainFocusCommand=cmd(stoptweening;linear,.5;diffuse,Color("Red"));
-			GainFocusCommand=function(self)
-				SCREENMAN:SystemMessage("GainFocus "..self:GetName());
-				self:diffuse(Color("Red"))
-				--self:zoom(999);
-			end;
-			LoseFocusCommand=cmd(stoptweening;linear,.5;diffuse,Color("White"));
-		};
-	}
-end;
-
-t[#t+1] = as;
-
-local function bTos(b) return b and "true" or "false" end;
+--[[local function bTos(b) return b and "true" or "false" end;
 
 t[#t+1] = Def.ActorFrame{
 	Def.BitmapText{
@@ -116,7 +85,7 @@ t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(Center);
 		Text=bTos(UNLOCKMAN:IsSongLocked(SONGMAN:FindSong("99-Easy/Gangnam Style")));
 	}
-}
+}]]
 
 
 return t;

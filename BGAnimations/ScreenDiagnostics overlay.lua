@@ -6,7 +6,7 @@ function IsWindowed()
 	end;
 end;
 
---Stupid fucking hack because ScreenOptionsService doesn't have a transition
+--Stupid hack because ScreenOptionsService doesn't have a transition
 local timer = 0;
 local t = Def.ActorFrame{
 	OnCommand=cmd(sleep,3;queuecommand,"Timer");

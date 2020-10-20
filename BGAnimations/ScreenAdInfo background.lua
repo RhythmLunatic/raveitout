@@ -37,6 +37,7 @@ local phrases = {
 	"Also check out StepPrime!",
 	"stole the precious thing",
 	"stole this theme (Sorry Cortes)",
+	"Shoutouts to Midflight Digital",
 	"Not actually a DJ",
 	"SEEEEEEEHHHHHHHHGAAAAAAAAAAAAAAAAA!",
 	"A real time music game that's hard and fast. It's too cool!",
@@ -65,6 +66,11 @@ return Def.ActorFrame{
 		InitCommand=cmd(Center;diffusealpha,0);
 		OnCommand=cmd(decelerate,.5;diffusealpha,1;sleep,3;decelerate,.3;zoomy,0;zoomx,3);
 	};
+	LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+        Text="https://github.com/RhythmLunatic/stepmania";
+        InitCommand=cmd(Center;addy,100;diffusealpha,0;wrapwidthpixels,SCREEN_WIDTH;zoom,.75);
+		OnCommand=cmd(decelerate,.5;diffusealpha,1;sleep,3;decelerate,.3;zoomy,0;zoomx,3);
+    };
 	
 	LoadActor(THEME:GetPathG("RhythmLunatic","logo"))..{
 		InitCommand=cmd(Center;cropright,1;diffusealpha,0);
