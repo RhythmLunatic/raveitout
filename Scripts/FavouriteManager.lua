@@ -54,7 +54,7 @@ Call this before ScreenSelectMusic and after addOrRemoveFavorite.
 
 To open the favorties folder, call this from ScreenSelectMusic:
 SCREENMAN:GetTopScreen():GetMusicWheel():ChangeSort("SortOrder_Preferred")
-SONGMAN:SetPreferredSongs("RIO_FavoriteSongs");
+SONGMAN:SetPreferredSongs("Favorites");
 SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection("P1 Favorites");
 
 Rave It Out uses a custom lua GroupWheel so the favorites folders will show alongside your groups.
