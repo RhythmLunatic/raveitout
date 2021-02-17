@@ -162,7 +162,6 @@ Branch = {
 		if GAMESTATE:IsEventMode() then
 			return SelectMusicOrCourse()
 		elseif STATSMAN:GetCurStageStats():AllFailed() or GAMESTATE:GetSmallestNumStagesLeftForAnyHumanPlayer() <= 0 then
-			
 			return "ScreenGameOver"
 		else
 			return SelectMusicOrCourse()

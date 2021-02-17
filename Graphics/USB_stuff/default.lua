@@ -34,10 +34,10 @@ local function PlayerName(player)
 		InitCommand=function(self)
 			self:skewx(-.2)
 			--self:settext("bla");
-			local profile = PROFILEMAN:GetProfile(player)
-			local name = profile:GetDisplayName()
+			local name = PROFILEMAN:GetPlayerName(player)
 			--SCREENMAN:SystemMessage(name)
 			
+			--If no USB
 			if MEMCARDMAN:GetCardState(player) == 'MemoryCardState_none' then
 				--If name is blank, it's probably the machine profile... After all, the name entry screen doesn't allow blank names.
 				if name == "" then		
@@ -51,7 +51,13 @@ local function PlayerName(player)
 					self:settext(string.upper(name)):maxwidth(200);
 				end
 			else
-				self:settext(string.upper(name)):maxwidth(200);
+				if state == 'MemoryCardState_removed' then
+					self:settext("CARD REMOVED")
+				elseif state == "MemoryCardState_error" then
+					self:settext("CARD ERROR")
+				else
+					self:settext(string.upper(name)):maxwidth(200);
+				end;
 			end
 			
 		end;

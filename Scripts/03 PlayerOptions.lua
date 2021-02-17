@@ -42,26 +42,46 @@ PerfectionistMode = {
 	PlayerNumber_P4 = false
 };
 
+--Custom func that returns dict with keys instead of a list. Needed for noteskin filtering.
+local function custSplit(delimiter, text)
+	local list = {}
+	local pos = 1
+	while 1 do
+		local first,last = string.find(text, delimiter, pos)
+		if first then
+			list[string.sub(text, pos, first-1)]=true
+			pos = last+1
+		else
+			list[string.sub(text, pos)]=true
+			break
+		end
+	end
+	return list
+end
+
 function OptionRowAvailableNoteskins()
 	local ns = NOTESKIN:GetNoteSkinNames();
-	local disallowedNS = split(",",THEME:GetMetric("Common","NoteSkinsToHide"));
-	for i = 1, #disallowedNS do
-		for k,v in pairs(ns) do
-			if v == disallowedNS[i] then
-				table.remove(ns, k)
-			end
+	--faster than table.remove by ~3.7x
+	--Thanks 2 tertu for telling me about it :^)
+	local disallowedNS = custSplit(',',THEME:GetMetric("Common","NoteSkinsToHide"));
+	local allowedNS = {}
+	for _,n in ipairs(ns) do
+		if not disallowedNS[n] then
+			allowedNS[#allowedNS+1]=n
 		end;
 	end;
+	--assert(#allowedNS > 0)
+	
 	--Make this global so the OptionsList shit in SSM can access it.
-	OPTIONSLIST_NUMNOTESKINS = #ns
-	OPTIONSLIST_NOTESKINS = ns
+	OPTIONSLIST_NUMNOTESKINS = #allowedNS
+	OPTIONSLIST_NOTESKINS = allowedNS
 	local t = {
 		Name="NoteskinsCustom",
 		LayoutType = "ShowAllInRow",
 		SelectType = "SelectOne",
 		OneChoiceForAllPlayers = false,
 		ExportOnChange = false,
-		Choices = ns,
+		Choices = allowedNS,
 		LoadSelections = function(self, list, pn)
 			--SCREENMAN:SystemMessage("Num items: "..#ns)
 			--This returns an instance of playerOptions, you need to set it back to the original
@@ -69,7 +89,7 @@ function OptionRowAvailableNoteskins()
 			local curNS = playerOptions:NoteSkin();
 			local found = false;
 			for i=1,#list do
-				if ns[i] == curNS then
+				if allowedNS[i] == curNS then
 					list[i] = true;
 					found = true;
 				end;

@@ -46,7 +46,7 @@ local t = Def.ActorFrame{
 	};
 	LoadFont("Common Normal")..{
 		Text="StepMania build: "..ProductFamily().." "..ProductVersion();
-		InitCommand=cmd(xy,SCREEN_CENTER_X,60);
+		InitCommand=cmd(xy,SCREEN_CENTER_X,60;maxwidth,SCREEN_WIDTH-50);
 		--[[OnCommand=function(self)
 			if ProductVersion() ~= "5.0.12" then
 				self:settext(self:GetText().." (Incompatible version?)");
@@ -88,7 +88,7 @@ local t = Def.ActorFrame{
 	};
 	LoadFont("Common Normal")..{
 		Text="Profiles: "..PROFILEMAN:GetNumLocalProfiles().." ("..join(", ",PROFILEMAN:GetLocalProfileDisplayNames())..")";
-		InitCommand=cmd(xy,20,225;horizalign,left);
+		InitCommand=cmd(xy,20,225;horizalign,left;maxwidth,SCREEN_WIDTH-50);
 		OnCommand=function(self)
 			if PREFSMAN:GetPreference("MemoryCardProfiles") == true and PROFILEMAN:GetNumLocalProfiles() == 0 then
 				self:diffuse(Color("Green"));

@@ -62,7 +62,7 @@ return Def.ActorFrame{
 			CurrentSongChangedMessageCommand=function(self)
 				self:stoptweening():diffusealpha(0);
 				if GAMESTATE:GetCurrentSong() then
-					if GAMESTATE:GetCurrentSong():GetPreviewVidPath() == nil then
+					if not GAMESTATE:GetCurrentSong():HasPreviewVid() then
 						self:sleep(.4):queuecommand("Load2");
 					end;
 				end;
@@ -91,25 +91,17 @@ return Def.ActorFrame{
 			InitCommand=cmd(x,_screen.cx;y,_screen.cy-30);
 			CurrentSongChangedMessageCommand=cmd(stoptweening;Load,nil;sleep,.4;queuecommand,"PlayVid2");
 			PlayVid2Command=function(self)
-				--self:Load(nil);
-				if streamSafeMode and has_value(STREAM_UNSAFE_AUDIO, GAMESTATE:GetCurrentSong():GetDisplayFullTitle() .. "||" .. GAMESTATE:GetCurrentSong():GetDisplayArtist()) then
+				if GAMESTATE:GetCurrentSong():HasPreviewVid() then
+					self:Load(GAMESTATE:GetCurrentSong():GetPreviewVidPath());
 					self:diffusealpha(0);
-					self:Load(nil);
-					return;
-				else
-					--local song = GAMESTATE:GetCurrentSong()
-					path = GetBGAPreviewPath("PREVIEWVID");
-					--path = song:GetBannerPath();
-					self:Load(path);
+					self:zoomto(384,232);
+					self:linear(0.2);
+					if path == "/Backgrounds/Title.mp4" then
+						self:diffusealpha(0.5);
+					else
+						self:diffusealpha(1);
+					end
 				end;
-				self:diffusealpha(0);
-				self:zoomto(384,232);
-				self:linear(0.2);
-				if path == "/Backgrounds/Title.mp4" then
-					self:diffusealpha(0.5);
-				else
-					self:diffusealpha(1);
-				end
 			end;
 		};
 		--TODO: Remove this when hiding songs works correctly!
