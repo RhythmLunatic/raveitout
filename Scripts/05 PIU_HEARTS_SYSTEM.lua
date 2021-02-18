@@ -68,7 +68,8 @@ function GetNumHeartsForSong()
 	if not s then
 		return 0
 	end
-	return GetSongExtraData(s, "Hearts")
+	return s:GetPIUStageCost();
+	--return GetSongExtraData(s, "Hearts")
 end;
 
 --TODO: This should be renamed to GetLargestNumHeartsLeftForAnyHumanPlayer, not smallest...

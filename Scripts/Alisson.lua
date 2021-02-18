@@ -17,14 +17,14 @@ function getcurstage()
 end
 
 --Please stop using this, it's depreciated and GetSongExtraData should be used instead..
-function GetBGAPreviewPath(_)
+--[[function GetBGAPreviewPath(_)
 	--just ignore the tag parameter
 	local song = GAMESTATE:GetCurrentSong()
 	if song then
 		return GetSongExtraData(song, "PreviewVid")
 	end
 	return ""
-end
+end]]
 
 --[[
 original code by Alisson, for reference

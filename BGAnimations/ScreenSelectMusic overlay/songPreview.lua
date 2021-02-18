@@ -96,11 +96,20 @@ return Def.ActorFrame{
 					self:diffusealpha(0);
 					self:zoomto(384,232);
 					self:linear(0.2);
-					if path == "/Backgrounds/Title.mp4" then
+					--[[
+					This worked when we were reading the #PREVIEWVID directly,
+					but I think specifying /Backgrounds/Title.mp4 is not possible
+					when using the C++ function GetPreviewVidPath(). (Though I haven't tried it.)
+					Either way, no RIO simfiles ever had this in their tag so it was a mystery why
+					this was being checked in the first place.
+					Nor did we ever have a Backgrounds folder.
+					]]
+					--[[if GAMESTATE:GetCurrentSong():GetPreviewVidPath() == "/Backgrounds/Title.mp4" then
 						self:diffusealpha(0.5);
 					else
 						self:diffusealpha(1);
-					end
+					end]]
+					self:diffusealpha(1);
 				end;
 			end;
 		};
