@@ -14,12 +14,6 @@ return Def.ActorFrame{
 			self:Load(getenv("profile_icon_"..pname(player)));
 			self:setsize(60,60);
 		end;
-		--[[ScreenChangedMessageCommand=cmd(playcommand,"On");
-		PlayerJoinedMessageCommand=cmd(playcommand,"On");
-		CoinInsertedMessageCommand=cmd(playcommand,"On");
-		CoinModeChangedMessageCommand=cmd(playcommand,"On");
-		ScreenChangedMessageCommand=cmd(playcommand,"On");
-		StorageDevicesChangedMessageCommand=cmd(playcommand,"On");]]
 
 	};
 	

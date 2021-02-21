@@ -85,6 +85,14 @@ function LoadPlayerStuff(Player)
 				end;
 			end;
 		};
+		--[[LoadActor(THEME:GetPathG("Common","Masked_PlayerBox"))..{
+			InitCommand=cmd(zoomtowidth,PROFILE_FRAME_WIDTH+50;zoomtoheight,PROFILE_FRAME_HEIGHT+250;MaskSource);
+			OnCommand=function(self)
+				if pn == 2 then
+					self:rotationy(180);
+				end;
+			end;
+		};]]
 		
 		--[[LoadActor("frame_"..pname(Player))..{
 			InitCommand=cmd(y,-PROFILE_FRAME_HEIGHT/2+15;);
@@ -184,10 +192,10 @@ function LoadPlayerStuff(Player)
 		Def.ActorScroller{
 			--Condition=(PROFILEMAN:GetNumLocalProfiles() > 0 and not USING_RFID);
 			Name = 'Scroller';
-			NumItemsToDraw=6;
+			NumItemsToDraw=8;
 			
 	 		--InitCommand=cmd(y,-230/2+20;);
-			OnCommand=cmd(y,1;SetFastCatchup,true;SetMask,200,5;SetSecondsPerItem,0.15;visible,(not USING_RFID));
+			OnCommand=cmd(y,1;SetFastCatchup,true;SetSecondsPerItem,0.15;visible,(not USING_RFID));
 			TransformFunction=function(self, offset, itemIndex, numItems)
 				local focus = scale(math.abs(offset),0,2,1,0);
 				self:visible(false);
@@ -221,9 +229,15 @@ function LoadPlayerStuff(Player)
 			InitCommand=cmd(vertalign,top;zoom,.4;y,-PROFILE_FRAME_HEIGHT/2+40;);
 		};
 		
+		--Mask for the circle
+		LoadActor("card_unit")..{
+			Condition=IsMemcardEnabled();
+			InitCommand=cmd(vertalign,top;y,-PROFILE_FRAME_HEIGHT/2+17;zoomtowidth,PROFILE_FRAME_WIDTH+15;zoomtoheight,180;MaskSource);
+		};
+		
 		LoadActor("circle")..{
 			Condition=IsMemcardEnabled();
-			InitCommand=cmd(diffusealpha,0;zoom,3.5;y,-PROFILE_FRAME_HEIGHT/2+100;);
+			InitCommand=cmd(diffusealpha,0;zoom,3.5;y,-PROFILE_FRAME_HEIGHT/2+100;MaskDest;ztestmode,"ZTestMode_WriteOnFail");
 			OnCommand=cmd(queuecommand,"Loop");
 			LoopCommand=cmd(decelerate,1;diffusealpha,1;zoom,1.5;sleep,.5;linear,.5;diffusealpha,0;sleep,0;zoom,3.5;queuecommand,"Loop");
 		};

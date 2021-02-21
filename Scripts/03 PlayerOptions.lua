@@ -60,12 +60,11 @@ local function custSplit(delimiter, text)
 end
 
 function OptionRowAvailableNoteskins()
-	local ns = NOTESKIN:GetNoteSkinNames();
 	--faster than table.remove by ~3.7x
 	--Thanks 2 tertu for telling me about it :^)
 	local disallowedNS = custSplit(',',THEME:GetMetric("Common","NoteSkinsToHide"));
 	local allowedNS = {}
-	for _,n in ipairs(ns) do
+	for _,n in ipairs(NOTESKIN:GetNoteSkinNames()) do
 		if not disallowedNS[n] then
 			allowedNS[#allowedNS+1]=n
 		end;
@@ -100,15 +99,15 @@ function OptionRowAvailableNoteskins()
 			end;
 		end,
 		SaveSelections = function(self, list, pn)
-			local pName = ToEnumShortString(pn)
+			--local pName = ToEnumShortString(pn)
 			--list[1] = true;
 			local found = false
 			for i=1,#list do
 				if not found then
 					if list[i] == true then
-						GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred"):NoteSkin(ns[i]);
+						GAMESTATE:GetPlayerState(pn):GetPlayerOptions("ModsLevel_Preferred"):NoteSkin(allowedNS[i]);
 						found = true
-						--SCREENMAN:SystemMessage("NS set to "..ns[i]);
+						--SCREENMAN:SystemMessage("NS set to "..allowedNS[i]);
 					end
 				end
 			end
