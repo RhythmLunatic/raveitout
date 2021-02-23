@@ -71,9 +71,6 @@ function OptionRowAvailableNoteskins()
 	end;
 	--assert(#allowedNS > 0)
 	
-	--Make this global so the OptionsList shit in SSM can access it.
-	OPTIONSLIST_NUMNOTESKINS = #allowedNS
-	OPTIONSLIST_NOTESKINS = allowedNS
 	local t = {
 		Name="NoteskinsCustom",
 		LayoutType = "ShowAllInRow",

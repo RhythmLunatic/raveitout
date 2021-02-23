@@ -11,8 +11,14 @@ local OPLIST_splitAt = THEME:GetMetric("OptionsList","MaxItemsBeforeSplit")
 --Start to shift the optionsList up at this row
 local OPLIST_ScrollAt = 16
 
+--Get noteskins and num noteskins from our custom noteskins function
+--For everyone else: NOTESKIN:GetNoteSkinNames()
+local OPTIONSLIST_NOTESKINS = OptionRowAvailableNoteskins().Choices
+local OPTIONSLIST_NUMNOTESKINS = #OPTIONSLIST_NOTESKINS;
+
+
 local t = Def.ActorFrame{
-	-- CODEBOX/OPTIONLIST
+	-- SOUNDS
 	LoadActor(THEME:GetPathS("","Codebox Move"))..{
 		OptionsListOpenedMessageCommand=cmd(play);
 		OptionsListRightMessageCommand=cmd(play);
@@ -32,6 +38,7 @@ local t = Def.ActorFrame{
 	};
 };
 
+--TODO: This was written before Noteskin() was a function, there is no reason to have this function still
 local function CurrentNoteSkin(p)
 	local state = GAMESTATE:GetPlayerState(p)
 	local mods = state:GetPlayerOptionsArray( 'ModsLevel_Preferred' )
@@ -45,6 +52,7 @@ local function CurrentNoteSkin(p)
 		end
 	end
 end
+
 --OpList
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 	--This keeps the name of the current OptionsList because OptionsListLeft and OptionsListRight does not know what list this is otherwise
@@ -125,13 +133,15 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 						end;
 					elseif currentOpList == "NoteSkins" then
 						local curRow;
-						--This global var is exported by OptionRowAvailableNoteskins()
+						--OPTIONSLIST_NUMNOTESKINS is exported by OptionRowAvailableNoteskins()
+						--What this if statement is doing is checking if the number of noteskins you have is greater than the split amount set in metrics.
+						--Because if it is then the optionsList has been split, therefore making the current row halved as instead of one row it's two
 						if OPLIST_splitAt < OPTIONSLIST_NUMNOTESKINS then
-							curRow = math.floor((params.Selection)/2)+1
+							curRow = math.floor((params.Selection)/2)+1 --If list is split
 						else
 							curRow = params.Selection+1
 						end;
-						--SCREENMAN:SystemMessage(curRow)
+						--Start scrolling?
 						if curRow>OPLIST_ScrollAt then
 							optionsListActor:stoptweening():linear(.2):y((SCREEN_CENTER_Y-100)+THEME:GetMetric("OptionsList","ItemsSpacingY")*(OPLIST_ScrollAt-curRow))
 						else
@@ -187,6 +197,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			AdjustCommand=function(self,params)
 				if currentOpList == "SongMenu" then
 					--Because hardcoding this couldn't possibly go wrong
+					--(Spoiler: It went wrong when I reordered it)
 					if params.Selection == 4 then
 						self:playcommand("UpdateText");
 						self:visible(true);
@@ -305,5 +316,40 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		};
 	};
 end;
+
+--[[
+Greetz from the RIO team
+Credits:
+Rhythm Lunatic (scrolling, descriptions, everything else)
+Jousway (noteskin preview)
+ROAD24 (initial coding)
+
+Shoutouts to Midflight Digital
+
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <http://unlicense.org>
+]]
 
 return t;
