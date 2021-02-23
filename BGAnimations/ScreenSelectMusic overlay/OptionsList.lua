@@ -150,23 +150,6 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			
 			OptionsListStartMessageCommand=function(self,params)
 				self:playcommand("Adjust",params);
-				--[[if params.Player == pn then
-					if currentOpList == "NoteSkins" then
-						local curRow;
-						--This global var is exported by OptionRowAvailableNoteskins()
-						if OPLIST_splitAt < OPTIONSLIST_NUMNOTESKINS then
-							curRow = math.floor((OPTIONSLIST_NUMNOTESKINS)/2)+1
-						else
-							curRow = OPTIONSLIST_NUMNOTESKINS+1
-						end;
-						--SCREENMAN:SystemMessage(curRow)
-						if curRow>OPLIST_ScrollAt then
-							optionsListActor:stoptweening():linear(.2):y((SCREEN_CENTER_Y-100)+THEME:GetMetric("OptionsList","ItemsSpacingY")*(OPLIST_ScrollAt-curRow))
-						else
-							optionsListActor:stoptweening():linear(.2):y(SCREEN_CENTER_Y-100)
-						end;
-					end;
-				end;]]
 			end;
 			OptionsMenuChangedMessageCommand=function(self,params)
 				--SCREENMAN:SystemMessage("MenuChanged: Menu="..params.Menu);
@@ -256,8 +239,17 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			OptionsListLeftMessageCommand=function(self,params)
 				self:playcommand("Adjust", params);
 			end;
-		
 		};
+		
+		--Make sure the scroller elements don't overlap the top and bottom by using a mask.
+		--Set TextOnCommand=MaskDest; in metrics.ini!
+		Def.Quad{
+			InitCommand=cmd(setsize,OPLIST_WIDTH,SCREEN_CENTER_Y-110;diffuse,Color.HoloBlue;vertalign,top;MaskSource;draworder,999)
+		};
+		Def.Quad{
+			InitCommand=cmd(setsize,OPLIST_WIDTH,38;diffuse,Color.HoloBlue;vertalign,bottom;y,SCREEN_BOTTOM;MaskSource;draworder,999)
+		};
+		
 		--Using an ActorFrame here causes draworder issues.
 		LoadActor("optionIcon")..{
 			InitCommand=cmd(draworder,100;zoomy,0.34;zoomx,0.425;diffusealpha,.75;y,_screen.cy-(olhei/2.25)+40;draworder,998);
