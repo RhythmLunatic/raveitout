@@ -72,6 +72,7 @@ function Setup()
 	PREFSMAN:SetPreference("SmoothLines",true);
 	PREFSMAN:SetPreference("CelShadeModels",false);
 	PREFSMAN:SetPreference("FastNoteRendering",true);
+	PREFSMAN:SetPreference("DisableUploadDir",true);
 	
 	--UI Options
 	PREFSMAN:SetPreference("ShowBanners",false);

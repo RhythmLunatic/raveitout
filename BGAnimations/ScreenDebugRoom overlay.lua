@@ -76,6 +76,105 @@ local t = Def.ActorFrame{
 
 };
 
+local function updateFunction(self,delta)
+	local i = 1
+	for n,child in pairs(self:GetChildren()) do
+		i=i+1
+		local x = child:GetX()-(delta*150)
+		if x < -10 then
+			x=x+SCREEN_WIDTH+20
+		end;
+		local y = math.sin(x*math.pi/(SCREEN_WIDTH/4))*100+SCREEN_CENTER_Y
+		--MESSAGEMAN:Broadcast("SystemMessage",{Message=x..","..y,NoAnimate=true})
+
+		child:xy(x,y)
+	end;
+	--MESSAGEMAN:Broadcast("SystemMessage",{Message=i,NoAnimate=true})
+end;
+
+local function getWavyText(s,x,y)
+	local letters = Def.ActorFrame{
+		OnCommand=function(self)
+			self:SetUpdateFunction(updateFunction)
+		end;
+	};
+	local spacing = 16;
+	for i=1,#s do
+		local c = s:sub(i,i)
+		letters[i] = LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			Name=i;
+			Text=c;
+			InitCommand=cmd(x,x-(#s)*spacing/2+i*spacing;);
+		};
+	end;
+	return letters;
+end;
+
+local function getZoomInText(s,x,y)
+	local letters = Def.ActorFrame{
+		OnCommand=function(self)
+			self:y(y)
+		end;
+	};
+	local spacing = 16;
+	for i=1,#s do
+		local c = s:sub(i,i)
+		letters[i] = LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			Name=i;
+			Text=c;
+			InitCommand=function(self)
+				self:x(x-(#s)*spacing/2+i*spacing+math.random(-10,10))
+				self:y(math.random(-10,10))
+				self:zoom(0);
+			end;
+			OnCommand=cmd(sleep,i*.2;linear,.2;zoom,1;xy,x-(#s)*spacing/2+i*spacing,0);
+		};
+	end;
+	return letters;
+end;
+
+local function getWeirdText(s,x,y)
+	local letters = Def.ActorFrame{
+		OnCommand=function(self)
+			self:y(y)
+		end;
+	};
+	local spacing = 16;
+	for i=1,#s do
+		local c = s:sub(i,i)
+		letters[i] = LoadFont("venacti/_venacti_outline 26px bold diffuse")..{
+			Name=i;
+			Text=c;
+			InitCommand=function(self)
+				self:x(x-(#s)*spacing/2+i*spacing+math.random(-100,100))
+				self:y(math.random(-100,100))
+				self:diffusealpha(0);
+			end;
+			OnCommand=cmd(sleep,i*.2;decelerate,.2;diffusealpha,1;xy,x-(#s)*spacing/2+i*spacing,0);
+		};
+	end;
+	return letters;
+end;
+
+
+--[[t[#t+1] = Def.ActorFrame{
+	OnCommand=function(self)
+		self:SetUpdateFunction(updateFunction)
+	end;
+	Def.BitmapText{
+		Name="a";
+		Font="venacti/_venacti_outline 26px bold diffuse";
+		InitCommand=cmd(Center);
+		--OnCommand=cmd(x,SCREEN_WIDTH;linear,5;x,0;queuecommand,"On";);
+		Text="A"
+	}
+}]]
+t[#t+1] = getWavyText("WAVY TEXT TEST",SCREEN_CENTER_X,SCREEN_CENTER_Y);
+t[#t+1] = getZoomInText("ZOOM IN TEST",SCREEN_CENTER_X,SCREEN_CENTER_Y);
+t[#t+1] = getWeirdText("Weird text",SCREEN_CENTER_X,SCREEN_CENTER_Y+100);
+
+
+
 
 --[[local function bTos(b) return b and "true" or "false" end;
 

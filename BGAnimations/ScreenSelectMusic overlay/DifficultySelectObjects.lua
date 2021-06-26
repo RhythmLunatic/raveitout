@@ -255,9 +255,9 @@ return Def.ActorFrame{
 							equSpeed = lobpm*xmod.."-"..hibpm*xmod
 						end;
 					end;
-					self:settext("SCROLL: "..equSpeed);
+					self:settextf(THEME:GetString("ScreenSelectMusic","SCROLL"),equSpeed);
 				else
-					self:settext("SCROLL: ????");
+					self:settextf(THEME:GetString("ScreenSelectMusic","SCROLL"),"????");
 				end;
 			end;
 			SpeedModChangedMessageCommand=function(self,params)
@@ -276,7 +276,7 @@ return Def.ActorFrame{
 
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{
 			Condition=PROFILEMAN:IsPersistentProfile(pn); --Don't show YOUR BEST when not using a profile
-			Text="YOUR BEST:";
+			Text=THEME:GetString("ScreenSelectMusic","YOUR BEST");
 			InitCommand=cmd(x,-60*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","ScoreInfoY")+20+txytune;zoom,0.25;skewx,-0.25;horizalign,alignment;queuecommand,"Set";);
 			--[[["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(queuecommand,"Set");
 			SetCommand=function(self)
@@ -378,7 +378,7 @@ return Def.ActorFrame{
 		};
 	
 		LoadFont("monsterrat/_montserrat semi bold 60px")..{	--Machine Top Score HOLDER (name)
-			Text="MACHINE BEST:";
+			Text=THEME:GetString("ScreenSelectMusic","MACHINE BEST");
 			InitCommand=cmd(x,-60*negativeOffset;y,THEME:GetMetric("ScreenSelectMusic","ScoreInfoY")+55+txytune;zoom,0.25;skewx,-0.25;horizalign,alignment;);
 			--[[["CurrentSteps"..pname(pn).."ChangedMessageCommand"]=cmd(queuecommand,"Set");
 			SetCommand=function(self)
